@@ -5,9 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMessengerSeg", "WPFMesse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMessengerServer", "WPFMessengerServer\WPFMessengerServer.csproj", "{719B8F8B-9F93-4CCC-B193-51E21B62D1AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atividade01", "AtividadesAula\Atividade01.csproj", "{24C8D62D-EC2A-4A01-A235-19A7C6967BDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atividade01Servidor", "AtividadesAula\Atividade01Servidor.csproj", "{24C8D62D-EC2A-4A01-A235-19A7C6967BDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessengerLib", "MessengerLib\MessengerLib.csproj", "{640A7499-5ED4-427A-968D-2E42D13DE224}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atividade01Cliente", "Atividade01Cliente\Atividade01Cliente.csproj", "{89EC2C66-33BB-4E5B-B55C-B51632D24C22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{640A7499-5ED4-427A-968D-2E42D13DE224}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{640A7499-5ED4-427A-968D-2E42D13DE224}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{640A7499-5ED4-427A-968D-2E42D13DE224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89EC2C66-33BB-4E5B-B55C-B51632D24C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89EC2C66-33BB-4E5B-B55C-B51632D24C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89EC2C66-33BB-4E5B-B55C-B51632D24C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89EC2C66-33BB-4E5B-B55C-B51632D24C22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
