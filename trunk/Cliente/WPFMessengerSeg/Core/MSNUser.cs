@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace WPFMessenger.Core
 {
     public class MSNUser
     {
         private string userName;
         private string userPassword;
-        private int userID;
+        private string userLogin;
 
         public string UserName
         {
@@ -23,10 +19,10 @@ namespace WPFMessenger.Core
             set { userPassword = value; }
         }
 
-        public int UserID
+        public string UserLogin
         {
-            get { return userID; }
-            set { userID = value; }
+            get { return userLogin; }
+            set { userLogin = value; }
         }
 
     }

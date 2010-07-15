@@ -46,7 +46,7 @@ namespace WPFMessenger
             userID.Foreground = new SolidColorBrush(Colors.Black);
             userID.GotFocus -= userID_GotFocus;
 
-            //userID.Text = "7237";
+            //userID.Text = "admin";
         }
 
         private void userPassword_GotFocus(object sender, RoutedEventArgs e)
@@ -55,7 +55,7 @@ namespace WPFMessenger
             userPassword.Foreground = new SolidColorBrush(Colors.Black);
             userPassword.GotFocus -= userPassword_GotFocus;
 
-            //userPassword.Password = "ht7mxh";
+            //userPassword.Password = "21232F297A57A5A743894A0E4A801FC3";
         }
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
@@ -72,16 +72,8 @@ namespace WPFMessenger
                return;
            }
 
-           int userIDValor;
-
-           if (!int.TryParse(userID.Text.ToString(), out userIDValor))
-           {
-               MessageBox.Show("O valor informado no campo ID deve ser númerico.");
-               return;
-           }
-
-           MSNSession.User.UserID = userIDValor;
-           MSNSession.User.UserPassword = userPassword.Password.ToString();
+           MSNSession.User.UserLogin = userID.Text.ToString();
+           MSNSession.User.UserPassword = MessengerLib.Encoder.GenerateMD5(userPassword.Password.ToString());
 
            btLogin.IsEnabled = false;
            userID.IsEnabled = false;
@@ -104,14 +96,14 @@ namespace WPFMessenger
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
             e.Result = TCPConnection.Connect();
-            //e.Result = true;
         }
 
 
         private void GetConnectionValidation(object sender, RunWorkerCompletedEventArgs e)
         {
 
-            bool connected = Boolean.Parse(e.Result.ToString());
+            string result = e.Result.ToString();
+            bool connected = (result.Length == 2);
 
             if (connected)
             {
@@ -126,6 +118,7 @@ namespace WPFMessenger
                 userID.IsEnabled = true;
                 userPassword.IsEnabled = true;
                 lblError.Visibility = Visibility.Visible;
+                lblError.Text = result;
                 loginBar.Visibility = Visibility.Hidden;
                 loginBar.BeginAnimation(ProgressBar.ValueProperty, null);
             }

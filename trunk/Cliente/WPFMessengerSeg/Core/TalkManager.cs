@@ -20,12 +20,12 @@ namespace WPFMessenger.Core
         private IList<MSNMessage> messageList;
 
         public Dictionary<MSNUser, TalkWindow> TalkList { get; set; }
-        public Dictionary<int, MSNUser> UserList { get; set; }
+        public Dictionary<string, MSNUser> UserList { get; set; }
 
         public TalkManager(MainWindow main)
         {
             TalkList = new Dictionary<MSNUser, TalkWindow>();
-            UserList = new Dictionary<int, MSNUser>();
+            UserList = new Dictionary<string, MSNUser>();
             this.main = main;
 
             mp = new MediaPlayer();

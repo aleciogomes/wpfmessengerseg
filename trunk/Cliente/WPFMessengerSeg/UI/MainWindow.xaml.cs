@@ -39,7 +39,7 @@ namespace WPFMessenger
 
             dicTreeItems = new Dictionary<string, MSNUser>();
 
-            this.lblUsuario.Text= MSNSession.User.UserID.ToString();
+            this.lblUsuario.Text= MSNSession.User.UserLogin.ToString();
             this.lblNome.Text = MSNSession.User.UserName;
 
             talkManager = new TalkManager(this);
@@ -47,7 +47,7 @@ namespace WPFMessenger
 
             //cria o usuário 'TODOS'
             MSNUser user = new MSNUser();
-            user.UserID = 0;
+            user.UserLogin = String.Empty;
             user.UserName = "Todos os usuários";
 
             TreeViewItem node = new TreeViewItem();
@@ -58,7 +58,7 @@ namespace WPFMessenger
             treeItemRoot.Items.Add(node);
 
             dicTreeItems.Add(node.Header.ToString(), user);
-            talkManager.UserList.Add(user.UserID, user);
+            talkManager.UserList.Add(user.UserLogin, user);
 
             treeItemRoot.IsExpanded = true;
             treeItemRoot.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
@@ -71,7 +71,7 @@ namespace WPFMessenger
         {
 
             //verifica se existem novas mensagens para o usuário logado
-            talkManager.IntializerMsgRefresher();
+            //talkManager.IntializerMsgRefresher();
 
             //verifica se existem novos usuários logados
             BackgroundWorker bw = new BackgroundWorker();
@@ -107,7 +107,7 @@ namespace WPFMessenger
             {
                 userDisplay = FormatUserDisplay(user);
 
-                if (!dicTreeItems.ContainsKey(userDisplay) && user.UserID != MSNSession.User.UserID)
+                if (!dicTreeItems.ContainsKey(userDisplay) && user.UserLogin != MSNSession.User.UserLogin)
                 {
                     node = new TreeViewItem();
                     node.Header = userDisplay;
@@ -117,8 +117,8 @@ namespace WPFMessenger
 
                     dicTreeItems.Add(node.Header.ToString(), user);
 
-                    if(!talkManager.UserList.ContainsKey(user.UserID)){
-                        talkManager.UserList.Add(user.UserID, user);
+                    if(!talkManager.UserList.ContainsKey(user.UserLogin)){
+                        talkManager.UserList.Add(user.UserLogin, user);
                     }
 
                     //Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
@@ -206,7 +206,7 @@ namespace WPFMessenger
 
         private String FormatUserDisplay(MSNUser user)
         {
-            return String.Format("{0} (id: {1})", user.UserName, user.UserID);
+            return String.Format("{0} (id: {1})", user.UserName, user.UserLogin);
         }
 
     }
