@@ -125,6 +125,9 @@ namespace WPFMessengerServer
                     }
 
                     break;
+                case MessengerLib.Action.GetMsg:
+
+                    break;
             }
 
         }
