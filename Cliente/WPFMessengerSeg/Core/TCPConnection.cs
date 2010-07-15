@@ -7,7 +7,7 @@ using System.Net;
 using System.Threading;
 using MessengerLib;
 
-namespace WPFMessenger.Core
+namespace WPFMessengerSeg.Core
 {
 
     public delegate bool TCPConnectionCaller();
@@ -67,7 +67,7 @@ namespace WPFMessenger.Core
 
         public static string Connect()
         {
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UsrValidation, GetAuthentication());
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());
 
             return EstabilishConnection(cmd, false);
 

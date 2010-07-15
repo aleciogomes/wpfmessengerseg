@@ -10,12 +10,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Threading;
-using WPFMessenger.Core;
+using WPFMessengerSeg.Core;
 using System.ComponentModel;
 using System.Windows.Controls.Primitives;
 
 
-namespace WPFMessenger
+namespace WPFMessengerSeg
 {
 
     public partial class LoginWindow : Window

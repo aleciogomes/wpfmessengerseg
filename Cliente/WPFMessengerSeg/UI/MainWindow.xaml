@@ -1,7 +1,7 @@
-﻿<Window x:Class="WPFMessenger.MainWindow"
+﻿<Window x:Class="WPFMessengerSeg.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="WPFMessenger" Height="545" Width="310" Loaded="Window_Loaded" Icon="/WPFMessenger;component/resources/wpfmsn.png" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    Title="WPFMessenger" Height="545" Width="310" Loaded="Window_Loaded" Icon="/WPFMessengerSeg;component/resources/wpfmsn.png" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style x:Key="LinkStyle" TargetType="{x:Type Hyperlink}">
@@ -25,7 +25,7 @@
         <Label Height="24" Margin="104,36,104,0" VerticalAlignment="Top" FontSize="10">Usuário:</Label>
         <TextBlock Margin="148,41,0,0" Name="lblUsuario" VerticalAlignment="Top" FontSize="10" HorizontalAlignment="Left" Width="80">ID</TextBlock>
         <Border Height="64" Margin="11,3,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="IndianRed" HorizontalAlignment="Left" Width="80">
-            <Image Height="55" HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/resources/avatar_darth.png" />
+            <Image Height="55" HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessengerSeg;component/resources/avatar_darth.png" />
         </Border>
         
 
@@ -68,7 +68,7 @@
             </Expander>
             <TextBlock>
                 <Hyperlink NavigateUri="http:\\ensino.furb.br" TextDecorations="None" RequestNavigate="Hyperlink_RequestNavigate">
-                    <Image Source="/WPFMessenger;component/resources/ava.png" />
+                    <Image Source="/WPFMessengerSeg;component/resources/ava.png" />
                 </Hyperlink> 
             </TextBlock>
         </StackPanel>

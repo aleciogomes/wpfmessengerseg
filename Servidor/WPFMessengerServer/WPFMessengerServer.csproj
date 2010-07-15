@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\Model\MSNMessage.cs" />
     <Compile Include="Core\Util.cs" />
     <Compile Include="Control\DAO\MSNUser.cs" />
     <Compile Include="Control\Model\MSNUser.cs" />

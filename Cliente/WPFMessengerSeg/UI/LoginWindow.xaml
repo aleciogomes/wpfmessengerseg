@@ -1,11 +1,11 @@
-﻿<Window x:Class="WPFMessenger.LoginWindow"
+﻿<Window x:Class="WPFMessengerSeg.LoginWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         
-    Title="WPFMessenger" Height="411" Width="332" ResizeMode="NoResize" Background="Honeydew" Icon="/WPFMessenger;component/resources/wpfmsn.png">
+    Title="WPFMessenger" Height="411" Width="332" ResizeMode="NoResize" Background="Honeydew" Icon="/WPFMessengerSeg;component/resources/wpfmsn.png">
     <Grid ClipToBounds="False" HorizontalAlignment="Left">
         <Border Height="100" Margin="81,18,78,0" VerticalAlignment="Top" BorderThickness="1" CornerRadius="5,5,5,5" Background="LightBlue">
-            <Image Stretch="Fill" Margin="5,5,5,5" Source="/WPFMessenger;component/resources/furbLogo.gif" />
+            <Image Stretch="Fill" Margin="5,5,5,5" Source="/WPFMessengerSeg;component/resources/furbLogo.gif" />
         </Border>
         <Label Height="31" Margin="131,136,131,0" VerticalAlignment="Top" FontSize="16" Foreground="GreenYellow">FURB</Label>
         <Label Margin="48,165,36,179">Entre com seu ID da disciplina de Redes.</Label>

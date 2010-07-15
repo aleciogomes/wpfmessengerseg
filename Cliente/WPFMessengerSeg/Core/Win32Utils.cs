@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace WPFMessenger.Core
+namespace WPFMessengerSeg.Core
 {
     public static class Win32Utils
     {

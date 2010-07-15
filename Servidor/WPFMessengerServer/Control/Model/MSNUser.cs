@@ -8,8 +8,8 @@ namespace WPFMessengerServer.Control.Model
         public DateTime? BlockedDate { get; set; }
         public DateTime? Expiration { get; set; }
         public String Name { get; set; }
+        public String Login { get; set; }
         public String Password { get; set; }
-        public int Id { get; set; }
         public int TimeAlert { get; set; }
     }
 }

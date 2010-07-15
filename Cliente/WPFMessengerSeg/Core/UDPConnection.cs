@@ -5,7 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 
-namespace WPFMessenger.Core
+namespace WPFMessengerSeg.Core
 {
     class UDPConnection
     {
