@@ -27,7 +27,8 @@ namespace MessengerLib
 
     public enum Action
     {
-         UsrValidation
+         Login
+        ,Logoff
         ,GetUsrs
         ,GetMsg
         ,SendMsg

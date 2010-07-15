@@ -83,44 +83,46 @@ namespace WPFMessengerServer
             string password = authentication.Split(':')[1];
             string answer = "OK";
 
+            Control.Model.MSNUser msnUser = null;
+
             switch (ActionHandler.GetAction(request))
             {
-                case MessengerLib.Action.UsrValidation:
+                case MessengerLib.Action.Login:
 
-                    if (!Util.IsValid(user, password))
+                   msnUser = Util.GetUser(user, password);
+
+                    if (msnUser == null)
                     {
                         answer = "Não foi possível entrar. Verifique seu ID e senha.";
                     }
                     else
                     {
                         Console.WriteLine(String.Format("Usuário conectado: {0}", user));
+                        Util.AddOnline(msnUser);
                     }
 
                     SendAnswer(tcpClient, answer);
+                    break;
+
+                case MessengerLib.Action.Logoff:
+
+                    msnUser = Util.GetUser(user, password);
+                    if (msnUser != null)
+                    {
+                        Console.WriteLine(String.Format("Usuário desconectado: {0}", user));
+                        Util.ShutdownUser(msnUser);
+                    }
+
                     break;
 
                 case MessengerLib.Action.GetUsrs:
 
                     StringBuilder sb = new StringBuilder();
 
-                    if (Util.IsValid(user, password))
+                    if (Util.GetUser(user, password) != null)
                     {
-                        IList<Control.Model.MSNUser> list = Util.GetUsers();
-
-                        if (list.Count > 0)
-                        {
-                            
-                            foreach (Control.Model.MSNUser msnUser in list)
-                            {
-                                sb.Append(String.Format("{0}:{1}:", msnUser.Id, msnUser.Name));
-                            }
-                        }
+                        SendAnswer(tcpClient, Util.GetUsers());
                     }
-
-                    //fim da cadeia de caracteres
-                    sb.Append("0::");
-
-                    SendAnswer(tcpClient, sb.ToString());
 
                     break;
             }

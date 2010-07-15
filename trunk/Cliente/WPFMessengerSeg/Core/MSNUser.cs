@@ -1,5 +1,5 @@
 ﻿
-namespace WPFMessenger.Core
+namespace WPFMessengerSeg.Core
 {
     public class MSNUser
     {

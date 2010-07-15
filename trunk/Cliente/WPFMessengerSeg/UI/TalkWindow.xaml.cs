@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using WPFMessenger.Core;
+using WPFMessengerSeg.Core;
 using System;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -11,7 +11,7 @@ using System.Timers;
 using System.Windows.Interop;
 using System.Windows.Input;
 
-namespace WPFMessenger.UI
+namespace WPFMessengerSeg.UI
 {
     /// <summary>
     /// Interaction logic for TalkWindow.xaml

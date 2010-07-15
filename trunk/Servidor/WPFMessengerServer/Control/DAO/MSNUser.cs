@@ -19,7 +19,7 @@ namespace WPFMessengerServer.Control.DAO
 
             try
             {
-                sql.Append(" SELECT cd_usuario, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario ");
+                sql.Append(" SELECT ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario ");
                 command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
                 reader = command.ExecuteReader();
 
@@ -30,9 +30,9 @@ namespace WPFMessengerServer.Control.DAO
                     while (reader.Read())
                     {
                         user = new Model.MSNUser();
-                        user.Id = int.Parse(reader.GetString("cd_usuario"));
-                        user.Name = reader.GetString("nm_usuario");
+                        user.Login = reader.GetString("ds_login");
                         user.Password = reader.GetString("ds_pwhash");
+                        user.Name = reader.GetString("nm_usuario");
 
                         try
                         {
@@ -80,7 +80,7 @@ namespace WPFMessengerServer.Control.DAO
             return list;
         }
 
-        public Model.MSNUser Get(string username, string password)
+        public Model.MSNUser Get(string login, string password)
         {
 
             DBUtil.Instance.openConnection();
@@ -90,10 +90,10 @@ namespace WPFMessengerServer.Control.DAO
 
             try
             {
-                sql.Append(" SELECT cd_usuario, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE nm_usuario = '{0}' and ds_pwhash = '{1}'");
+                sql.Append(" SELECT nm_usuario, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}' and ds_pwhash = '{1}'");
 
                 Object[] sqlParams = new Object[]{
-                    username, password
+                    login, password
                 };
 
                 command = new MySqlCommand(String.Format(sql.ToString(), sqlParams), DBUtil.Instance.Connection);
@@ -104,9 +104,9 @@ namespace WPFMessengerServer.Control.DAO
                 {
                     Model.MSNUser user = new Model.MSNUser();
 
-                    user.Id = int.Parse(reader.GetString("cd_usuario"));
-                    user.Name = username;
+                    user.Login = login;
                     user.Password = password;
+                    user.Name = reader.GetString("nm_usuario");
 
                     try
                     {

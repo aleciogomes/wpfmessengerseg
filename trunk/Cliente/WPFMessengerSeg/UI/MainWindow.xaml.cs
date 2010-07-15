@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using WPFMessenger.Core;
+using WPFMessengerSeg.Core;
 using System.Windows.Controls;
 using System;
 using System.Diagnostics;
 using System.Windows.Documents;
-using WPFMessenger.UI;
+using WPFMessengerSeg.UI;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Media;
 using System.Windows.Interop;
 
-namespace WPFMessenger
+namespace WPFMessengerSeg
 {
     public partial class MainWindow : Window
     {

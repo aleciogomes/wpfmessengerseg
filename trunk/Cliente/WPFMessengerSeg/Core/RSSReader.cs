@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Windows.Controls;
 
-namespace WPFMessenger.Core
+namespace WPFMessengerSeg.Core
 {
     public class RSSReader
     {

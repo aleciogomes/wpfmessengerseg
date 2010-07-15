@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace WPFMessenger
+namespace WPFMessengerSeg
 {
     /// <summary>
     /// Interaction logic for App.xaml

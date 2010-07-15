@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WPFMessenger.UI;
+using WPFMessengerSeg.UI;
 using System.ComponentModel;
 using System.Windows;
 using System.Media;
 using System.Windows.Media;
 
-namespace WPFMessenger.Core
+namespace WPFMessengerSeg.Core
 {
     class TalkManager
     {
