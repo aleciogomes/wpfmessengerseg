@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Net;
 using System.Threading;
+using MessengerLib;
 
 namespace WPFMessenger.Core
 {
@@ -15,10 +16,10 @@ namespace WPFMessenger.Core
     {
 
         private static int port = 1012;
-
         private static string errorMsg = "Erro: Id inválido: ";
-        private static string serverURL = "larc.inf.furb.br";
-        private static string getUsrString = "GET USRS ";
+        private static string serverURL = "127.0.0.1";
+        private static string authentication = String.Empty;
+
 
         public static IList<MSNUser> GetListUsers()
         {
@@ -42,7 +43,7 @@ namespace WPFMessenger.Core
                         if (i % 2 == 0)
                         {
                             user = new MSNUser();
-                            user.UserID = Int32.Parse(value);
+                            user.UserLogin = value;
                         }
                         else
                         {
@@ -64,9 +65,13 @@ namespace WPFMessenger.Core
 
         }
 
-        public static bool Connect()
+        public static string Connect()
         {
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UsrValidation, GetAuthentication());
 
+            return EstabilishConnection(cmd, false);
+
+            /*
             IList<MSNUser> lista = GetListUsers();
 
             if (lista.Count > 0)
@@ -87,7 +92,7 @@ namespace WPFMessenger.Core
             {
 
                 return false;
-            }
+            }*/
         }
 
         private static bool ValidetConnect(string returnString)
@@ -104,13 +109,13 @@ namespace WPFMessenger.Core
 
         private static String GetUsers()
         {
-            string cmd = String.Format("{0}{1}:{2}", getUsrString, MSNSession.User.UserID, MSNSession.User.UserPassword);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetUsrs, GetAuthentication());
             return EstabilishConnection(cmd, true);
         }
 
         public static IList<MSNMessage> GetMyMessages()
         {
-            string cmd = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserID, MSNSession.User.UserPassword);
+            string cmd = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserLogin, MSNSession.User.UserPassword);
 
             string messageString = EstabilishConnection(cmd, false);
             string value = null;
@@ -136,11 +141,7 @@ namespace WPFMessenger.Core
                         }
                         else
                         {
-                            try
-                            {
-                                message.Forwarder = Int32.Parse(value);
-                            }
-                            catch { }
+                            message.Forwarder = value;
                         }
                     }
 
@@ -160,12 +161,15 @@ namespace WPFMessenger.Core
             {
                 TcpClient tcpclnt = new TcpClient();
                 //Console.WriteLine("Conectando.....");
-                tcpclnt.Connect(serverURL, port);
+                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverURL), port);
+                tcpclnt.Connect(serverEndPoint);
 
                 //Console.WriteLine("Conectado!");
                 Stream stm = tcpclnt.GetStream();
 
-                UTF8Encoding enc = new UTF8Encoding();
+                //UTF8Encoding enc = new UTF8Encoding();
+
+                Encoding enc = System.Text.Encoding.GetEncoding("iso-8859-1");
 
                 byte[] ba = enc.GetBytes(command);
 
@@ -234,6 +238,16 @@ namespace WPFMessenger.Core
 
 
             return message.ToString();
+        }
+
+        private static string GetAuthentication()
+        {
+            if (String.IsNullOrEmpty(authentication))
+            {
+                authentication = String.Format("{0}:{1}", MSNSession.User.UserLogin, MSNSession.User.UserPassword);
+            }
+
+            return authentication;
         }
 
     }

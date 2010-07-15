@@ -167,7 +167,7 @@ namespace WPFMessenger.UI
         {
             Run run = new Run(text);
 
-            if (user.UserID == destinyUser.UserID)
+            if (user.UserLogin == destinyUser.UserLogin)
             {
                 run.Foreground = new SolidColorBrush(Colors.LimeGreen);
             }
