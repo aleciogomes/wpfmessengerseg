@@ -1,25 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net.Sockets;
-using System.Threading;
 using System.Net;
-using WPFMessengerServer.Authentication;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using MessengerLib;
+using System.Collections;
+using WPFMessengerServer.Control;
+using System.Collections.Generic;
 
 namespace WPFMessengerServer
 {
     public class Listener
     {
 
+        private Encoding encoder;
+        private const int channel = 1012;
         private TcpListener tcpListener;
-        private UserIdentity identity;
 
         public Listener()
         {
-            this.tcpListener = new TcpListener(IPAddress.Any, 1012);
-            this.identity = new UserIdentity();
+            this.tcpListener = new TcpListener(IPAddress.Any, channel);
+            this.encoder = Encoding.GetEncoding("iso-8859-1");
         }
 
         public void ListenForClients()
@@ -42,7 +43,7 @@ namespace WPFMessengerServer
             TcpClient tcpClient = (TcpClient)client;
             NetworkStream clientStream = tcpClient.GetStream();
 
-            byte[] message = new byte[4096];
+            byte[] message = new byte[1000];
             int qtdBytes;
 
             while (true)
@@ -52,7 +53,7 @@ namespace WPFMessengerServer
                 try
                 {
                     //aguarda receber a mensagem
-                    qtdBytes = clientStream.Read(message, 0, 4096);
+                    qtdBytes = clientStream.Read(message, 0, 1000);
                 }
                 catch
                 {
@@ -66,39 +67,75 @@ namespace WPFMessengerServer
                 }
 
                 //mensagem recebida
-                ASCIIEncoding encoder = new ASCIIEncoding();
+                this.ProcessRequest(tcpClient,encoder.GetString(message, 0, qtdBytes));
 
-                string input = encoder.GetString(message, 0, qtdBytes);
-
-                switch (ActionHandler.GetAction(input))
-                {
-                    case MessengerLib.Action.UsrValidation:
-
-                        input = ActionHandler.GetMessage(input);
-                        string user = input.Split(':')[0];
-                        string password = input.Split(':')[1];
-
-                        if (this.identity.IsValid(user, password))
-                        {
-                            Console.WriteLine("Usuários e senha validados!");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Usuários e/ou senha invalido(s)!");
-                        }
-                        break;
-                }
-
-                /*
-                NetworkStream stream = tcpClient.GetStream();
-                byte[] buffer = encoder.GetBytes("Hello Client!");
-
-                stream.Write(buffer, 0, buffer.Length);
-                stream.Flush();
-                */
             }
 
             tcpClient.Close();
+        }
+
+        private void ProcessRequest(TcpClient tcpClient, string request)
+        {
+
+            string authentication = ActionHandler.GetMessage(request);
+
+            string user = authentication.Split(':')[0];
+            string password = authentication.Split(':')[1];
+            string answer = "OK";
+
+            switch (ActionHandler.GetAction(request))
+            {
+                case MessengerLib.Action.UsrValidation:
+
+                    if (!Util.IsValid(user, password))
+                    {
+                        answer = "Não foi possível entrar. Verifique seu ID e senha.";
+                    }
+                    else
+                    {
+                        Console.WriteLine(String.Format("Usuário conectado: {0}", user));
+                    }
+
+                    SendAnswer(tcpClient, answer);
+                    break;
+
+                case MessengerLib.Action.GetUsrs:
+
+                    StringBuilder sb = new StringBuilder();
+
+                    if (Util.IsValid(user, password))
+                    {
+                        IList<Control.Model.MSNUser> list = Util.GetUsers();
+
+                        if (list.Count > 0)
+                        {
+                            
+                            foreach (Control.Model.MSNUser msnUser in list)
+                            {
+                                sb.Append(String.Format("{0}:{1}:", msnUser.Id, msnUser.Name));
+                            }
+                        }
+                    }
+
+                    //fim da cadeia de caracteres
+                    sb.Append("0::");
+
+                    SendAnswer(tcpClient, sb.ToString());
+
+                    break;
+            }
+
+        }
+
+        private void SendAnswer(TcpClient tcpClient, string message)
+        {
+
+            NetworkStream stream = tcpClient.GetStream();
+            byte[] buffer = encoder.GetBytes(message);
+
+            //envia Resposta
+            stream.Write(buffer, 0, buffer.Length);
+            stream.Flush();
         }
 
     }
