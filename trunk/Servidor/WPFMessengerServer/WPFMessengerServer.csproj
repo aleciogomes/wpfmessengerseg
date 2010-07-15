@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -45,7 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authentication\UserIdentity.cs" />
+    <Compile Include="Core\Util.cs" />
+    <Compile Include="Control\DAO\MSNUser.cs" />
+    <Compile Include="Control\Model\MSNUser.cs" />
+    <Compile Include="Control\DBUtil.cs" />
     <Compile Include="Core\Listener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +59,13 @@
       <Project>{640A7499-5ED4-427A-968D-2E42D13DE224}</Project>
       <Name>MessengerLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\scriptBD.sql" />
+    <None Include="resources\users.qbquery" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\MySql.Data.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
