@@ -3,7 +3,7 @@ using System.Text;
 
 namespace MessengerLib
 {
-    public class Encoder
+    public static class Encoder
     {
         /*
         private const string keyMD5 = "wpfMSNKey";
@@ -19,7 +19,7 @@ namespace MessengerLib
         }
         */
 
-        public string GenerateMD5(string input)
+        public static string GenerateMD5(string input)
         {
             //calcula o MD5 hash a partir da string
             MD5 md5      = MD5.Create();
