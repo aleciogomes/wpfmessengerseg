@@ -17,6 +17,7 @@ namespace Atividade01Cliente
 
         static void Main(string[] args)
         {
+
             TcpClient client = new TcpClient();
 
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1012);
