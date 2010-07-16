@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using WPFMessengerServer.Control.Model;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using WPFMessengerServer.Control.Model;
 
 namespace WPFMessengerServer
 {
@@ -10,10 +10,16 @@ namespace WPFMessengerServer
         private static Control.DAO.MSNUser dao = new Control.DAO.MSNUser();
         private static IList<MSNUser> listOnline = new List<MSNUser>();
         private static Dictionary<MSNUser, IList<MSNMessage>> dicMessages = new Dictionary<MSNUser, IList<MSNMessage>>();
+        private static Object lockMsg = new Object();
 
-        public static Control.Model.MSNUser GetUser(string user, string password)
+        public static MSNUser GetUser(string user, string password)
         {
             return dao.Get(user, password);
+        }
+
+        public static MSNUser GetContact(string user)
+        {
+            return dao.GetContact(user);
         }
 
         public static string GetUsers()
@@ -28,7 +34,7 @@ namespace WPFMessengerServer
             }
 
             //fim da cadeia de caracteres
-            sb.Append("0::");
+            sb.Append(MessengerLib.Config.EndStackMessage);
 
             return sb.ToString();
         }
@@ -48,32 +54,41 @@ namespace WPFMessengerServer
             return listOnline.Contains(user);
         }
 
-        public static void AddMessage(MSNUser from, MSNUser to, string content )
+        public static void AddMessage(MSNUser forwarder, MSNUser destiny, string content )
         {
-            MSNMessage message = new MSNMessage();
-            message.Message = content;
-            message.Forwarder = from;
-
-            if (!dicMessages.ContainsKey(to))
+            lock (lockMsg)
             {
-                dicMessages.Add(to, new List<MSNMessage>());
-            }
+                MSNMessage message = new MSNMessage();
+                message.Message = content;
+                message.Forwarder = forwarder;
 
-            dicMessages[to].Add(message);
+                if (!dicMessages.ContainsKey(destiny))
+                {
+                    dicMessages.Add(destiny, new List<MSNMessage>());
+                }
+
+                dicMessages[destiny].Add(message);
+            }
         }
 
-        public static IList<string> GetMessages(MSNUser user)
+        public static string GetMessages(MSNUser user)
         {
-            IList<string> messages = new List<string>();
+            StringBuilder sb = new StringBuilder();
 
-            foreach(MSNMessage msg in dicMessages[user])
+            lock (lockMsg)
             {
-                messages.Add(String.Format("{0}:{1}", msg.Forwarder.Login, msg.Message));
+                foreach (MSNMessage msg in dicMessages[user])
+                {
+                    sb.Append(String.Format("{0}:{1}", msg.Forwarder.Login, msg.Message));
+                }
+
+                sb.Append(MessengerLib.Config.EndStackMessage);
+
+                //limpa o cache de mensagens
+                dicMessages[user].Clear();
             }
 
-            messages.Add("0:");
-
-            return messages;
+            return sb.ToString();
         }
 
     }

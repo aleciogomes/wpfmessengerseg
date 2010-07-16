@@ -14,6 +14,8 @@ namespace WPFMessengerServer.Control
         public String Pass { get; set; }
         public Boolean Configured { get; set; }
 
+        private static Object lockBD = new Object();
+
         private DBUtil() {}
 
         public static DBUtil Instance
@@ -45,16 +47,19 @@ namespace WPFMessengerServer.Control
 
         public void openConnection()
         {
-            try
+            lock (lockBD)
             {
-                if (instance.Connection != null)
+                try
                 {
-                    instance.Connection.Open();
+                    if (instance.Connection != null)
+                    {
+                        instance.Connection.Open();
+                    }
                 }
-            }
-            catch
-            {
-                Console.WriteLine("Erro ao abrir conexao com o banco");
+                catch
+                {
+                    Console.WriteLine("Erro ao abrir conexao com o banco");
+                }
             }
         }
 

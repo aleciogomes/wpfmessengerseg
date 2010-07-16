@@ -90,11 +90,19 @@ namespace WPFMessengerServer.Control.DAO
 
             try
             {
-                sql.Append(" SELECT nm_usuario, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}' and ds_pwhash = '{1}'");
+                sql.Append(" SELECT nm_usuario, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}'");
 
-                Object[] sqlParams = new Object[]{
-                    login, password
-                };
+                Object[] sqlParams = null;
+
+                if (!String.IsNullOrEmpty(password))
+                {
+                    sql.Append(" and ds_pwhash = '{1}' ");
+                    sqlParams = new Object[] { login, password };
+                }
+                else
+                {
+                    sqlParams = new Object[]{ login};
+                }
 
                 command = new MySqlCommand(String.Format(sql.ToString(), sqlParams), DBUtil.Instance.Connection);
                 reader = command.ExecuteReader();
@@ -155,5 +163,10 @@ namespace WPFMessengerServer.Control.DAO
             return null;
         }
 
+
+        public Model.MSNUser GetContact(string user)
+        {
+            return this.Get(user, String.Empty);
+        }
     }
 }
