@@ -5,6 +5,9 @@ namespace MessengerLib
 {
     public static class Encoder
     {
+
+        private static Encoding encoderISO = Encoding.GetEncoding("iso-8859-1");
+
         /*
         private const string keyMD5 = "wpfMSNKey";
 
@@ -18,6 +21,11 @@ namespace MessengerLib
 
         }
         */
+
+        public static Encoding GetEncoding()
+        {
+            return encoderISO;
+        }
 
         public static string GenerateMD5(string input)
         {
