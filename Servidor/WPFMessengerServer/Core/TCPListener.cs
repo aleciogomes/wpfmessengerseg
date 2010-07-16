@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using MessengerLib;
-using System.Collections;
-using WPFMessengerServer.Control;
-using System.Collections.Generic;
+using WPFMessengerServer.Control.Model;
 
 namespace WPFMessengerServer
 {
-    public class Listener
+    public class TCPListener
     {
 
-        private Encoding encoder;
         private const int channel = 1012;
         private TcpListener tcpListener;
 
-        public Listener()
+        public TCPListener()
         {
             this.tcpListener = new TcpListener(IPAddress.Any, channel);
-            this.encoder = Encoding.GetEncoding("iso-8859-1");
         }
 
-        public void ListenForClients()
+        public void Listen()
         {
             this.tcpListener.Start();
 
@@ -67,7 +62,7 @@ namespace WPFMessengerServer
                 }
 
                 //mensagem recebida
-                this.ProcessRequest(tcpClient,encoder.GetString(message, 0, qtdBytes));
+                this.ProcessRequest(tcpClient, MessengerLib.Encoder.GetEncoding().GetString(message, 0, qtdBytes));
 
             }
 
@@ -81,54 +76,77 @@ namespace WPFMessengerServer
 
             string user = authentication.Split(':')[0];
             string password = authentication.Split(':')[1];
-            string answer = "OK";
+            string answer = String.Empty;
 
-            Control.Model.MSNUser msnUser = null;
+            MSNUser msnUser = Util.GetUser(user, password);
 
             switch (ActionHandler.GetAction(request))
             {
                 case MessengerLib.Action.Login:
 
-                   msnUser = Util.GetUser(user, password);
-
                     if (msnUser == null)
                     {
+                        //auditoria
+                        Console.WriteLine(String.Format("Login inválido: {0}/{1}", user, password));
+
                         answer = "Não foi possível entrar. Verifique seu ID e senha.";
                     }
                     else
                     {
+                        //auditoria
                         Console.WriteLine(String.Format("Usuário conectado: {0}", user));
+
                         Util.AddOnline(msnUser);
+                        answer = MessengerLib.Config.OKMessage;
                     }
 
-                    SendAnswer(tcpClient, answer);
                     break;
 
                 case MessengerLib.Action.Logoff:
 
-                    msnUser = Util.GetUser(user, password);
                     if (msnUser != null)
                     {
+                        //auditoria
                         Console.WriteLine(String.Format("Usuário desconectado: {0}", user));
+
                         Util.ShutdownUser(msnUser);
                     }
+
+                    answer = MessengerLib.Config.OKMessage;
 
                     break;
 
                 case MessengerLib.Action.GetUsrs:
 
-                    StringBuilder sb = new StringBuilder();
-
-                    if (Util.GetUser(user, password) != null)
+                    if (msnUser != null)
                     {
-                        SendAnswer(tcpClient, Util.GetUsers());
+                        answer = Util.GetUsers();
+                    }
+                    else
+                    {
+                        answer = MessengerLib.Config.EndStackMessage;
                     }
 
                     break;
                 case MessengerLib.Action.GetMsg:
 
+                    if (msnUser != null)
+                    {
+                        answer = Util.GetMessages(msnUser);
+                    }
+                    else
+                    {
+                        answer = MessengerLib.Config.EndStackMessage;
+                    }
+
+                    break;
+                default:
+                    answer = MessengerLib.Config.ErrorMessage;
                     break;
             }
+
+
+            SendAnswer(tcpClient, answer);
 
         }
 
@@ -136,7 +154,7 @@ namespace WPFMessengerServer
         {
 
             NetworkStream stream = tcpClient.GetStream();
-            byte[] buffer = encoder.GetBytes(message);
+            byte[] buffer = MessengerLib.Encoder.GetEncoding().GetBytes(message);
 
             //envia Resposta
             stream.Write(buffer, 0, buffer.Length);

@@ -47,11 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Control\Model\MSNMessage.cs" />
+    <Compile Include="Core\UDPListener.cs" />
     <Compile Include="Core\Util.cs" />
     <Compile Include="Control\DAO\MSNUser.cs" />
     <Compile Include="Control\Model\MSNUser.cs" />
     <Compile Include="Control\DBUtil.cs" />
-    <Compile Include="Core\Listener.cs" />
+    <Compile Include="Core\TCPListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
