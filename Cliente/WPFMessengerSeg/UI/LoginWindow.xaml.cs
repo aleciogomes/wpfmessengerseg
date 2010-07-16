@@ -103,7 +103,9 @@ namespace WPFMessengerSeg
         {
 
             string result = e.Result.ToString();
-            bool connected = (result.Length == 2);
+
+            //verifica se o resultado é 'OK'
+            bool connected = (result.Equals(MessengerLib.Config.OKMessage));
 
             if (connected)
             {

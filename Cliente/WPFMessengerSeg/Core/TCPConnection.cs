@@ -15,11 +15,7 @@ namespace WPFMessengerSeg.Core
     public static class TCPConnection
     {
 
-        private static int port = 1012;
-        private static string errorMsg = "Erro: Id inválido: ";
-        private static string serverURL = "127.0.0.1";
         private static string authentication = String.Empty;
-
 
         public static IList<MSNUser> GetListUsers()
         {
@@ -29,7 +25,7 @@ namespace WPFMessengerSeg.Core
 
             string returnString = GetUsers();
 
-            if (ValidetConnect(returnString) && !returnString.Equals("0::"))
+            if (ValidetConnect(returnString) && !returnString.Equals(MessengerLib.Config.EndStackMessage))
             {
                 string[] returnVector = returnString.Split(new char[] { ':' });
                 string value = null;
@@ -67,37 +63,26 @@ namespace WPFMessengerSeg.Core
 
         public static string Connect()
         {
+            authentication = String.Empty;
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());
+            
+            string result = EstabilishConnection(cmd, false);
 
-            return EstabilishConnection(cmd, false);
-
-            /*
             IList<MSNUser> lista = GetListUsers();
-
-            if (lista.Count > 0)
+            foreach (MSNUser user in lista)
             {
-
-                foreach (MSNUser user in lista)
+                if (user.UserLogin == MSNSession.User.UserLogin)
                 {
-                    if (user.UserID == MSNSession.User.UserID)
-                    {
-                        MSNSession.User.UserName = user.UserName;
-                        return true;
-                    }
+                    MSNSession.User.UserName = user.UserName;
                 }
-
-                return false;
             }
-            else
-            {
-
-                return false;
-            }*/
+            
+            return result;
         }
 
         private static bool ValidetConnect(string returnString)
         {
-            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(errorMsg) < 0)
+            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(MessengerLib.Config.ErrorMessage) < 0)
             {
                 return true;
             }
@@ -115,15 +100,15 @@ namespace WPFMessengerSeg.Core
 
         public static IList<MSNMessage> GetMyMessages()
         {
-            string cmd = String.Format("{0}{1}:{2}", "GET MSG ", MSNSession.User.UserLogin, MSNSession.User.UserPassword);
-
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetMsg, GetAuthentication());
             string messageString = EstabilishConnection(cmd, false);
+
             string value = null;
 
             IList<MSNMessage> lista = new List<MSNMessage>();
             MSNMessage message = null;
 
-            while (!messageString.Equals("0:"))
+            while (!messageString.Equals(MessengerLib.Config.EndStackMessage))
             {
                 string[] returnVector = messageString.Split(new char[] { ':' }, 2);
 
@@ -161,7 +146,7 @@ namespace WPFMessengerSeg.Core
             {
                 TcpClient tcpclnt = new TcpClient();
                 //Console.WriteLine("Conectando.....");
-                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverURL), port);
+                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(MessengerLib.Config.ServerURL), MessengerLib.Config.TCPPort);
                 tcpclnt.Connect(serverEndPoint);
 
                 //Console.WriteLine("Conectado!");
@@ -185,7 +170,7 @@ namespace WPFMessengerSeg.Core
             catch (Exception erro)
             {
                 Console.WriteLine("Erro: " + erro.StackTrace);
-                return errorMsg;
+                return MessengerLib.Config.ErrorMessage;
             }
         }
 
@@ -200,7 +185,6 @@ namespace WPFMessengerSeg.Core
 
             if (useCharStop)
             {
-                string parada = "0:";
                 bool continuarLendo = true;
                 string compararParada = null;
                 char? charAnterior = null;
@@ -215,7 +199,7 @@ namespace WPFMessengerSeg.Core
                         compararParada = String.Format("{0}{1}", charAnterior, charAtual);
                         charAnterior = charAtual;
 
-                        if (compararParada.Equals(parada))
+                        if (compararParada.Equals(MessengerLib.Config.EndStackMessage))
                         {
                             continuarLendo = false;
                         }
