@@ -71,7 +71,7 @@ namespace WPFMessengerSeg
         {
 
             //verifica se existem novas mensagens para o usuário logado
-            //talkManager.IntializerMsgRefresher();
+            talkManager.IntializerMsgRefresher();
 
             //verifica se existem novos usuários logados
             BackgroundWorker bw = new BackgroundWorker();

@@ -1,44 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace WPFMessengerSeg.Core
 {
     class UDPConnection
     {
-        private int port = 1011;
-        private string serverURL = "127.0.0.1";
         private IPAddress ipAdress = null;
-        private string getMsgString = "SEND MSG ";
-
         private UdpClient udp;
 
         public UDPConnection()
         {
-            IPHostEntry ip = Dns.GetHostEntry(serverURL);
-            IPAddress [] ipList = ip.AddressList;
-
-            if (ipList.Length > 0)
-            {
-                ipAdress = ipList[0];
-            }
-
+            this.ipAdress = IPAddress.Parse(MessengerLib.Config.ServerURL);
             udp = new UdpClient();
         }
 
         public bool SendMessage(MSNUser destintyUser, string message)
         {
-
-            string command = String.Format("{0}{1}:{2}:{3}:{4}", this.getMsgString, MSNSession.User.UserLogin, MSNSession.User.UserPassword, destintyUser.UserLogin, message);
+            string info = String.Format("{0}:{1}:{2}:{3}", MSNSession.User.UserLogin, MSNSession.User.UserPassword, destintyUser.UserLogin, message);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.SendMsg, info);
 
             try
             {
-                IPEndPoint ip = new IPEndPoint(ipAdress, port);
+                IPEndPoint ip = new IPEndPoint(ipAdress, MessengerLib.Config.UDPPort);
 
-                byte[] data = Encoding.Default.GetBytes(command);
+                byte[] data = Encoding.Default.GetBytes(cmd);
                 udp.Send(data, data.Length, ip);
 
                 return true;
