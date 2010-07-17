@@ -7,9 +7,11 @@ CREATE SCHEMA IF NOT EXISTS `WPFMESS` DEFAULT CHARACTER SET latin1 COLLATE latin
 -- -----------------------------------------------------
 -- Table `WPFMESS`.`USUARIO`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `WPFMESS`.`PERMISSAO`;
 DROP TABLE IF EXISTS `WPFMESS`.`USUARIO` ;
 
 CREATE  TABLE IF NOT EXISTS `WPFMESS`.`USUARIO` (
+  `cd_usuario` INT NOT NULL AUTO_INCREMENT,
   `ds_login` VARCHAR(50) ,
   `nm_usuario` VARCHAR(50) ,
   `ds_pwhash` VARCHAR(50) ,
@@ -17,7 +19,7 @@ CREATE  TABLE IF NOT EXISTS `WPFMESS`.`USUARIO` (
   `nr_prazoAlerta` INT ,
   `fl_bloqueada` CHAR ,
   `dt_liberacaoBloqueio` DATE ,
-  PRIMARY KEY (`ds_login`) )
+  PRIMARY KEY (`cd_usuario`) )
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `WPFMESS`.`MENSAGEMOFF` ;
@@ -44,15 +46,13 @@ CREATE TABLE IF NOT EXISTS `WPFMESS`.`OPERACAO` (
 )
 ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `WPFMESS`.`PERMISSAO`;
-
 CREATE TABLE IF NOT EXISTS `WPFMESS`.`PERMISSAO` (
-  `ds_login` VARCHAR(50) NOT NULL,
+  `cd_usuario` INT NOT NULL,
   `cd_operacao` INT NOT NULL,
-  PRIMARY KEY (`ds_login`, `cd_operacao`),
+  PRIMARY KEY (`cd_usuario`, `cd_operacao`),
   CONSTRAINT `fk_permissao_usuario`
-    FOREIGN KEY (`ds_login`)
-    REFERENCES `WPFMESS`.`USUARIO` (`ds_login`),
+    FOREIGN KEY (`cd_usuario`)
+    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`),
   CONSTRAINT `fk_permissao_operacao`
     FOREIGN KEY (`cd_operacao`)
     REFERENCES `WPFMESS`.`OPERACAO` (`cd_operacao`)
