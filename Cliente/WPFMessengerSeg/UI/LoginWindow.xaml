@@ -8,7 +8,7 @@
             <Image Stretch="Fill" Margin="5,5,5,5" Source="/WPFMessengerSeg;component/resources/furbLogo.gif" />
         </Border>
         <Label Height="31" Margin="131,136,131,0" VerticalAlignment="Top" FontSize="16" Foreground="GreenYellow">FURB</Label>
-        <Label Margin="48,165,36,179">Entre com seu ID da disciplina de Redes.</Label>
+        <Label Margin="48,165,36,179" HorizontalAlignment="Center">Entre com seu usuário e senha</Label>
         <GroupBox Header="Login" Margin="35,0,28,73" Height="101" VerticalAlignment="Bottom">
             <StackPanel>
                 <TextBox Height="23" Name="userID" Width="Auto" Margin="10,10,10,3" Foreground="DarkGray" GotFocus="userID_GotFocus">Insira seu ID</TextBox>

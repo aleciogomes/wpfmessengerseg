@@ -25,7 +25,7 @@ namespace WPFMessengerSeg
         private TalkManager talkManager;
 
         //atualiza lista de usuários a cada 6 segundos
-        private int timeRefreshUsers = 6;
+        private TimeSpan timeRefreshUsers;
 
         private bool firstRefresh = true;
 
@@ -35,15 +35,17 @@ namespace WPFMessengerSeg
 
             Closing += Window_Closing;
 
-            rootTitle = treeItemRoot.Header.ToString();
+            this.rootTitle = treeItemRootOnline.Header.ToString();
 
-            dicTreeItems = new Dictionary<string, MSNUser>();
+            this.dicTreeItems = new Dictionary<string, MSNUser>();
 
             this.lblUsuario.Text= MSNSession.User.UserLogin.ToString();
             this.lblNome.Text = MSNSession.User.UserName;
 
-            talkManager = new TalkManager(this);
-            LoadRSS();
+            this.timeRefreshUsers = TimeSpan.FromSeconds(6);
+
+            this.talkManager = new TalkManager(this);
+            this.LoadRSS();
 
             //cria o usuário 'TODOS'
             MSNUser user = new MSNUser();
@@ -55,13 +57,13 @@ namespace WPFMessengerSeg
             node.FontSize = 12;
             node.Foreground = new SolidColorBrush(Colors.LimeGreen);
             node.PreviewMouseDoubleClick += ShowTalkWindow;
-            treeItemRoot.Items.Add(node);
+            treeItemRootOnline.Items.Add(node);
 
-            dicTreeItems.Add(node.Header.ToString(), user);
-            talkManager.UserList.Add(user.UserLogin, user);
+            this.dicTreeItems.Add(node.Header.ToString(), user);
+            this.talkManager.UserList.Add(user.UserLogin, user);
 
-            treeItemRoot.IsExpanded = true;
-            treeItemRoot.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
+            this.treeItemRootOnline.IsExpanded = true;
+            this.treeItemRootOnline.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
 
         }
 
@@ -84,7 +86,7 @@ namespace WPFMessengerSeg
         {
             if (!firstRefresh)
             {
-                Thread.Sleep(timeRefreshUsers * 1000);
+                Thread.Sleep(timeRefreshUsers);
             }
             else
             {
@@ -113,7 +115,7 @@ namespace WPFMessengerSeg
                     node.Header = userDisplay;
                     node.FontSize = 12;
                     node.PreviewMouseDoubleClick += ShowTalkWindow;
-                    treeItemRoot.Items.Add(node);
+                    treeItemRootOnline.Items.Add(node);
 
                     dicTreeItems.Add(node.Header.ToString(), user);
 
@@ -125,8 +127,8 @@ namespace WPFMessengerSeg
                 }
             }
 
-            treeItemRoot.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRoot.Items.Count));
-            treeItemRoot.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
+            treeItemRootOnline.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
+            treeItemRootOnline.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
 
             IntializerRefresher();
         }
@@ -150,6 +152,10 @@ namespace WPFMessengerSeg
 
             if (result == MessageBoxResult.Yes)
             {
+                //faz o logoff no server
+                UDPConnection udp = new UDPConnection();
+                udp.Logoff();
+
                 Application.Current.Shutdown();
             }
             else
@@ -207,6 +213,11 @@ namespace WPFMessengerSeg
         private String FormatUserDisplay(MSNUser user)
         {
             return String.Format("{0} (id: {1})", user.UserName, user.UserLogin);
+        }
+
+        private void Sair(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
     }
