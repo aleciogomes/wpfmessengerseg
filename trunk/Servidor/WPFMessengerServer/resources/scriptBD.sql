@@ -59,6 +59,15 @@ CREATE TABLE IF NOT EXISTS `WPFMESS`.`PERMISSAO` (
 )
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `WPFMESS`.`AUDITORIA` (
+  `cd_usuario` INT NOT NULL,
+  `ds_auditoria` TEXT NOT NULL,
+  CONSTRAINT `fk_auditoria_usuario`,
+    FOREIGN KEY (`cd_usuario`)
+    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`)
+)
+ENGINE = InnoDB;
+
 INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio)
 VALUES ('admin', 'Administrador', '21232F297A57A5A743894A0E4A801FC3', NULL, 0, FALSE, NULL);
 
