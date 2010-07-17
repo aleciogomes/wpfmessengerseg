@@ -15,7 +15,7 @@ namespace MessengerLib
 
         public static string GetMessage(string input)
         {
-            return input.Split(separator)[1];
+            return input.Split(new char[]{separator}, 2)[1];
         }
 
         public static string FormatAction(Action action, string message)
