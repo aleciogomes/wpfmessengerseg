@@ -36,10 +36,10 @@
                 <MenuItem Header="Conta">
                     <MenuItem Header="Visualizar minha conta" Click="MyAccount_Click"/>
                 </MenuItem>
-                <MenuItem Header="Administrar" Visibility="Hidden">
-                    <MenuItem Header="Gerenciar usuários"/>
+                <MenuItem Header="Administrar" Visibility="Hidden" Name="menuAdmin" >
+                    <MenuItem Header="Gerenciar usuários" Click="ManageUsers_Click"/>
                 </MenuItem>
-                <MenuItem Header="Auditoria" Visibility="Hidden">
+                <MenuItem Header="Auditoria" Visibility="Hidden" Name="menuAuditoria">
                     <MenuItem Header="Visualizar eventos do sistema"/>
                 </MenuItem>
             </Menu>
@@ -53,8 +53,8 @@
                 </Canvas.Background>
                 
                 <TextBlock Height="32" Margin="104,36,22,0" Name="lblNome" VerticalAlignment="Top" FontSize="16" Canvas.Top="-18">Nome do usuário</TextBlock>
-                <Label Height="24" Margin="104,61,104,0" VerticalAlignment="Top" FontSize="10" Canvas.Left="-3" Width="46" Canvas.Top="-15">Usuário:</Label>
-                <TextBlock Margin="148,41,0,0" Name="lblUsuario" VerticalAlignment="Top" FontSize="10" HorizontalAlignment="Left" Width="80" Height="13" Canvas.Top="11" Canvas.Left="-3">ID</TextBlock>
+                <Label Margin="104,61,104,0" VerticalAlignment="Top" FontSize="10" Canvas.Left="-3" Width="46" Canvas.Top="-15">Usuário:</Label>
+                <TextBlock Name="lblUsuario" Margin="104,61,104,0" VerticalAlignment="Top" FontSize="10" Canvas.Left="43" Width="46" Canvas.Top="-10" Height="13">ID</TextBlock>
                 <Border Height="64" Margin="11,28,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="IndianRed" HorizontalAlignment="Left" Width="80" Canvas.Top="-18">
                     <Image Height="55" HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessengerSeg;component/resources/avatar_darth.png" />
                 </Border>
@@ -64,18 +64,11 @@
             <TreeView Name="treeUsers" BorderThickness="0" Height="345" MaxHeight="1000">
 
                 <TreeView.Resources>
-                    <Style TargetType="TreeViewItem">
-                        <Style.Triggers>
-                            <Trigger Property="HasItems" Value="true">
-                                <Setter Property="Focusable" Value="false" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
                     <SolidColorBrush Color="RoyalBlue" x:Key="{x:Static SystemColors.HighlightBrushKey}"/>
                 </TreeView.Resources>
 
-                <TreeViewItem Header="Usuários Online (0)" FontSize="15" Foreground="CadetBlue" Name="treeItemRootOnline" IsHitTestVisible="True" />
-                <TreeViewItem Header="Usuários Offline (0)" FontSize="15" Foreground="CadetBlue" Name="treeItemRootOffline" IsHitTestVisible="True" />
+                <TreeViewItem Header="Usuários Online (0)" FontSize="15" Foreground="CadetBlue" Name="treeItemRootOnline" IsHitTestVisible="True" Focusable="False" />
+                <TreeViewItem Header="Usuários Offline (0)" FontSize="15" Foreground="CadetBlue" Name="treeItemRootOffline" IsHitTestVisible="True" Focusable="False"/>
             </TreeView>
 
             <Expander x:Name="expander" Header="Notícias FURB" MaxHeight="120" Background="Lavender" Foreground="Black">

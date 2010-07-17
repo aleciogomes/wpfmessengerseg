@@ -31,7 +31,7 @@ namespace WPFMessengerServer
 
             foreach (Control.Model.MSNUser usuario in list)
             {
-                sb.Append(String.Format("{0}:{1}:", usuario.Login, usuario.Name));
+                sb.Append(String.Format("{0}:{1}:{2}:", usuario.Login, usuario.Name, IsOnline(usuario.Login)));
             }
 
             //fim da cadeia de caracteres
@@ -45,9 +45,17 @@ namespace WPFMessengerServer
             listOnline.Add(user);
         }
 
-        public static void ShutdownUser(MSNUser user)
+        public static void ShutdownUser(string user)
         {
-            listOnline.Remove(user);
+            IList<MSNUser> query = (from msnUser in listOnline
+                                    where msnUser.Login.Equals(user)
+                                    select msnUser).ToList();
+
+            foreach (MSNUser msnUser in query)
+            {
+                listOnline.Remove(msnUser);
+            }
+
         }
 
         public static void UpdateAccount(string user, string newName, string newUser, string newPassword)
@@ -57,9 +65,9 @@ namespace WPFMessengerServer
 
         public static bool IsOnline(string user)
         {
-            IList<MSNUser> query = (from msnuser in listOnline 
-                                    where msnuser.Login.Equals(user)
-                                    select msnuser ).ToList();
+            IList<MSNUser> query = (from msnUser in listOnline
+                                    where msnUser.Login.Equals(user)
+                                    select msnUser).ToList();
 
             return (query.Count > 0);
         }

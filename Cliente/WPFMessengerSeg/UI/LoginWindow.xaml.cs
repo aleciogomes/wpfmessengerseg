@@ -55,7 +55,7 @@ namespace WPFMessengerSeg
             userPassword.Foreground = new SolidColorBrush(Colors.Black);
             userPassword.GotFocus -= userPassword_GotFocus;
 
-            //userPassword.Password = "21232F297A57A5A743894A0E4A801FC3";
+            //userPassword.Password = "admin";
         }
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
