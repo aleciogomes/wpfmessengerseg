@@ -137,6 +137,7 @@ namespace WPFMessengerServer
                     }
 
                     break;
+
                 default:
                     answer = MessengerLib.Config.ErrorMessage;
                     break;

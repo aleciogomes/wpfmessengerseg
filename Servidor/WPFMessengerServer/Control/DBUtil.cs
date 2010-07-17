@@ -107,7 +107,7 @@ namespace WPFMessengerServer.Control
             }
         }
 
-        public void executeInsert(String query)
+        public void executeQuery(String query)
         {
             MySqlCommand command = null;
 
@@ -117,21 +117,6 @@ namespace WPFMessengerServer.Control
                 command.ExecuteNonQuery();
             }
             catch(Exception e)
-            {
-                Console.WriteLine("Erro ao executar query:\n" + e.Message);
-            }
-        }
-
-        public void executeDelete(String query)
-        {
-            MySqlCommand command = null;
-
-            try
-            {
-                command = new MySqlCommand(query, instance.Connection);
-                command.ExecuteNonQuery();
-            }
-            catch (Exception e)
             {
                 Console.WriteLine("Erro ao executar query:\n" + e.Message);
             }

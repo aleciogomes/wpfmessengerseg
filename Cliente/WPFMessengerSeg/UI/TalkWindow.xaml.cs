@@ -20,8 +20,6 @@ namespace WPFMessengerSeg.UI
     {
         private IntPtr hwnd;
 
-        private UDPConnection udp;
-
         private MSNUser destinyUser;
 
         //define como estático, para nao recriar toda vez que abrir uma janela de conversa
@@ -47,8 +45,6 @@ namespace WPFMessengerSeg.UI
             KeyDown += Window_KeyDown;
             Closing += Window_Closing;
             msgBox.PreviewKeyDown += MsgBox_KeyDown;
-
-            udp = new UDPConnection();
 
             this.SetLabelText(lblCurrentUser, MSNSession.User.UserName);
 
@@ -130,7 +126,7 @@ namespace WPFMessengerSeg.UI
 
             if (!message.Equals(String.Empty))
             {
-                udp.SendMessage(this.destinyUser, message);
+                UDPConnection.SendMessage(this.destinyUser, message);
                 msgBox.Document.Blocks.Clear();
 
                 this.InsertMessage(MSNSession.User, message);

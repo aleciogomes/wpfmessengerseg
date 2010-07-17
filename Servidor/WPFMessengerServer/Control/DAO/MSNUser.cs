@@ -56,11 +56,11 @@ namespace WPFMessengerServer.Control.DAO
 
                             try
                             {
-                                user.BlockedDate = DateTime.Parse(reader.GetString("dt_liberacaoBloqueio"));
+                                user.UnblockDate = DateTime.Parse(reader.GetString("dt_liberacaoBloqueio"));
                             }
                             catch
                             {
-                                user.BlockedDate = null;
+                                user.UnblockDate = null;
                             }
 
                             try
@@ -142,11 +142,11 @@ namespace WPFMessengerServer.Control.DAO
 
                         try
                         {
-                            user.BlockedDate = DateTime.Parse(reader.GetString("dt_liberacaoBloqueio"));
+                            user.UnblockDate = DateTime.Parse(reader.GetString("dt_liberacaoBloqueio"));
                         }
                         catch
                         {
-                            user.BlockedDate = null;
+                            user.UnblockDate = null;
                         }
 
                         try
@@ -179,6 +179,27 @@ namespace WPFMessengerServer.Control.DAO
             return null;
         }
 
+
+        public void Update(string user, string newName, string newUser, string newPassword)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.Append(" UPDATE Usuario SET ");
+            sql.Append(" ds_login  = '{0}' ");
+            sql.Append(",nm_usuario = '{1}' ");
+            sql.Append(",ds_pwhash = '{2}' ");
+            sql.Append(" WHERE ds_login = '{3}' ");
+
+            Object[] sqlParams = new Object[]{
+                newUser,
+                newName,
+                newPassword,
+                user
+            };
+
+            DBUtil.Instance.openConnection();
+            DBUtil.Instance.executeQuery(String.Format(sql.ToString(), sqlParams));
+            DBUtil.Instance.closeConnection();
+        }
 
         public Model.MSNUser GetContact(string user)
         {

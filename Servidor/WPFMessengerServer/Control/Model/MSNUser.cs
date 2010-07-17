@@ -5,7 +5,7 @@ namespace WPFMessengerServer.Control.Model
     public class MSNUser
     {
         public Boolean Blocked { get; set; }
-        public DateTime? BlockedDate { get; set; }
+        public DateTime? UnblockDate { get; set; }
         public DateTime? Expiration { get; set; }
         public String Name { get; set; }
         public String Login { get; set; }

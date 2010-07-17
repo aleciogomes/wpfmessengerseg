@@ -148,13 +148,12 @@ namespace WPFMessengerSeg
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Essa ação finalizará todas as conversas e fechará o programa.\nDeseja continuar?","Finalizar WPFMessenger", MessageBoxButton.YesNo);
+            MessageBoxResult result = MessageBox.Show("Essa ação finalizará todas as conversas e fechará o programa.\nDeseja continuar?","Finalizar WPFMessenger", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {
                 //faz o logoff no server
-                UDPConnection udp = new UDPConnection();
-                udp.Logoff();
+                UDPConnection.Logoff();
 
                 Application.Current.Shutdown();
             }
@@ -215,10 +214,26 @@ namespace WPFMessengerSeg
             return String.Format("{0} (id: {1})", user.UserName, user.UserLogin);
         }
 
-        private void Sair(object sender, RoutedEventArgs e)
+        #region Ações do menu
+
+        private void Logoff_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+
+        private void MyAccount_Click(object sender, RoutedEventArgs e)
+        {
+            AccountWindow accWindow = new AccountWindow();
+            accWindow.Owner = this;
+
+            accWindow.ShowDialog();
+
+            this.lblUsuario.Text = MSNSession.User.UserLogin;
+            this.lblNome.Text = MSNSession.User.UserName;
+
+        }
+
+        #endregion
 
     }
 }

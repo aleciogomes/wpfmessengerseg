@@ -68,7 +68,7 @@ namespace WPFMessengerSeg
            if (String.IsNullOrEmpty(userPassword.Password.ToString()) || String.IsNullOrEmpty(userID.Text.ToString()))
            {
                userPassword.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-               MessageBox.Show("Informe seu ID e sua Senha.");
+               MessageBox.Show("Informe seu ID e Senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                return;
            }
 
