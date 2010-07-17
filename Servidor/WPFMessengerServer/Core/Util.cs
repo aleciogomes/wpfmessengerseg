@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using WPFMessengerServer.Control.Model;
+using System.Linq;
 
 namespace WPFMessengerServer
 {
@@ -9,7 +10,7 @@ namespace WPFMessengerServer
     {
         private static Control.DAO.MSNUser dao = new Control.DAO.MSNUser();
         private static IList<MSNUser> listOnline = new List<MSNUser>();
-        private static Dictionary<MSNUser, IList<MSNMessage>> dicMessages = new Dictionary<MSNUser, IList<MSNMessage>>();
+        private static Dictionary<string, IList<MSNMessage>> dicMessages = new Dictionary<string, IList<MSNMessage>>();
         private static Object lockMsg = new Object();
 
         public static MSNUser GetUser(string user, string password)
@@ -49,12 +50,16 @@ namespace WPFMessengerServer
             listOnline.Remove(user);
         }
 
-        public static bool IsOnline(MSNUser user)
+        public static bool IsOnline(string user)
         {
-            return listOnline.Contains(user);
+            IList<MSNUser> query = (from msnuser in listOnline 
+                                    where msnuser.Login.Equals(user)
+                                    select msnuser ).ToList();
+
+            return (query.Count > 0);
         }
 
-        public static void AddMessage(MSNUser forwarder, MSNUser destiny, string content )
+        public static void AddMessage(MSNUser forwarder, string destiny, string content )
         {
             lock (lockMsg)
             {
@@ -71,21 +76,34 @@ namespace WPFMessengerServer
             }
         }
 
-        public static string GetMessages(MSNUser user)
+        public static string GetMessages(string user)
         {
             StringBuilder sb = new StringBuilder();
 
             lock (lockMsg)
             {
-                foreach (MSNMessage msg in dicMessages[user])
+
+                if (dicMessages.ContainsKey(user))
                 {
-                    sb.Append(String.Format("{0}:{1}", msg.Forwarder.Login, msg.Message));
+                    foreach (MSNMessage msg in dicMessages[user])
+                    {
+                        sb.Append(String.Format("{0}:{1}", msg.Forwarder.Login, msg.Message));
+                    }
+
+                    //limpa o cache de mensagens
+                    dicMessages[user].Clear();
+
+                    if (sb.Length == 0)
+                    {
+                        sb.Append(MessengerLib.Config.EndStackMessage);
+                    }
+
+                }
+                else
+                {
+                    sb.Append(MessengerLib.Config.EndStackMessage);
                 }
 
-                sb.Append(MessengerLib.Config.EndStackMessage);
-
-                //limpa o cache de mensagens
-                dicMessages[user].Clear();
             }
 
             return sb.ToString();

@@ -89,30 +89,27 @@ namespace WPFMessengerServer
                         //auditoria
                         Console.WriteLine(String.Format("Login inválido: {0}/{1}", user, password));
 
-                        answer = "Não foi possível entrar. Verifique seu ID e senha.";
+                        answer = "Não foi possível entrar. Verifique seu usuário e senha.";
                     }
                     else
                     {
-                        //auditoria
-                        Console.WriteLine(String.Format("Usuário conectado: {0}", user));
+                        if (!Util.IsOnline(msnUser.Login))
+                        {
+                            //auditoria
+                            Console.WriteLine(String.Format("Usuário conectado: {0}", user));
 
-                        Util.AddOnline(msnUser);
-                        answer = MessengerLib.Config.OKMessage;
+                            Util.AddOnline(msnUser);
+                            answer = MessengerLib.Config.OKMessage;
+                        }
+                        else
+                        {
+                            //auditoria
+                            Console.WriteLine(String.Format("Tentativa de logar com conta já online: {0}", user));
+
+                            answer = "Essa conta já está online no sistema.";
+                        }
+
                     }
-
-                    break;
-
-                case MessengerLib.Action.Logoff:
-
-                    if (msnUser != null)
-                    {
-                        //auditoria
-                        Console.WriteLine(String.Format("Usuário desconectado: {0}", user));
-
-                        Util.ShutdownUser(msnUser);
-                    }
-
-                    answer = MessengerLib.Config.OKMessage;
 
                     break;
 
@@ -132,7 +129,7 @@ namespace WPFMessengerServer
 
                     if (msnUser != null)
                     {
-                        answer = Util.GetMessages(msnUser);
+                        answer = Util.GetMessages(user);
                     }
                     else
                     {
