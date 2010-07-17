@@ -53,7 +53,7 @@ namespace WPFMessengerSeg.UI
             this.userName.Text = String.Empty;
 
             this.userExpiration.Text = String.Empty;
-            this.userExpirationWarning.Text = String.Empty;
+            this.userTimeAlert.Text = String.Empty;
             this.userEnabled.IsChecked = true;
         }
 
@@ -65,7 +65,7 @@ namespace WPFMessengerSeg.UI
             this.userName.IsEnabled = enabled;
 
             this.userExpiration.IsEnabled = enabled;
-            this.userExpirationWarning.IsEnabled = enabled;
+            this.userTimeAlert.IsEnabled = enabled;
             this.userEnabled.IsEnabled = enabled;
         }
 
@@ -95,7 +95,17 @@ namespace WPFMessengerSeg.UI
                 {
                 }
 
-               UDPConnection.CreateAccount(newName, newUser, newPassword, expiration, int.Parse(this.userExpirationWarning.Text), !this.userEnabled.IsChecked);
+                string timeAlert = String.Empty;
+
+                try
+                {
+                    timeAlert = int.Parse(this.userTimeAlert.Text).ToString();
+                }
+                catch
+                {
+                }
+
+               UDPConnection.CreateAccount(newName, newUser, newPassword, expiration, timeAlert, !this.userEnabled.IsChecked);
                MessageBox.Show("Usuário cadastrado com sucesso", "Novo usuário", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 

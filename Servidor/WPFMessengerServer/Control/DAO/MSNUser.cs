@@ -209,7 +209,7 @@ namespace WPFMessengerServer.Control.DAO
             sql.Append(" INSERT INTO Usuario ");
             sql.Append(" (ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio) ");
             sql.Append(" VALUES ");
-            sql.Append(" ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}' )");
+            sql.Append(" ( '{0}', '{1}', '{2}', {3}, '{4}', '{5}', {6} )");
 
             int blocked = (user.Blocked ? 1 : 0);
 

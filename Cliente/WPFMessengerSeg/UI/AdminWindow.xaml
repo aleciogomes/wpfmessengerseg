@@ -74,7 +74,7 @@
                     <TextBox Grid.Row="0" Grid.Column="1" Name="userExpiration"  Width="Auto" Margin="10,5,10,5" IsEnabled="false"/>
 
                     <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">Alerta de expiração (dias):</Label>
-                    <TextBox Grid.Row="1" Grid.Column="1" Name="userExpirationWarning"  Width="Auto" Margin="10,5,10,5" IsEnabled="false"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Name="userTimeAlert"  Width="Auto" Margin="10,5,10,5" IsEnabled="false"/>
 
                     <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">Ativa:</Label>
                     <CheckBox Grid.Row="2" Grid.Column="1" Margin="10,8,10,5" Name="userEnabled" IsEnabled="False"/>

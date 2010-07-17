@@ -46,7 +46,7 @@ namespace WPFMessengerSeg.Core
 
         }
 
-        public static void CreateAccount(string newName, string newUser, string newPassword, string expiration, int timeAlert, bool? blocked)
+        public static void CreateAccount(string newName, string newUser, string newPassword, string expiration, string timeAlert, bool? blocked)
         {
             if (!String.IsNullOrEmpty(newName) && !String.IsNullOrEmpty(newUser) && !String.IsNullOrEmpty(newPassword))
             {
