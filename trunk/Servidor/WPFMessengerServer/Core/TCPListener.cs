@@ -72,10 +72,10 @@ namespace WPFMessengerServer
         private void ProcessRequest(TcpClient tcpClient, string request)
         {
 
-            string authentication = ActionHandler.GetMessage(request);
+            string[] info = ActionHandler.GetMessage(request).Split(':');
 
-            string user = authentication.Split(':')[0];
-            string password = authentication.Split(':')[1];
+            string user = info[0];
+            string password = info[1];
             string answer = String.Empty;
 
             MSNUser msnUser = Util.GetUser(user, password);
@@ -99,7 +99,7 @@ namespace WPFMessengerServer
                             Console.WriteLine(String.Format("Usuário conectado: {0}", user));
 
                             Util.AddOnline(msnUser);
-                            answer = MessengerLib.Config.OKMessage;
+                            answer = String.Format("{0}:{1}", MessengerLib.Config.OKMessage, msnUser.Expiration);
                         }
                         else
                         {
@@ -134,6 +134,24 @@ namespace WPFMessengerServer
                     else
                     {
                         answer = MessengerLib.Config.EndStackMessage;
+                    }
+
+                    break;
+
+                case MessengerLib.Action.UserAvailable:
+
+                    string newUser = info[2];
+
+                    if (Util.GetContact(newUser) != null)
+                    {
+                        //auditoria
+                        Console.WriteLine(String.Format("Tentativa de cadastrar um usuário que já existe: {0}", user));
+
+                        answer = "Usuário já existente na base. Escolha outro login.";
+                    }
+                    else
+                    {
+                        answer = MessengerLib.Config.OKMessage;
                     }
 
                     break;

@@ -25,6 +25,16 @@ namespace WPFMessengerSeg.UI
             this.userPassword.Password = sb.Append('X', MSNSession.User.UserLogin.Length).ToString();
 
             this.userName.Text = MSNSession.User.UserName;
+
+            if (MSNSession.User.Expiration != null)
+            {
+                this.userExpiration.Text = MSNSession.User.Expiration.ToString();
+            }
+            else
+            {
+                this.userExpiration.Text = "Sem limite";
+            }
+            
         }
 
         private void btFechar_Click(object sender, RoutedEventArgs e)
@@ -32,7 +42,7 @@ namespace WPFMessengerSeg.UI
             this.Close();
         }
 
-        private void btLogin_Click(object sender, RoutedEventArgs e)
+        private void btAlterar_Click(object sender, RoutedEventArgs e)
         {
 
             string newName = this.userName.Text.ToString(),
@@ -42,6 +52,12 @@ namespace WPFMessengerSeg.UI
             if (passChanged)
             {
                 string newPassword2 = this.userPassword2.Password.ToString();
+
+                if (String.IsNullOrEmpty(newPassword))
+                {
+                    MessageBox.Show("Informe e confirme a senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
                 if (!newPassword.Equals(newPassword2))
                 {
@@ -60,16 +76,33 @@ namespace WPFMessengerSeg.UI
             }
 
 
-            if (String.IsNullOrEmpty(newName) || String.IsNullOrEmpty(newUser) || String.IsNullOrEmpty(newPassword))
+            if (String.IsNullOrEmpty(newName) || String.IsNullOrEmpty(newUser))
             {
                 MessageBox.Show("Informe todos os campos corretamente.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            UDPConnection.UpdateAccount(newName, newUser, newPassword);
-            MessageBox.Show("Dados alterados com sucesso", "Minha conta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            string testUser = String.Empty;
 
-            this.Close();
+            //faz o teste se mudou o usuário
+            if (!MSNSession.User.UserLogin.Equals(newUser))
+            {
+                testUser = TCPConnection.GetUserAvailable(newUser);
+            }
+
+            if (testUser.Equals(MessengerLib.Config.OKMessage) || String.IsNullOrEmpty(testUser))
+            {
+                UDPConnection.UpdateAccount(newName, newUser, newPassword);
+                MessageBox.Show("Dados alterados com sucesso", "Minha conta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show(testUser, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.userID.Focus();
+            }
+
         }
 
         private void userPassword_GotFocus(object sender, RoutedEventArgs e)

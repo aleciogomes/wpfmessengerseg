@@ -38,6 +38,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -65,6 +66,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="UI\AccountWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\AdminWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -101,6 +106,9 @@
     <Compile Include="Core\UDPConnection.cs" />
     <Compile Include="UI\AccountWindow.xaml.cs">
       <DependentUpon>AccountWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\AdminWindow.xaml.cs">
+      <DependentUpon>AdminWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
@@ -155,6 +163,7 @@
     <Resource Include="resources\avatar_stormtrooper.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\addUser.png" />
     <Content Include="resources\alert.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

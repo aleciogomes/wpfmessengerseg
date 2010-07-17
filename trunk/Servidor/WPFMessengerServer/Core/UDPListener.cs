@@ -76,7 +76,7 @@ namespace WPFMessengerServer.Core
                         //auditoria
                         Console.WriteLine(String.Format("Usuário desconectado: {0}", user));
 
-                        Util.ShutdownUser(msnUser);
+                        Util.ShutdownUser(msnUser.Login);
                     }
 
                     break;

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Net;
-using System.Threading;
-using MessengerLib;
 
 namespace WPFMessengerSeg.Core
 {
@@ -25,10 +23,13 @@ namespace WPFMessengerSeg.Core
 
             string returnString = GetUsers();
 
-            if (ValidetConnect(returnString) && !returnString.Equals(MessengerLib.Config.EndStackMessage))
+            if (ValidetReturn(returnString) && !returnString.Equals(MessengerLib.Config.EndStackMessage))
             {
-                string[] returnVector = returnString.Split(new char[] { ':' });
+                string[] returnVector = returnString.Split(':');
                 string value = null;
+
+                //conta quantos atributos já fora adicionados a um usuário
+                int countAttributes = 0;
 
                 for (int i = 0; i < returnVector.Length; i++)
                 {
@@ -36,14 +37,23 @@ namespace WPFMessengerSeg.Core
 
                     if (!String.IsNullOrEmpty(value))
                     {
-                        if (i % 2 == 0)
+
+                        if (countAttributes == 0)
                         {
                             user = new MSNUser();
                             user.UserLogin = value;
+                            countAttributes++;
+                        }
+                        else if (countAttributes == 1)
+                        {
+                            user.UserName = value;
+                            countAttributes++;
                         }
                         else
                         {
-                            user.UserName = value;
+                            //reinicia
+                            countAttributes = 0;
+                            user.Online = bool.Parse(value);
                             list.Add(user);
                         }
                     }
@@ -65,22 +75,43 @@ namespace WPFMessengerSeg.Core
         {
             authentication = String.Empty;
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());
-            
             string result = EstabilishConnection(cmd, false);
 
-            IList<MSNUser> lista = GetListUsers();
-            foreach (MSNUser user in lista)
-            {
-                if (user.UserLogin == MSNSession.User.UserLogin)
+            string[] info = result.Split(':');
+
+            if(info.Length > 1){
+
+                try
                 {
-                    MSNSession.User.UserName = user.UserName;
+                    MSNSession.User.Expiration = DateTime.Parse(info[1]);
+                }
+                catch
+                {
+                    MSNSession.User.Expiration = null;
+                }
+
+                IList<MSNUser> lista = GetListUsers();
+                foreach (MSNUser user in lista)
+                {
+                    if (user.UserLogin == MSNSession.User.UserLogin)
+                    {
+                        MSNSession.User.UserName = user.UserName;
+                    }
                 }
             }
-            
-            return result;
+
+            return info[0];
         }
 
-        private static bool ValidetConnect(string returnString)
+        public static string GetUserAvailable(string newUser)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), newUser);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UserAvailable, info);
+
+            return EstabilishConnection(cmd, false);
+        }
+
+        private static bool ValidetReturn(string returnString)
         {
             if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(MessengerLib.Config.ErrorMessage) < 0)
             {

@@ -18,13 +18,13 @@ namespace WPFMessengerSeg
 
         public IList<MSNUser> listUsers;
 
-        private string rootTitle;
+        private string rootTitleOnline;
+        private string rootTitleOffline;
 
-        private Dictionary<string, MSNUser> dicTreeItems;
+        private Dictionary<string, MSNUser> dicOnlineUsers;
+        private Dictionary<string, MSNUser> dicOfflineUsers;
 
         private TalkManager talkManager;
-
-        //atualiza lista de usuários a cada 6 segundos
         private TimeSpan timeRefreshUsers;
 
         private bool firstRefresh = true;
@@ -35,41 +35,34 @@ namespace WPFMessengerSeg
 
             Closing += Window_Closing;
 
-            this.rootTitle = treeItemRootOnline.Header.ToString();
+            this.rootTitleOnline = treeItemRootOnline.Header.ToString();
+            this.rootTitleOffline = treeItemRootOffline.Header.ToString();
 
-            this.dicTreeItems = new Dictionary<string, MSNUser>();
+            this.dicOnlineUsers = new Dictionary<string, MSNUser>();
+            this.dicOfflineUsers = new Dictionary<string, MSNUser>();
 
             this.lblUsuario.Text= MSNSession.User.UserLogin.ToString();
             this.lblNome.Text = MSNSession.User.UserName;
 
+            //atualiza lista de usuários a cada 6 segundos
             this.timeRefreshUsers = TimeSpan.FromSeconds(6);
 
             this.talkManager = new TalkManager(this);
             this.LoadRSS();
 
-            //cria o usuário 'TODOS'
-            MSNUser user = new MSNUser();
-            user.UserLogin = String.Empty;
-            user.UserName = "Todos os usuários";
+            this.InitalizeTree();
 
-            TreeViewItem node = new TreeViewItem();
-            node.Header = user.UserName;
-            node.FontSize = 12;
-            node.Foreground = new SolidColorBrush(Colors.LimeGreen);
-            node.PreviewMouseDoubleClick += ShowTalkWindow;
-            treeItemRootOnline.Items.Add(node);
-
-            this.dicTreeItems.Add(node.Header.ToString(), user);
-            this.talkManager.UserList.Add(user.UserLogin, user);
-
-            this.treeItemRootOnline.IsExpanded = true;
-            this.treeItemRootOnline.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
+            //verifica permissões de admin
+            if (1 == 1)
+            {
+                this.EnableAdminOptions();
+            }
 
         }
 
-        #region Busca listagem de usuários
+        #region Listagem de usuários
 
-        private void IntializerRefresher()
+        private void InitializeRefresher()
         {
 
             //verifica se existem novas mensagens para o usuário logado
@@ -99,43 +92,150 @@ namespace WPFMessengerSeg
         }
 
 
+        #region Construção da lista
+
+        private void InitalizeTree()
+        {
+            MSNUser user = new MSNUser();
+            user.UserLogin = String.Empty;
+            user.UserName = "Todos os usuários";
+
+            TreeViewItem node = new TreeViewItem();
+            node.Header = user.UserName;
+            node.FontSize = 12;
+            node.Foreground = new SolidColorBrush(Colors.LimeGreen);
+            node.PreviewMouseDoubleClick += ShowTalkWindow;
+            treeItemRootOnline.Items.Add(node);
+
+            this.dicOnlineUsers.Add(node.Header.ToString(), user);
+            this.talkManager.UserList.Add(user.UserLogin, user);
+
+            this.treeItemRootOnline.IsExpanded = true;
+            this.treeItemRootOnline.Header = rootTitleOnline.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
+
+            this.treeItemRootOffline.IsExpanded = true;
+        }
+
         public void LoadTreeView(object sender, RunWorkerCompletedEventArgs e)
         {
-            TreeViewItem node;
 
+            TreeViewItem node;
             String userDisplay = null;
 
             foreach (MSNUser user in listUsers)
             {
+
                 userDisplay = FormatUserDisplay(user);
 
-                if (!dicTreeItems.ContainsKey(userDisplay) && user.UserLogin != MSNSession.User.UserLogin)
+                //se não é o usuário logado
+                if (user.UserLogin != MSNSession.User.UserLogin)
                 {
                     node = new TreeViewItem();
                     node.Header = userDisplay;
                     node.FontSize = 12;
-                    node.PreviewMouseDoubleClick += ShowTalkWindow;
-                    treeItemRootOnline.Items.Add(node);
 
-                    dicTreeItems.Add(node.Header.ToString(), user);
-
-                    if(!talkManager.UserList.ContainsKey(user.UserLogin)){
-                        talkManager.UserList.Add(user.UserLogin, user);
+                    if (user.Online)
+                    {
+                        AddOnline(user, node);
+                    }
+                    else
+                    {
+                        AddOffline(user, node);
                     }
 
                     //Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
+
+                }
+
+            }
+
+            treeItemRootOnline.Header = rootTitleOnline.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
+            treeItemRootOnline.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
+
+            treeItemRootOffline.Header = rootTitleOffline.Replace("(0)", String.Format("({0})", treeItemRootOffline.Items.Count));
+            treeItemRootOffline.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
+
+            InitializeRefresher();
+        }
+
+        private void AddOnline(MSNUser user, TreeViewItem node)
+        {
+            
+            string header = node.Header.ToString(); 
+
+            //garante que o usuário não seja mostrado como um usuário OFFLINE
+            dicOfflineUsers.Remove(header);
+            this.RemoveItemByHeader(treeItemRootOffline, header);
+
+            if (!dicOnlineUsers.ContainsKey(header))
+            {
+                node.PreviewMouseDoubleClick += ShowTalkWindow;
+
+                if (!talkManager.UserList.ContainsKey(user.UserLogin))
+                {
+                    talkManager.UserList.Add(user.UserLogin, user);
+                }
+
+                treeItemRootOnline.Items.Add(node);
+                dicOnlineUsers.Add(header, user);
+
+            }
+        }
+
+        private void AddOffline(MSNUser user, TreeViewItem node)
+        {
+            string header = node.Header.ToString(); 
+
+            //garante que o usuário não seja mostrado como um usuário ONLINE
+            dicOnlineUsers.Remove(header);
+            this.RemoveItemByHeader(treeItemRootOnline, header);
+
+            //verifica se já está adicionado
+            if (!dicOfflineUsers.ContainsKey(header))
+            {
+                //verifica se o usuário logado pode falar com usuários offline
+                if (1 == 2)
+                {
+                    node.PreviewMouseDoubleClick += ShowTalkWindow;
+
+                    if (!talkManager.UserList.ContainsKey(user.UserLogin))
+                    {
+                        talkManager.UserList.Add(user.UserLogin, user);
+                    }
+                }
+                node.Foreground = new SolidColorBrush(Colors.Gray);
+                treeItemRootOffline.Items.Add(node);
+                dicOfflineUsers.Add(header, user);
+
+            }
+
+        }
+
+        private void RemoveItemByHeader(TreeViewItem tree,  string header)
+        {
+
+            TreeViewItem searchItem = null;
+
+            foreach (TreeViewItem item in tree.Items)
+            {
+                if ((item.Header.ToString().Equals(header)))
+                {
+                    searchItem = item;
+                    break;
                 }
             }
 
-            treeItemRootOnline.Header = rootTitle.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
-            treeItemRootOnline.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
-
-            IntializerRefresher();
+            if (searchItem != null)
+            {
+                tree.Items.Remove(searchItem);
+            }
         }
+
+        #endregion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            IntializerRefresher();
+            InitializeRefresher();
         }
 
         #endregion
@@ -204,7 +304,7 @@ namespace WPFMessengerSeg
 
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
 
-            TalkWindow selectedWindow = talkManager.addTalk(dicTreeItems[selectedItem.Header.ToString()]);
+            TalkWindow selectedWindow = talkManager.addTalk(dicOnlineUsers[selectedItem.Header.ToString()]);
             selectedWindow.Show();
             selectedWindow.Focus();
         }
@@ -212,6 +312,12 @@ namespace WPFMessengerSeg
         private String FormatUserDisplay(MSNUser user)
         {
             return String.Format("{0} (id: {1})", user.UserName, user.UserLogin);
+        }
+
+        private void EnableAdminOptions()
+        {
+            this.menuAdmin.Visibility = Visibility.Visible;
+            this.menuAuditoria.Visibility = Visibility.Visible;
         }
 
         #region Ações do menu
@@ -234,6 +340,13 @@ namespace WPFMessengerSeg
         }
 
         #endregion
+
+        private void ManageUsers_Click(object sender, RoutedEventArgs e)
+        {
+            AdminWindow manage = new AdminWindow();
+            manage.Owner = this;
+            manage.ShowDialog();
+        }
 
     }
 }
