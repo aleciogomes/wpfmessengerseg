@@ -61,7 +61,7 @@ namespace WPFMessengerSeg.Core
 
         }
 
-        public static string Connect()
+        public static string Login()
         {
             authentication = String.Empty;
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());

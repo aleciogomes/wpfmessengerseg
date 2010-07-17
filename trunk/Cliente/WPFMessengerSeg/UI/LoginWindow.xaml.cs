@@ -95,7 +95,7 @@ namespace WPFMessengerSeg
 
         private void ValidateConnect(object sender, DoWorkEventArgs e)
         {
-            e.Result = TCPConnection.Connect();
+            e.Result = TCPConnection.Login();
         }
 
 

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WPFMessengerSeg.UI.TalkWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="" Height="490" Width="701" Icon="/WPFMessenger;component/resources/chat.png"
+    Title="" Height="490" Width="701" Icon="/WPFMessengerSeg;component/resources/chat.png"
     Background="Lavender" Topmost="False"
         FocusManager.FocusedElement="{Binding ElementName=msgBox}"
         >   
@@ -31,14 +31,14 @@
                     <Grid Grid.Row="0">
                         <TextBlock Margin="0,80,0,0" Width="130" HorizontalAlignment="Center" Foreground="CornflowerBlue" Name="lblDestinyUser" TextAlignment="Center">Nome do Usuário</TextBlock>
                         <Border Height="75" Margin="25,5,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="CornflowerBlue" HorizontalAlignment="Left" Width="80">
-                            <Image HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/resources/avatar_stormtrooper.png" />
+                            <Image HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessengerSeg;component/resources/avatar_stormtrooper.png" />
                         </Border>
                     </Grid>
 
                     <Grid Grid.Row="2">
                         <TextBlock  Margin="0,80,0,0" Width="130" HorizontalAlignment="Center" Foreground="IndianRed" Name="lblCurrentUser" TextAlignment="Center">Nome do Usuário</TextBlock>
                         <Border Height="75" Margin="25,5,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="IndianRed" HorizontalAlignment="Left" Width="80">
-                            <Image HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessenger;component/resources/avatar_darth.png" />
+                            <Image HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessengerSeg;component/resources/avatar_darth.png" />
                         </Border>
                     </Grid>
                 </Grid>
@@ -68,52 +68,52 @@
             <Grid Grid.Row="1">
                 <ToolBar x:Name="TBEmoticon" HorizontalContentAlignment="Right" Background="Lavender">
                     <Button Click="Icon_Click">
-                        <Image Source="/WPFMessenger;component/resources/emoticon/nosegrin.png"  Height="14" Width="14" ToolTip=":D"/>
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/nosegrin.png"  Height="14" Width="14" ToolTip=":D"/>
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/smile.png"  Height="14" Width="14" ToolTip=":)" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/smile.png"  Height="14" Width="14" ToolTip=":)" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/wink.png"  Height="14" Width="14" ToolTip=";)" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/wink.png"  Height="14" Width="14" ToolTip=";)" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/cool.png"  Height="14" Width="14" ToolTip="B)" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/cool.png"  Height="14" Width="14" ToolTip="B)" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/tongue.png"  Height="14" Width="14" ToolTip=":P" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/tongue.png"  Height="14" Width="14" ToolTip=":P" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/straightface.png"  Height="14" Width="14" ToolTip=":|" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/straightface.png"  Height="14" Width="14" ToolTip=":|" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/mustache.png"  Height="14" Width="14" ToolTip=":{" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/mustache.png"  Height="14" Width="14" ToolTip=":{" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/shocked.png"  Height="14" Width="14" ToolTip=":O" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/shocked.png"  Height="14" Width="14" ToolTip=":O" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/kiss.png"  Height="14" Width="14" ToolTip=":*" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/kiss.png"  Height="14" Width="14" ToolTip=":*" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/frown.png"  Height="14" Width="14" ToolTip=":(" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/frown.png"  Height="14" Width="14" ToolTip=":(" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/cry.png"  Height="14" Width="14" ToolTip=":'(" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/cry.png"  Height="14" Width="14" ToolTip=":'(" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/slant.png"  Height="14" Width="14" ToolTip=":/" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/slant.png"  Height="14" Width="14" ToolTip=":/" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/angry.png"  Height="14" Width="14" ToolTip="x(" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/angry.png"  Height="14" Width="14" ToolTip="x(" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/wince.png"  Height="14" Width="14" ToolTip="&gt;.&lt;" />
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/wince.png"  Height="14" Width="14" ToolTip="&gt;.&lt;" />
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/devil.png"  Height="14" Width="14" ToolTip="}=)"/>
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/devil.png"  Height="14" Width="14" ToolTip="}=)"/>
                     </Button>
                     <Button Click="Icon_Click" >
-                        <Image Source="/WPFMessenger;component/resources/emoticon/rockout.png"  Height="14" Width="14" ToolTip="\m/"/>
+                        <Image Source="/WPFMessengerSeg;component/resources/emoticon/rockout.png"  Height="14" Width="14" ToolTip="\m/"/>
                     </Button>
                 </ToolBar>
             </Grid>
