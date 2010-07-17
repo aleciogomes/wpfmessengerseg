@@ -40,44 +40,36 @@ namespace WPFMessengerServer.Core
                    user     = String.Empty,
                    password = String.Empty;
 
-            string[] info = null;
+            string[] info = ActionHandler.GetMessage(request).Split(':');
+            user = info[0];
+            password = info[1];
+
+            MSNUser msnUser = Util.GetUser(user, password);
 
             switch (ActionHandler.GetAction(request))
             {
                 case MessengerLib.Action.SendMsg:
 
-                    info = ActionHandler.GetMessage(request).Split(':');
 
-                    user     = info[0];
-                    password = info[1];
                     string destiny  = info[2];
 
                     //pode conter emoticons na msg
                     string msg = String.Join(":", info, 3, info.Length - 3);
 
-                    MSNUser msnForwarder = Util.GetUser(user, password);
-
-                    if (msnForwarder != null)
+                    if (msnUser != null)
                     {
                         //auditoria
                         Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", user, destiny));
 
                         if (Util.GetContact(destiny) != null)
                         {
-                            Util.AddMessage(msnForwarder, destiny, msg);
+                            Util.AddMessage(msnUser, destiny, msg);
                         }
                     }
 
                     break;
 
                 case MessengerLib.Action.Logoff:
-
-                    info  = ActionHandler.GetMessage(request).Split(':');
-
-                    user = info[0];
-                    password = info[1];
-
-                    MSNUser msnUser = Util.GetUser(user, password);
 
                     if (msnUser != null)
                     {
@@ -86,6 +78,23 @@ namespace WPFMessengerServer.Core
 
                         Util.ShutdownUser(msnUser);
                     }
+
+                    break;
+
+                case MessengerLib.Action.UpdateAccount:
+
+                    string newName = info[2],
+                           newUser = info[3],
+                           newPassword = info[4];
+
+                    if (msnUser != null)
+                    {
+                        //auditoria
+                        Console.WriteLine(String.Format("Alterando dados da conta: {0}", user));
+
+                        Util.UpdateAccount(user, newName, newUser, newPassword);
+                    }
+
 
                     break;
             }

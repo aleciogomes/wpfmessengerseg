@@ -8,26 +8,26 @@ namespace WPFMessengerServer
 {
     public static class Util
     {
-        private static Control.DAO.MSNUser dao = new Control.DAO.MSNUser();
+        private static Control.DAO.MSNUser daoUser = new Control.DAO.MSNUser();
         private static IList<MSNUser> listOnline = new List<MSNUser>();
         private static Dictionary<string, IList<MSNMessage>> dicMessages = new Dictionary<string, IList<MSNMessage>>();
         private static Object lockMsg = new Object();
 
         public static MSNUser GetUser(string user, string password)
         {
-            return dao.Get(user, password);
+            return daoUser.Get(user, password);
         }
 
         public static MSNUser GetContact(string user)
         {
-            return dao.GetContact(user);
+            return daoUser.GetContact(user);
         }
 
         public static string GetUsers()
         {
             StringBuilder sb = new StringBuilder();
 
-            IList<MSNUser> list = dao.GetList();
+            IList<MSNUser> list = daoUser.GetList();
 
             foreach (Control.Model.MSNUser usuario in list)
             {
@@ -48,6 +48,11 @@ namespace WPFMessengerServer
         public static void ShutdownUser(MSNUser user)
         {
             listOnline.Remove(user);
+        }
+
+        public static void UpdateAccount(string user, string newName, string newUser, string newPassword)
+        {
+            daoUser.Update(user, newName, newUser, newPassword);
         }
 
         public static bool IsOnline(string user)

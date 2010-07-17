@@ -31,13 +31,16 @@
 
             <Menu Height="22" Name="menu" Background="PaleGoldenrod">
                 <MenuItem Header="Arquivo">
-                    <MenuItem Header="Sair" Click="Sair"/>
+                    <MenuItem Header="Sair" Click="Logoff_Click"/>
                 </MenuItem>
                 <MenuItem Header="Conta">
-                    <MenuItem Header="Visualizar minha conta" Click="Sair"/>
+                    <MenuItem Header="Visualizar minha conta" Click="MyAccount_Click"/>
                 </MenuItem>
                 <MenuItem Header="Administrar" Visibility="Hidden">
-                    <MenuItem Header="Gerenciar usuários" Click="Sair"/>
+                    <MenuItem Header="Gerenciar usuários"/>
+                </MenuItem>
+                <MenuItem Header="Auditoria" Visibility="Hidden">
+                    <MenuItem Header="Visualizar eventos do sistema"/>
                 </MenuItem>
             </Menu>
 
@@ -51,7 +54,7 @@
                 
                 <TextBlock Height="32" Margin="104,36,22,0" Name="lblNome" VerticalAlignment="Top" FontSize="16" Canvas.Top="-18">Nome do usuário</TextBlock>
                 <Label Height="24" Margin="104,61,104,0" VerticalAlignment="Top" FontSize="10" Canvas.Left="-3" Width="46" Canvas.Top="-15">Usuário:</Label>
-                <TextBlock Margin="148,41,0,0" Name="lblUsuario" VerticalAlignment="Top" FontSize="10" HorizontalAlignment="Left" Width="80" Height="13" Canvas.Top="11" Canvas.Left="47">ID</TextBlock>
+                <TextBlock Margin="148,41,0,0" Name="lblUsuario" VerticalAlignment="Top" FontSize="10" HorizontalAlignment="Left" Width="80" Height="13" Canvas.Top="11" Canvas.Left="-3">ID</TextBlock>
                 <Border Height="64" Margin="11,28,0,0" VerticalAlignment="Top" BorderThickness="0.1" CornerRadius="2,2,2,2" Background="IndianRed" HorizontalAlignment="Left" Width="80" Canvas.Top="-18">
                     <Image Height="55" HorizontalAlignment="Left" Margin="5,5,5,5" Stretch="Fill" VerticalAlignment="Top" IsEnabled="True" Source="/WPFMessengerSeg;component/resources/avatar_darth.png" />
                 </Border>

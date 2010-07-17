@@ -5,35 +5,48 @@ using System.Text;
 
 namespace WPFMessengerSeg.Core
 {
-    public class UDPConnection
+    public static class UDPConnection
     {
-        private IPAddress ipAdress = null;
-        private UdpClient udp;
+        private static IPAddress ipAdress = IPAddress.Parse(MessengerLib.Config.ServerURL);
+        private static UdpClient udp = new UdpClient();
 
-        public UDPConnection()
-        {
-            this.ipAdress = IPAddress.Parse(MessengerLib.Config.ServerURL);
-            udp = new UdpClient();
-        }
 
-        public bool SendMessage(MSNUser destintyUser, string message)
+        public static bool SendMessage(MSNUser destintyUser, string message)
         {
-            string info = String.Format("{0}:{1}:{2}:{3}", MSNSession.User.UserLogin, MSNSession.User.UserPassword, destintyUser.UserLogin, message);
+            string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), destintyUser.UserLogin, message);
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.SendMsg, info);
 
-            return this.Transfer(cmd);
+            return Transfer(cmd);
         }
 
 
-        public void Logoff()
+        public static void Logoff()
         {
-            string authentication = String.Format("{0}:{1}", MSNSession.User.UserLogin, MSNSession.User.UserPassword);
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Logoff, authentication);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Logoff, TCPConnection.GetAuthentication());
 
-            this.Transfer(cmd);
+            Transfer(cmd);
         }
 
-        private bool Transfer(string cmd)
+        public static void UpdateAccount(string newName, string newUser, string newPassword)
+        {
+
+            if (!String.IsNullOrEmpty(newName) && !String.IsNullOrEmpty(newUser) && !String.IsNullOrEmpty(newPassword))
+            {
+                string info = String.Format("{0}:{1}:{2}:{3}", TCPConnection.GetAuthentication(), newName, newUser, newPassword);
+
+                string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UpdateAccount, info);
+
+                Transfer(cmd);
+
+                TCPConnection.ClearAuthentication();
+                MSNSession.User.UserName = newName;
+                MSNSession.User.UserLogin = newUser;
+                MSNSession.User.UserPassword = newPassword;
+            }
+
+        }
+
+        private static bool Transfer(string cmd)
         {
             try
             {

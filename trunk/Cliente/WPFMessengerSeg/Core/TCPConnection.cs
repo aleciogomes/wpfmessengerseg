@@ -224,7 +224,12 @@ namespace WPFMessengerSeg.Core
             return message.ToString();
         }
 
-        private static string GetAuthentication()
+        public static void ClearAuthentication()
+        {
+            authentication = String.Empty;
+        }
+
+        public static string GetAuthentication()
         {
             if (String.IsNullOrEmpty(authentication))
             {
