@@ -81,7 +81,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.UpdateAccount:
+                case MessengerLib.Action.UpdateAcc:
 
                     string newName = info[2],
                            newUser = info[3],
@@ -90,11 +90,60 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
-                        Console.WriteLine(String.Format("Alterando dados da conta: {0}", user));
+                        Console.WriteLine(String.Format("Alterando dados da conta {0}: {1}", newName, user));
 
                         Util.UpdateAccount(user, newName, newUser, newPassword);
                     }
 
+
+                    break;
+
+                case MessengerLib.Action.CreateAcc:
+
+                    //valida a conta de admin
+                    if (msnUser != null)
+                    {
+                        //nova conta
+                        msnUser = new MSNUser();
+
+                        msnUser.Login = info[2];
+                        msnUser.Name = info[3];
+                        msnUser.Password = info[4];
+
+                        try
+                        {
+                           msnUser.Expiration = DateTime.Parse(info[5]);
+                        }
+                        catch
+                        {
+                           msnUser.Expiration = null;
+                        }
+
+                        try
+                        {
+                            msnUser.TimeAlert = int.Parse(info[6]);
+                        }
+                        catch
+                        {
+                            msnUser.TimeAlert = 0;
+                        }
+
+                        msnUser.Blocked = Convert.ToBoolean(info[7]);
+
+                        try
+                        {
+                            msnUser.UnblockDate = DateTime.Parse(info[8]);
+                        }
+                        catch
+                        {
+                            msnUser.UnblockDate = null;
+                        }
+
+                        //auditoria
+                        Console.WriteLine(String.Format("Criando nova conta: {0}", msnUser.Login));
+
+                        Util.CreateAccount(msnUser);
+                    }
 
                     break;
             }

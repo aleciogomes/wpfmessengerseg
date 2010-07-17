@@ -32,7 +32,8 @@ namespace MessengerLib
         ,GetUsrs
         ,GetMsg
         ,SendMsg
-        ,UpdateAccount
+        ,UpdateAcc
+        ,CreateAcc
         ,UserAvailable
     }
 }

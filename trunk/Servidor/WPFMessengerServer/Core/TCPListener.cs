@@ -145,7 +145,7 @@ namespace WPFMessengerServer
                     if (Util.GetContact(newUser) != null)
                     {
                         //auditoria
-                        Console.WriteLine(String.Format("Tentativa de cadastrar um usuário que já existe: {0}", user));
+                        Console.WriteLine(String.Format("Tentativa de cadastrar um usuário que já existe: {0}", newUser));
 
                         answer = "Usuário já existente na base. Escolha outro login.";
                     }
