@@ -17,11 +17,11 @@ namespace WPFMessengerServer.Control.Model
             {
                 if (UnblockDate.HasValue)
                 {
-                    return UnblockDate.Value.ToString(MessengerLib.Config.DateFormatMySQL);
+                    return String.Format("'{0}'", UnblockDate.Value.ToString(MessengerLib.Config.DateFormatMySQL));
                 }
                 else
                 {
-                    return null;
+                    return "null";
                 }
             }
         }
@@ -34,11 +34,11 @@ namespace WPFMessengerServer.Control.Model
             {
                 if (Expiration.HasValue)
                 {
-                    return Expiration.Value.ToString(MessengerLib.Config.DateFormatMySQL);
+                    return String.Format("'{0}'", Expiration.Value.ToString(MessengerLib.Config.DateFormatMySQL));
                 }
                 else
                 {
-                    return null;
+                    return "null";
                 }
             }
 
