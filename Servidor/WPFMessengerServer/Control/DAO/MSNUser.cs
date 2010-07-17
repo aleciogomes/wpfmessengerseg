@@ -30,7 +30,10 @@ namespace WPFMessengerServer.Control.DAO
 
                 try
                 {
-                    sql.Append(" SELECT ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario ");
+                    sql.Append(" SELECT ");
+                    sql.Append(" ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio ");
+                    sql.Append(" FROM usuario ");
+                    sql.Append(" WHERE fl_bloqueada = 0 ");
                     command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
                     reader = command.ExecuteReader();
 
@@ -73,6 +76,7 @@ namespace WPFMessengerServer.Control.DAO
                             }
 
                             user.Blocked = Convert.ToBoolean(int.Parse(reader.GetString("fl_bloqueada")));
+
                             list.Add(user);
                         }
                     }
@@ -196,9 +200,40 @@ namespace WPFMessengerServer.Control.DAO
                 user
             };
 
-            DBUtil.Instance.openConnection();
-            DBUtil.Instance.executeQuery(String.Format(sql.ToString(), sqlParams));
-            DBUtil.Instance.closeConnection();
+            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+        }
+
+        public void Insert(Model.MSNUser user)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.Append(" INSERT INTO Usuario ");
+            sql.Append(" (ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio) ");
+            sql.Append(" VALUES ");
+            sql.Append(" ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}' )");
+
+            int blocked = (user.Blocked ? 1 : 0);
+
+            Object[] sqlParams = new Object[]{
+                user.Login,
+                user.Name,
+                user.Password,
+                user.ExpirationString,
+                user.TimeAlert,
+                blocked,
+                user.UnblockDateString,
+            };
+
+            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+        }
+
+        private void ExecQuery(string sql)
+        {
+            lock (lockBD)
+            {
+                DBUtil.Instance.openConnection();
+                DBUtil.Instance.executeQuery(sql);
+                DBUtil.Instance.closeConnection();
+            }
         }
 
         public Model.MSNUser GetContact(string user)

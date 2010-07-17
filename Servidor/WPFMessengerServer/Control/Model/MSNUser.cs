@@ -5,11 +5,44 @@ namespace WPFMessengerServer.Control.Model
     public class MSNUser
     {
         public Boolean Blocked { get; set; }
-        public DateTime? UnblockDate { get; set; }
-        public DateTime? Expiration { get; set; }
         public String Name { get; set; }
         public String Login { get; set; }
         public String Password { get; set; }
         public int TimeAlert { get; set; }
+
+        public DateTime? UnblockDate;
+        public string UnblockDateString
+        {
+            get
+            {
+                if (UnblockDate.HasValue)
+                {
+                    return UnblockDate.Value.ToString(MessengerLib.Config.DateFormatMySQL);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+
+        public DateTime? Expiration;
+        public string ExpirationString
+        {
+            get
+            {
+                if (Expiration.HasValue)
+                {
+                    return Expiration.Value.ToString(MessengerLib.Config.DateFormatMySQL);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+        }
+
     }
 }

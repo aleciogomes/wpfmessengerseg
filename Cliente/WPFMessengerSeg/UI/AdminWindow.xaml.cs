@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WPFMessengerSeg.Core;
 
 namespace WPFMessengerSeg.UI
 {
@@ -66,6 +67,38 @@ namespace WPFMessengerSeg.UI
             this.userExpiration.IsEnabled = enabled;
             this.userExpirationWarning.IsEnabled = enabled;
             this.userEnabled.IsEnabled = enabled;
+        }
+
+        private void btIncluir_Click(object sender, RoutedEventArgs e)
+        {
+            string newName = this.userName.Text.ToString(),
+                    newUser = this.userID.Text.ToString(),
+                    newPassword = this.userPassword.Password.ToString();
+
+            string result = MSNUser.ValidateChanges(newName, newUser, true, newPassword, this.userPassword2.Password.ToString());
+
+            if (!String.IsNullOrEmpty(result))
+            {
+                MessageBox.Show(result, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                newPassword = MessengerLib.Encoder.GenerateMD5(newPassword);
+
+                string expiration = String.Empty;
+
+                try
+                {
+                    expiration = String.Format(MessengerLib.Config.DateFormat, DateTime.Parse(this.userExpiration.Text));
+                }
+                catch
+                {
+                }
+
+               UDPConnection.CreateAccount(newName, newUser, newPassword, expiration, int.Parse(this.userExpirationWarning.Text), !this.userEnabled.IsChecked);
+               MessageBox.Show("Usuário cadastrado com sucesso", "Novo usuário", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
         }
 
     }

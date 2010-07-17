@@ -63,6 +63,11 @@ namespace WPFMessengerServer
             daoUser.Update(user, newName, newUser, newPassword);
         }
 
+        public static void CreateAccount(MSNUser user)
+        {
+            daoUser.Insert(user);
+        }
+
         public static bool IsOnline(string user)
         {
             IList<MSNUser> query = (from msnUser in listOnline
