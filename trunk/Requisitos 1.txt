@@ -4,8 +4,8 @@ AUTENTICAÇÃO
 [X] Auditoria mínima do slide 7
 [X] Auditoria mínima do slide 8, item 1
 [X] Dados e funcionalidades do slide 9
-[ ] Slide 10 itens 1 e 2 (Senha: Número mínimo de caracteres, Letras, números e sinais)
-[ ] Auditoria mínima do slide 11 (Auditoria: rejeição de senhas )
+[X] Slide 10 itens 1 e 2 (Senha: Número mínimo de caracteres, Letras, números e sinais)
+[X] Auditoria mínima do slide 11 (Auditoria: rejeição de senhas )
 [X] Método de autenticação com HASH
 
 ==================
