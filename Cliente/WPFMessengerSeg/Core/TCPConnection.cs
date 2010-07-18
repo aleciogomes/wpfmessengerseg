@@ -4,6 +4,8 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using MessengerLib.Core;
+using MessengerLib;
 
 namespace WPFMessengerSeg.Core
 {
@@ -41,10 +43,15 @@ namespace WPFMessengerSeg.Core
                         if (countAttributes == 0)
                         {
                             user = new MSNUser();
-                            user.Login = value;
+                            user.ID = int.Parse(value);
                             countAttributes++;
                         }
                         else if (countAttributes == 1)
+                        {
+                            user.Login = value;
+                            countAttributes++;
+                        }
+                        else if (countAttributes == 2)
                         {
                             user.Name = value;
                             countAttributes++;
@@ -145,6 +152,76 @@ namespace WPFMessengerSeg.Core
             catch { }
 
             return user;
+        }
+
+        public static void LoadFeatures(MSNUser user)
+        {
+
+            if (user.ListFeature == null)
+            {
+                user.ListFeature = new List<MSNFeature>();
+
+                string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), user.ID);
+                string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetFeatures, info);
+
+                string returnString = EstabilishConnection(cmd, false);
+
+                if (ValidetReturn(returnString) && !returnString.Equals(MessengerLib.Config.EndStackMessage))
+                {
+
+                    string[] returnVector = returnString.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    string value = null;
+
+                    //conta quantos atributos já fora adicionados a um usuário
+                    int countAttributes = 0;
+
+                    MSNFeature feature = null;
+                    string[] featureVector = null;
+                    string featureString = String.Empty;
+
+                    MSNOperation operation = null;
+                    string[] operationVector = null;
+
+                    for (int i = 0; i < returnVector.Length; i++)
+                    {
+                        value = returnVector[i].ToString();
+                        featureVector = value.Split('|');
+
+                        //detalhes do recurso
+                        featureString = featureVector[0];
+                        feature = new MSNFeature();
+                        feature.ID = int.Parse(featureString.Split(':')[0]);
+                        feature.Name = MessengerLib.FeatureHandler.GetFeature(featureString.Split(':')[1]);
+
+                        operationVector = featureVector[1].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        countAttributes = 0;
+
+                        for (int j = 0; j < operationVector.Length; j++)
+                        {
+                            value = operationVector[j].ToString();
+
+                            if (countAttributes == 0)
+                            {
+                                operation = new MSNOperation();
+                                operation.ID = int.Parse(value);
+                                countAttributes++;
+                            }
+                            else
+                            {
+                                //reinicia
+                                countAttributes = 0;
+                                operation.Name = MessengerLib.OperationHandler.GetOperation(value);
+                                feature.ListOperation.Add(operation);
+                            }
+                        }
+
+                        user.ListFeature.Add(feature);
+                    }
+
+                }
+            }
+
         }
 
         private static bool ValidetReturn(string returnString)

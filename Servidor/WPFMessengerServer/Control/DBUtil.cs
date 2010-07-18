@@ -5,6 +5,8 @@ namespace WPFMessengerServer.Control
 {
     public class DBUtil
     {
+        public static Object lockBD = new Object();
+
         private static DBUtil instance;
         public MySqlConnection Connection { get; set; }
         public String Database { get; set; }

@@ -46,12 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Control\DAO\MSNOperation.cs" />
-    <Compile Include="Control\DAO\MSNResource.cs" />
+    <Compile Include="Control\DAO\MSNFeature.cs" />
+    <Compile Include="Control\DAO\MSNPermission.cs" />
     <Compile Include="Control\Model\MSNMessage.cs" />
-    <Compile Include="Control\Model\MSNOperation.cs" />
-    <Compile Include="Control\Model\MSNPermission.cs" />
-    <Compile Include="Control\Model\MSNResource.cs" />
     <Compile Include="Core\UDPListener.cs" />
     <Compile Include="Core\Util.cs" />
     <Compile Include="Control\DAO\MSNUser.cs" />

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using WPFMessengerSeg.Core;
 using System.Windows.Controls;
+using MessengerLib;
 
 namespace WPFMessengerSeg.UI
 {
@@ -14,6 +15,8 @@ namespace WPFMessengerSeg.UI
 
         private MSNUser selectedUser;
 
+        private IList<CheckBox> listCheckbox;
+
         public ConfigWindow()
         {
             InitializeComponent();
@@ -22,6 +25,19 @@ namespace WPFMessengerSeg.UI
             this.LoadUsers();
 
             this.btAlterar.Visibility = Visibility.Hidden;
+
+            listCheckbox = new List<CheckBox>();
+
+            listCheckbox.Add(this.RegUsers);
+            listCheckbox.Add(this.ChangeProp);
+            listCheckbox.Add(this.Auditor);
+
+            listCheckbox.Add(this.SendMsg);
+            listCheckbox.Add(this.SendMsgOffUser);
+            listCheckbox.Add(this.RecMsg);
+            listCheckbox.Add(this.SendEmoticons);
+            listCheckbox.Add(this.RecEmoticons);
+
             this.ControlFields(false);
         }
 
@@ -46,14 +62,18 @@ namespace WPFMessengerSeg.UI
 
         private void ControlFields(bool enabled)
         {
-            this.RegUsers.IsEnabled = enabled;
-            this.ChangeProp.IsEnabled = enabled;
-            this.Auditor.IsEnabled = enabled;
+            foreach (CheckBox check in this.listCheckbox)
+            {
+                check.IsEnabled = enabled;
+            }
+        }
 
-            this.SendMsg.IsEnabled = enabled;
-            this.RecMsg.IsEnabled = enabled;
-            this.SendEmoticons.IsEnabled = enabled;
-            this.RecEmoticons.IsEnabled = enabled;
+        private void CheckFields()
+        {
+            foreach (CheckBox check in this.listCheckbox)
+            {
+                check.IsChecked = MSNUser.HasFeature(selectedUser, OperationHandler.GetOperation(check.Name));
+            }
         }
 
         private void comboUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -64,12 +84,36 @@ namespace WPFMessengerSeg.UI
             {
                 this.btAlterar.Visibility = Visibility.Visible;
                 this.ControlFields(true);
+
+                TCPConnection.LoadFeatures(selectedUser);
+
+                this.CheckFields();
             }
         }
 
         private void btFechar_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void btAlterar_Click(object sender, RoutedEventArgs e)
+        {
+
+            IList<Operation> list = new List<Operation>();
+
+            foreach (CheckBox check in this.listCheckbox)
+            {
+                if ((bool) check.IsChecked)
+                {
+                    list.Add(OperationHandler.GetOperation(check.Name));
+                }
+            }
+
+            //resseta a lista do usuário selecionado
+            selectedUser.ListFeature = null;
+
+            UDPConnection.UpdatePermissions(list, selectedUser.ID);
+            MessageBox.Show("Dados alterados com sucesso", "Alteração de permissões", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
     }

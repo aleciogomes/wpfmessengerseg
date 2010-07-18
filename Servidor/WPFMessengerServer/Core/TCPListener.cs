@@ -148,6 +148,17 @@ namespace WPFMessengerServer
 
                     break;
 
+                case MessengerLib.Action.GetFeatures:
+
+                    int userID = int.Parse(info[2]);
+
+                    if (msnUser != null)
+                    {
+                        answer = Util.GetFeatures(userID);
+                    }
+
+                    break;
+
                 case MessengerLib.Action.UserAvailable:
 
                     string newUser = info[2];

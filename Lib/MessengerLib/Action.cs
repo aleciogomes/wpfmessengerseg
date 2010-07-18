@@ -32,9 +32,11 @@ namespace MessengerLib
         ,GetUsers
         ,GetUserInfo
         ,GetMsg
+        ,GetFeatures
         ,SendMsg
         ,UpdateAccMainInfo
         ,UpdateAccOtherInfo
+        ,UpdatePermissions
         ,CreateAcc
         ,DeleteAcc
         ,UserAvailable
