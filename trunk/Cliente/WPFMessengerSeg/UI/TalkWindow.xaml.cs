@@ -30,8 +30,8 @@ namespace WPFMessengerSeg.UI
             get { return destinyUser; }
             set { 
                     destinyUser = value;
-                    this.Title = String.Format("{0} - Conversa", destinyUser.UserName);
-                    this.SetLabelText(lblDestinyUser, destinyUser.UserName);
+                    this.Title = String.Format("{0} - Conversa", destinyUser.Name);
+                    this.SetLabelText(lblDestinyUser, destinyUser.Name);
                 }
         }
 
@@ -46,7 +46,7 @@ namespace WPFMessengerSeg.UI
             Closing += Window_Closing;
             msgBox.PreviewKeyDown += MsgBox_KeyDown;
 
-            this.SetLabelText(lblCurrentUser, MSNSession.User.UserName);
+            this.SetLabelText(lblCurrentUser, MSNSession.User.Name);
 
             if (EmoticonList == null)
             {
@@ -140,7 +140,7 @@ namespace WPFMessengerSeg.UI
             Paragraph p = new Paragraph();
 
             //nome do usuário
-            p.Inlines.Add(FormatRun(user, String.Format("({0}) {1} diz:", System.DateTime.Now, user.UserName)));
+            p.Inlines.Add(FormatRun(user, String.Format("({0}) {1} diz:", System.DateTime.Now, user.Name)));
             p.Inlines.Add(System.Environment.NewLine);
 
             //tab
@@ -163,7 +163,7 @@ namespace WPFMessengerSeg.UI
         {
             Run run = new Run(text);
 
-            if (user.UserLogin == destinyUser.UserLogin)
+            if (user.Login == destinyUser.Login)
             {
                 run.Foreground = new SolidColorBrush(Colors.LimeGreen);
             }

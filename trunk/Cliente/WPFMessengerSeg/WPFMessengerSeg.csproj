@@ -95,6 +95,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\events\Arguments.cs" />
+    <Compile Include="Core\events\Delegate.cs" />
     <Compile Include="Core\Win32Utils.cs" />
     <Compile Include="Core\MSNMessage.cs" />
     <Compile Include="Core\MSNSession.cs" />

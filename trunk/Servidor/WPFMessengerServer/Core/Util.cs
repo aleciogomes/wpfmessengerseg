@@ -23,6 +23,12 @@ namespace WPFMessengerServer
             return daoUser.GetContact(user);
         }
 
+        public static string GetUserInfo(string user)
+        {
+           MSNUser msnUser = daoUser.GetContact(user);
+           return String.Format("{0}:{1}:{2}:{3}:{4}:{5}", msnUser.Name, msnUser.Password, msnUser.ExpirationString(false), msnUser.TimeAlert, msnUser.Blocked, msnUser.UnblockDateString(false));
+        }
+
         public static string GetUsers()
         {
             StringBuilder sb = new StringBuilder();
@@ -58,14 +64,25 @@ namespace WPFMessengerServer
 
         }
 
-        public static void UpdateAccount(string user, string newName, string newUser, string newPassword)
+        public static void UpdateAccount(string user, MSNUser msnUser)
         {
-            daoUser.Update(user, newName, newUser, newPassword);
+            daoUser.Update(user, msnUser);
+        }
+
+        public static void UpdateAccountOtherInfo(MSNUser msnUser)
+        {
+            daoUser.UpdateOtherInfo(msnUser);
         }
 
         public static void CreateAccount(MSNUser user)
         {
             daoUser.Insert(user);
+        }
+
+        public static void DeleteAccount(string user)
+        {
+            ShutdownUser(user);
+            daoUser.Delete(user);
         }
 
         public static bool IsOnline(string user)

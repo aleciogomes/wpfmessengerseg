@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{719B8F8B-9F93-4CCC-B193-51E21B62D1AB}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="Control\DAO\MSNOperation.cs" />
     <Compile Include="Control\DAO\MSNResource.cs" />
-    <Compile Include="Control\Model\MSNFeatures.cs" />
     <Compile Include="Control\Model\MSNMessage.cs" />
     <Compile Include="Control\Model\MSNOperation.cs" />
     <Compile Include="Control\Model\MSNPermission.cs" />

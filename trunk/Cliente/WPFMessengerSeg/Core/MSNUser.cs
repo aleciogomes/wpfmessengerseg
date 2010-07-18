@@ -4,16 +4,49 @@ namespace WPFMessengerSeg.Core
 {
     public class MSNUser
     {
-        public string UserName { get; set; }
-        public string UserLogin { get; set; }
+        public string Name { get; set; }
+        public string Login { get; set; }
         public bool Online { get; set; }
 
         //apenas o usuário logado terá esses 2 atributos com valor
-        public string UserPassword { get; set; }
+        public string Password { get; set; }
+
         public DateTime? Expiration { get; set; }
+        public string ExpirationString
+        {
+            get
+            {
+                return FormatDateString(Expiration);
+            }
+        }
 
 
-        public static string ValidateChanges(string name ,string user, bool validatePass, string password, string password2)
+        //apenas através da tela de administração esses atributos são preenchidos
+        public Boolean Blocked { get; set; }
+        public int TimeAlert { get; set; }
+
+        public DateTime? UnblockDate { get; set; }
+        public string UnblockDateString
+        {
+            get
+            {
+                return FormatDateString(UnblockDate);
+            }
+        }
+
+        private string FormatDateString(DateTime? date)
+        {
+            if (date.HasValue)
+            {
+                return String.Format(MessengerLib.Config.DateFormat, date);
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+
+        public static string ValidateChanges(string currentUser, string name ,string user, bool validatePass, string password, string password2)
         {
 
             string result = string.Empty;
@@ -42,7 +75,7 @@ namespace WPFMessengerSeg.Core
             string testUser = String.Empty;
 
             //faz o teste se mudou o usuário
-            if (!MSNSession.User.UserLogin.Equals(user))
+            if (!currentUser.Equals(user))
             {
                 testUser = TCPConnection.GetUserAvailable(user);
             }

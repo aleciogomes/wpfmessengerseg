@@ -18,13 +18,12 @@ namespace WPFMessengerSeg.UI
 
             passChanged = false;
 
-            this.userID.Text = MSNSession.User.UserLogin;
+            this.userID.Text = MSNSession.User.Login;
 
             //coloca a senha como 'X'
-            StringBuilder sb = new StringBuilder();
-            this.userPassword.Password = sb.Append('X', MSNSession.User.UserLogin.Length).ToString();
+            this.userPassword.Password = new StringBuilder().Append('X', MSNSession.User.Login.Length).ToString();
 
-            this.userName.Text = MSNSession.User.UserName;
+            this.userName.Text = MSNSession.User.Name;
 
             if (MSNSession.User.Expiration != null)
             {
@@ -49,7 +48,7 @@ namespace WPFMessengerSeg.UI
                    newUser = this.userID.Text.ToString(),
                    newPassword = this.userPassword.Password.ToString();
 
-            string result = MSNUser.ValidateChanges(newName, newUser, passChanged, newPassword, this.userPassword2.Password.ToString());
+            string result = MSNUser.ValidateChanges(MSNSession.User.Login, newName, newUser, passChanged, newPassword, this.userPassword2.Password.ToString());
 
             if (!String.IsNullOrEmpty(result))
             {
@@ -64,10 +63,10 @@ namespace WPFMessengerSeg.UI
                 else
                 {
                     //mantém a senha
-                    newPassword = MSNSession.User.UserPassword;
+                    newPassword = MSNSession.User.Password;
                 }
 
-                UDPConnection.UpdateAccount(newName, newUser, newPassword);
+                UDPConnection.UpdateAccount(MSNSession.User.Login, newName, newUser, newPassword);
                 MessageBox.Show("Dados alterados com sucesso", "Minha conta", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                 this.Close();

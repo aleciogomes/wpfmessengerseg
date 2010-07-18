@@ -29,11 +29,14 @@ namespace MessengerLib
     {
          Login
         ,Logoff
-        ,GetUsrs
+        ,GetUsers
+        ,GetUserInfo
         ,GetMsg
         ,SendMsg
-        ,UpdateAcc
+        ,UpdateAccMainInfo
+        ,UpdateAccOtherInfo
         ,CreateAcc
+        ,DeleteAcc
         ,UserAvailable
     }
 }

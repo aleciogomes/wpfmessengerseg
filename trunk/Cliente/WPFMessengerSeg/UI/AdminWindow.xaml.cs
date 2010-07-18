@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WPFMessengerSeg.Core;
+using System.Collections.ObjectModel;
+using WPFMessengerSeg.Core.events;
 
 namespace WPFMessengerSeg.UI
 {
@@ -19,14 +21,22 @@ namespace WPFMessengerSeg.UI
     /// </summary>
     public partial class AdminWindow : Window
     {
+
+        public event DeleteUserHandler UserDeleted;
+
+        private bool passChanged;
+        private MSNUser selectedUser;
+
         public AdminWindow()
         {
             InitializeComponent();
 
-            this.btIncluir.Visibility = Visibility.Hidden;
-            this.btAlterar.Visibility = Visibility.Hidden;
-            this.btExcluir.Visibility = Visibility.Hidden;
-            this.userLastDesblock.Text = DateTime.Now.ToString() ;
+            this.comboUsers.DisplayMemberPath = "Name";
+            this.selectedUser = null;
+
+            this.InitializeLayout();
+            this.LoadUsers();
+
         }
 
         private void btFechar_Click(object sender, RoutedEventArgs e)
@@ -42,6 +52,31 @@ namespace WPFMessengerSeg.UI
 
             this.ControlFields(true);
             this.ResetFieldsValues();
+
+        }
+
+        private void InitializeLayout()
+        {
+            this.btIncluir.Visibility = Visibility.Hidden;
+            this.btAlterar.Visibility = Visibility.Hidden;
+            this.btExcluir.Visibility = Visibility.Hidden;
+            this.userUnblockDate.Text = String.Format(MessengerLib.Config.DateFormat, DateTime.Now);
+        }
+
+        private void LoadUsers()
+        {
+
+            this.comboUsers.Items.Clear();
+
+            //atualiza a lista
+            IList<MSNUser> listUsers = (from msnUser in TCPConnection.GetListUsers()
+                                   select msnUser).ToList();
+
+            
+            foreach(MSNUser user in listUsers)
+            {
+                this.comboUsers.Items.Add(user);
+            }
 
         }
 
@@ -71,11 +106,89 @@ namespace WPFMessengerSeg.UI
 
         private void btIncluir_Click(object sender, RoutedEventArgs e)
         {
-            string newName = this.userName.Text.ToString(),
-                    newUser = this.userID.Text.ToString(),
-                    newPassword = this.userPassword.Password.ToString();
+            this.InsertUpdate(true);
+        }
 
-            string result = MSNUser.ValidateChanges(newName, newUser, true, newPassword, this.userPassword2.Password.ToString());
+        private void btExcluir_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Deseja realmente excluir esse usuário?", "Exclusão de usuário", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+
+                UDPConnection.DeleteAccount(selectedUser.Login);
+                MessageBox.Show("Usuário excluído com sucesso", "Exclusão de usuário", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+                //remove o usuário da listagem na tela principal
+                if (UserDeleted != null)
+                {
+                    UserDeleted(this, new Arguments(MessengerLib.Config.FormatUserDisplay(selectedUser.Name, selectedUser.Login)));
+                }
+
+                //recarrega para garantir que vai trazer todos os usuários (inclusive os adicionados e removidos por outros admins)
+                this.LoadUsers();
+
+            }
+        }
+
+        private void comboUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedUser = this.comboUsers.SelectedItem as MSNUser;
+
+            if (selectedUser != null)
+            {
+                this.btIncluir.Visibility = Visibility.Hidden;
+                this.btAlterar.Visibility = Visibility.Visible;
+                this.btExcluir.Visibility = Visibility.Visible;
+
+                this.ControlFields(true);
+
+                selectedUser = TCPConnection.GetUserInfo(selectedUser.Login);
+
+                this.userID.Text = selectedUser.Login;
+                this.userPassword.Password = new StringBuilder().Append('X', selectedUser.Login.Length).ToString();
+                this.userName.Text = selectedUser.Name;
+
+                this.userExpiration.Text = selectedUser.ExpirationString;
+                this.userTimeAlert.Text = selectedUser.TimeAlert.ToString();
+                this.userEnabled.IsChecked = !selectedUser.Blocked;
+                this.userUnblockDate.Text = selectedUser.UnblockDateString;
+
+                this.passChanged = false;
+            }
+            else
+            {
+                this.InitializeLayout();
+                this.ControlFields(false);
+                this.ResetFieldsValues();
+            }
+
+        }
+
+        private void btAlterar_Click(object sender, RoutedEventArgs e)
+        {
+            this.InsertUpdate(false);
+        }
+
+        private void userPassword_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.userPassword.Clear();
+            this.passChanged = true;
+        }
+
+        private void InsertUpdate(bool insert)
+        {
+
+            if (insert)
+            {
+                this.passChanged = true;
+            }
+
+            string newName = this.userName.Text.ToString(),
+                     newUser = this.userID.Text.ToString(),
+                     newPassword = this.userPassword.Password.ToString();
+
+            string user = (insert ? String.Empty :  selectedUser.Login);
+
+            string result = MSNUser.ValidateChanges( user, newName, newUser, passChanged, newPassword, this.userPassword2.Password.ToString());
 
             if (!String.IsNullOrEmpty(result))
             {
@@ -83,7 +196,15 @@ namespace WPFMessengerSeg.UI
             }
             else
             {
-                newPassword = MessengerLib.Encoder.GenerateMD5(newPassword);
+                if (this.passChanged)
+                {
+                    newPassword = MessengerLib.Encoder.GenerateMD5(newPassword);
+                }
+                else
+                {
+                    //mantém a senha
+                    newPassword = selectedUser.Password;
+                }
 
                 string expiration = String.Empty;
 
@@ -105,10 +226,33 @@ namespace WPFMessengerSeg.UI
                 {
                 }
 
-               UDPConnection.CreateAccount(newName, newUser, newPassword, expiration, timeAlert, !this.userEnabled.IsChecked);
-               MessageBox.Show("Usuário cadastrado com sucesso", "Novo usuário", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
+                if (insert)
+                {
+                    UDPConnection.CreateAccount(newName, newUser, newPassword, expiration, timeAlert, !this.userEnabled.IsChecked);
+                    MessageBox.Show("Usuário cadastrado com sucesso", "Novo usuário", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
+                    //recarrega para garantir que vai trazer todos os usuários (inclusive os adicionados e removidos por outros admins)
+                    this.LoadUsers();
+                }
+                else
+                {
+                    string unblockDate = String.Empty;
+
+                    //está reabilitando o usuário
+                    if (selectedUser.Blocked && (bool) this.userEnabled.IsChecked)
+                    {
+                        unblockDate = String.Format(MessengerLib.Config.DateFormat, DateTime.Now);
+                        this.userUnblockDate.Text = unblockDate;
+                    }
+
+                    selectedUser.Blocked = !(bool)this.userEnabled.IsChecked;
+
+                    UDPConnection.UpdateAccount(selectedUser.Login, newName, newUser, newPassword);
+                    UDPConnection.UpdateAccountOtherInfo(newUser, expiration, timeAlert, !this.userEnabled.IsChecked, unblockDate);
+                    MessageBox.Show("Dados alterados com sucesso", "Alteração de usuário", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+
+            }
         }
 
     }

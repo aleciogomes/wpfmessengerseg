@@ -13,7 +13,7 @@ namespace WPFMessengerSeg.Core
 
         public static bool SendMessage(MSNUser destintyUser, string message)
         {
-            string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), destintyUser.UserLogin, message);
+            string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), destintyUser.Login, message);
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.SendMsg, info);
 
             return Transfer(cmd);
@@ -27,22 +27,39 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
-        public static void UpdateAccount(string newName, string newUser, string newPassword)
+        public static void UpdateAccount(string userLogin, string newName, string newUser, string newPassword)
         {
 
             if (!String.IsNullOrEmpty(newName) && !String.IsNullOrEmpty(newUser) && !String.IsNullOrEmpty(newPassword))
             {
-                string info = String.Format("{0}:{1}:{2}:{3}", TCPConnection.GetAuthentication(), newName, newUser, newPassword);
+                bool selfUpdate = (userLogin.Equals(MSNSession.User.Login));
 
-                string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UpdateAcc, info);
+                string info = String.Format("{0}:{1}:{2}:{3}:{4}", TCPConnection.GetAuthentication(), userLogin, newName, newUser, newPassword);
+
+                string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UpdateAccMainInfo, info);
 
                 Transfer(cmd);
 
-                TCPConnection.ClearAuthentication();
-                MSNSession.User.UserName = newName;
-                MSNSession.User.UserLogin = newUser;
-                MSNSession.User.UserPassword = newPassword;
+                //atualizando a própria conta
+                if (selfUpdate)
+                {
+                    TCPConnection.ClearAuthentication();
+                    MSNSession.User.Name = newName;
+                    MSNSession.User.Login = newUser;
+                    MSNSession.User.Password = newPassword;
+                }
             }
+
+        }
+
+        public static void UpdateAccountOtherInfo(string userLogin, string expiration, string timeAlert, bool? blocked, string unblockDate)
+        {
+
+            string info = String.Format("{0}:{1}:{2}:{3}:{4}:{5}", TCPConnection.GetAuthentication(), userLogin, expiration, timeAlert, blocked.ToString(), unblockDate);
+
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UpdateAccOtherInfo, info);
+
+            Transfer(cmd);
 
         }
 
@@ -55,6 +72,14 @@ namespace WPFMessengerSeg.Core
 
                 Transfer(cmd);
             }
+        }
+
+        public static void DeleteAccount(string userLogin)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), userLogin);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.DeleteAcc, info);
+
+            Transfer(cmd);
         }
 
         private static bool Transfer(string cmd)
