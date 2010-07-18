@@ -1,0 +1,28 @@
+============
+AUTENTICAÇÃO
+============
+[X] Auditoria mínima do slide 7
+[X] Auditoria mínima do slide 8, item 1
+[X] Dados e funcionalidades do slide 9
+[ ] Slide 10 itens 1 e 2 (Senha: Número mínimo de caracteres, Letras, números e sinais)
+[ ] Auditoria mínima do slide 11 (Auditoria: rejeição de senhas )
+[X] Método de autenticação com HASH
+
+==================
+CONTROLE DE ACESSO
+==================
+[-] Implementar ACL com Usuário, Recurso e Operação (grupo é extra)
+[X] Deve ter uma forma de alterar as ACLs no sistema
+[X] Consistir pelo menos 3 recursos
+[ ] Auditoria mínima slide 8 (Auditoria: requisições com acesso = sucesso)
+
+======
+SIGILO
+======
+[-] Implementar um sigilo com criptografia simétrica
+
+
+Legenda:
+[X] - Feito
+[-] - Parcialmente
+[ ] - Não feito
