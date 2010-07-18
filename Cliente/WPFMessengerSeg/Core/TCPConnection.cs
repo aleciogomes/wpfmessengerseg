@@ -16,6 +16,7 @@ namespace WPFMessengerSeg.Core
     {
 
         private static string authentication = String.Empty;
+        public static string ExpirationWarning = String.Empty;
 
         public static IList<MSNUser> GetListUsers()
         {
@@ -84,27 +85,37 @@ namespace WPFMessengerSeg.Core
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());
             string result = EstabilishConnection(cmd, false);
 
-            string[] info = result.Split(':');
+            string[] info = result.Split(new char[] { ':' }, 4);
 
             if(info.Length > 1){
 
+                MSNSession.User.Name = info[1];
+
                 try
                 {
-                    MSNSession.User.Expiration = DateTime.Parse(info[1]);
+                    MSNSession.User.Expiration = DateTime.Parse(info[2]);
                 }
                 catch
                 {
                     MSNSession.User.Expiration = null;
                 }
 
-                IList<MSNUser> lista = GetListUsers();
-                foreach (MSNUser user in lista)
+                MSNSession.User.TimeAlert = int.Parse(info[3]);
+
+
+                if (MSNSession.User.TimeAlert > 0 && MSNSession.User.Expiration.HasValue)
                 {
-                    if (user.Login == MSNSession.User.Login)
+                    DateTime expiration = (DateTime) MSNSession.User.Expiration;
+
+                    TimeSpan difference = expiration.Subtract(DateTime.Now.Date);
+
+                    if (difference.Days <= MSNSession.User.TimeAlert)
                     {
-                        MSNSession.User.Name = user.Name;
+                        ExpirationWarning = String.Format("Sua conta será expirada em {0} dia(s). Entre em contato com o administrador do sistema!", difference.Days);
                     }
+
                 }
+
             }
 
             return info[0];

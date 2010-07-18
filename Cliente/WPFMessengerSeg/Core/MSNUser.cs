@@ -16,7 +16,6 @@ namespace WPFMessengerSeg.Core
         public string Login { get; set; }
         public bool Online { get; set; }
 
-        //apenas o usuário logado terá esses 2 atributos com valor
         public string Password { get; set; }
 
         public DateTime? Expiration { get; set; }
@@ -28,8 +27,6 @@ namespace WPFMessengerSeg.Core
             }
         }
 
-
-        //apenas através da tela de administração esses atributos são preenchidos
         public Boolean Blocked { get; set; }
         public int TimeAlert { get; set; }
 

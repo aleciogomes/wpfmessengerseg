@@ -86,22 +86,47 @@ namespace WPFMessengerServer
 
                     if (msnUser == null)
                     {
-                        //auditoria
-                        Util.RegEvent(user, String.Format("Login inválido: {0}/{1}", user, password));
-                        Console.WriteLine(String.Format("Login inválido: {0}/{1}"), user, password);
+                        if (Util.GetContact(user) == null)
+                        {
+                            //auditoria
+                            Util.RegEvent(user, String.Format("Login inválido", user));
+                            Console.WriteLine(String.Format("Login inválido", user));
+                        }
+                        else
+                        {
+                            //auditoria
+                            Util.RegEvent(user, "Senha inválida");
+                            Console.WriteLine("Senha inválida");
+                        }
 
                         answer = "Não foi possível entrar. Verifique seu usuário e senha.";
                     }
                     else
                     {
-                        if (!Util.IsOnline(msnUser.Login))
+                        if (msnUser.Blocked)
+                        {
+                            //auditoria
+                            Util.RegEvent(user, "Tentativa de logar com conta bloqueada");
+                            Console.WriteLine(String.Format("Tentativa de logar com conta bloqueada: {0}", user));
+
+                            answer = "Conta bloqueada pelo administrador do sistema.";
+                        }
+                        else if (msnUser.Expiration != null && DateTime.Now >= msnUser.Expiration)
+                        {
+                            //auditoria
+                            Util.RegEvent(user, "Tentativa de logar com conta expirada");
+                            Console.WriteLine(String.Format("Tentativa de logar com conta expirada: {0}", user));
+
+                            answer = "Conta expirada";
+                        }
+                        else if (!Util.IsOnline(msnUser.Login))
                         {
                             //auditoria
                             Util.RegEvent(user, "Login efetuado");
                             Console.WriteLine(String.Format("Login realizado: {0}", user));
 
                             Util.AddOnline(msnUser);
-                            answer = String.Format("{0}:{1}", MessengerLib.Config.OKMessage, msnUser.Expiration);
+                            answer = String.Format("{0}:{1}:{2}:{3}", MessengerLib.Config.OKMessage, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert);
                         }
                         else
                         {

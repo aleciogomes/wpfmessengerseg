@@ -19,10 +19,10 @@ namespace MessengerLib
        ,ChangeProp
        ,Auditor
        ,SendMsg
-       ,SendMsgOffUser
        ,RecMsg
        ,SendEmoticons
        ,RecEmoticons
+       ,SendMsgOffUser
     }
 
 }
