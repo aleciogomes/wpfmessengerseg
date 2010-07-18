@@ -87,6 +87,40 @@ namespace WPFMessengerServer
             }
         }
 
+        public static string GetLogDates()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach(DateTime date in daoLog.GetDateList())
+            {
+                sb.Append(String.Format("{0}:", date.ToString(MessengerLib.Config.DateFormat)));
+            }
+
+            if (sb.Length == 0)
+            {
+                sb.Append(MessengerLib.Config.EndStackMessage);
+            }
+
+            return sb.ToString();
+        }
+
+        public static string GetLog(DateTime logDate)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (MessengerLib.Core.MSNLog log in daoLog.GetList(logDate))
+            {
+                sb.Append(String.Format("{0}|{1}|", log.Date.ToString(), log.Event));
+            }
+
+            if (sb.Length == 0)
+            {
+                sb.Append(MessengerLib.Config.EndStackMessage);
+            }
+
+            return sb.ToString();
+        }
+
         public static void AddOnline(Control.Model.MSNUser user)
         {
             listOnline.Add(user);

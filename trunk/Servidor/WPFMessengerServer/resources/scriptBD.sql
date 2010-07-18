@@ -64,12 +64,8 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `WPFMESS`.`AUDITORIA` ;
 
 CREATE TABLE IF NOT EXISTS `WPFMESS`.`AUDITORIA` (
-  `cd_usuario` INT NOT NULL,
-  `dt_auditoria` DATE ,
-  `ds_auditoria` TEXT NOT NULL,
-  CONSTRAINT `fk_auditoria_usuario`,
-    FOREIGN KEY (`cd_usuario`)
-    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`)
+  `dt_auditoria` DATETIME ,
+  `ds_auditoria` TEXT NOT NULL
 )
 ENGINE = InnoDB;
 

@@ -43,7 +43,7 @@ namespace WPFMessengerSeg.UI
             this.btIncluir.Visibility = Visibility.Hidden;
             this.btAlterar.Visibility = Visibility.Hidden;
             this.btExcluir.Visibility = Visibility.Hidden;
-            this.userUnblockDate.Text = String.Format(MessengerLib.Config.DateFormat, DateTime.Now);
+            this.userUnblockDate.Text = DateTime.Now.ToString(MessengerLib.Config.DateFormat);
         }
 
         private void LoadUsers()
@@ -52,9 +52,7 @@ namespace WPFMessengerSeg.UI
             this.comboUsers.Items.Clear();
 
             //atualiza a lista
-            IList<MSNUser> listUsers = (from msnUser in TCPConnection.GetListUsers()
-                                   select msnUser).ToList();
-
+            IList<MSNUser> listUsers = TCPConnection.GetListUsers();
             
             foreach(MSNUser user in listUsers)
             {
@@ -211,7 +209,7 @@ namespace WPFMessengerSeg.UI
 
                 try
                 {
-                    expiration = String.Format(MessengerLib.Config.DateFormat, DateTime.Parse(this.userExpiration.Text));
+                    expiration = DateTime.Parse(this.userExpiration.Text).ToString(MessengerLib.Config.DateFormat);
                 }
                 catch
                 {
@@ -242,7 +240,7 @@ namespace WPFMessengerSeg.UI
                     //está reabilitando o usuário
                     if (selectedUser.Blocked && (bool) this.userEnabled.IsChecked)
                     {
-                        unblockDate = String.Format(MessengerLib.Config.DateFormat, DateTime.Now);
+                        unblockDate = DateTime.Now.ToString(MessengerLib.Config.DateFormat);
                         this.userUnblockDate.Text = unblockDate;
                     }
 

@@ -69,7 +69,7 @@ namespace WPFMessengerSeg.Core
         {
             if (!String.IsNullOrEmpty(newName) && !String.IsNullOrEmpty(newUser) && !String.IsNullOrEmpty(newPassword))
             {
-                string info = String.Format("{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}", TCPConnection.GetAuthentication(), newUser, newName, newPassword, expiration, timeAlert, blocked.ToString(), String.Format(MessengerLib.Config.DateFormat, DateTime.Now));
+                string info = String.Format("{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}", TCPConnection.GetAuthentication(), newUser, newName, newPassword, expiration, timeAlert, blocked.ToString(), DateTime.Now.ToString(MessengerLib.Config.DateFormat));
                 string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.CreateAcc, info);
 
                 Transfer(cmd);

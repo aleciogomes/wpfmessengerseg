@@ -33,6 +33,8 @@ namespace MessengerLib
         ,GetUserInfo
         ,GetMsg
         ,GetFeatures
+        ,GetLogDates
+        ,GetLog
         ,SendMsg
         ,UpdateAccMainInfo
         ,UpdateAccOtherInfo
