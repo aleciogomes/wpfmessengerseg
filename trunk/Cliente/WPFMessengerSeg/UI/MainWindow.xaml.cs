@@ -346,15 +346,29 @@ namespace WPFMessengerSeg
 
         }
 
-        #endregion
-
         private void ManageUsers_Click(object sender, RoutedEventArgs e)
         {
-            AdminWindow manage  = new AdminWindow();
+            AdminWindow manage = new AdminWindow();
             manage.UserDeleted += new DeleteUserHandler(this.RemoveDeletedUser);
             manage.Owner = this;
             manage.ShowDialog();
         }
+
+        private void ChangeUsersProp_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigWindow properties = new ConfigWindow();
+            properties.Owner = this;
+            properties.ShowDialog();
+        }
+
+        private void Auditor_Click(object sender, RoutedEventArgs e)
+        {
+            AuditorWindow auditor = new AuditorWindow();
+            auditor.Owner = this;
+            auditor.ShowDialog();
+        }
+
+        #endregion
 
     }
 }

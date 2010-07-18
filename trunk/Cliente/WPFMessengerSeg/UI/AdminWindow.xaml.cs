@@ -31,27 +31,10 @@ namespace WPFMessengerSeg.UI
         {
             InitializeComponent();
 
-            this.comboUsers.DisplayMemberPath = "Name";
             this.selectedUser = null;
 
             this.InitializeLayout();
             this.LoadUsers();
-
-        }
-
-        private void btFechar_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void btCadastrar_Click(object sender, RoutedEventArgs e)
-        {
-            this.btIncluir.Visibility = Visibility.Visible;
-            this.btAlterar.Visibility = Visibility.Hidden;
-            this.btExcluir.Visibility = Visibility.Hidden;
-
-            this.ControlFields(true);
-            this.ResetFieldsValues();
 
         }
 
@@ -78,6 +61,8 @@ namespace WPFMessengerSeg.UI
                 this.comboUsers.Items.Add(user);
             }
 
+             this.comboUsers.SelectedIndex = -1;
+
         }
 
         private void ResetFieldsValues()
@@ -102,6 +87,22 @@ namespace WPFMessengerSeg.UI
             this.userExpiration.IsEnabled = enabled;
             this.userTimeAlert.IsEnabled = enabled;
             this.userEnabled.IsEnabled = enabled;
+        }
+
+        private void btFechar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btCadastrar_Click(object sender, RoutedEventArgs e)
+        {
+            this.comboUsers.SelectedIndex = -1;
+
+            this.btIncluir.Visibility = Visibility.Visible;
+            this.btAlterar.Visibility = Visibility.Hidden;
+            this.btExcluir.Visibility = Visibility.Hidden;
+
+            this.ControlFields(true);
         }
 
         private void btIncluir_Click(object sender, RoutedEventArgs e)
