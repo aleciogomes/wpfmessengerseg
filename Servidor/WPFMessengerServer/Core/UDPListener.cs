@@ -1,9 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using MessengerLib;
-using System;
 using WPFMessengerServer.Control.Model;
 
 namespace WPFMessengerServer.Core
@@ -81,20 +80,60 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.UpdateAcc:
-
-                    string newName = info[2],
-                           newUser = info[3],
-                           newPassword = info[4];
+                case MessengerLib.Action.UpdateAccMainInfo:
 
                     if (msnUser != null)
                     {
-                        //auditoria
-                        Console.WriteLine(String.Format("Alterando dados da conta {0}: {1}", newName, user));
 
-                        Util.UpdateAccount(user, newName, newUser, newPassword);
+                        user = info[2];
+
+                        msnUser = new MSNUser();
+                        msnUser.Name = info[3];
+                        msnUser.Login = info[4];
+                        msnUser.Password = info[5];
+
+                        //auditoria
+                        Console.WriteLine(String.Format("Alterando dados da conta {0}: {1}", msnUser.Name, user));
+
+                        Util.UpdateAccount(user, msnUser);
                     }
 
+
+                    break;
+                case MessengerLib.Action.UpdateAccOtherInfo:
+
+                    //valida a conta de admin
+                    if (msnUser != null)
+                    {
+                        //nova conta
+                        msnUser = new MSNUser();
+                        msnUser.Login = info[2];
+
+                        try
+                        {
+                            msnUser.Expiration = DateTime.Parse(info[3]);
+                        }
+                        catch { }
+
+                        try
+                        {
+                            msnUser.TimeAlert = int.Parse(info[4]);
+                        }
+                        catch { }
+
+                        msnUser.Blocked = Convert.ToBoolean(info[5]);
+
+                        try
+                        {
+                            msnUser.UnblockDate = DateTime.Parse(info[6]);
+                        }
+                        catch { }
+
+                        //auditoria
+                        Console.WriteLine(String.Format("Alterando outros dados da conta {0}", msnUser.Login));
+
+                        Util.UpdateAccountOtherInfo(msnUser);
+                    }
 
                     break;
 
@@ -112,21 +151,15 @@ namespace WPFMessengerServer.Core
 
                         try
                         {
-                           msnUser.Expiration = DateTime.Parse(info[5]);
+                            msnUser.Expiration = DateTime.Parse(info[5]);
                         }
-                        catch
-                        {
-                           msnUser.Expiration = null;
-                        }
+                        catch { }
 
                         try
                         {
                             msnUser.TimeAlert = int.Parse(info[6]);
                         }
-                        catch
-                        {
-                            msnUser.TimeAlert = 0;
-                        }
+                        catch { }
 
                         msnUser.Blocked = Convert.ToBoolean(info[7]);
 
@@ -134,18 +167,32 @@ namespace WPFMessengerServer.Core
                         {
                             msnUser.UnblockDate = DateTime.Parse(info[8]);
                         }
-                        catch
-                        {
-                            msnUser.UnblockDate = null;
-                        }
+                        catch { }
 
                         //auditoria
-                        Console.WriteLine(String.Format("Criando nova conta: {0}", msnUser.Login));
+                        Console.WriteLine(String.Format("Nova conta criada: {0}", msnUser.Login));
 
                         Util.CreateAccount(msnUser);
                     }
 
                     break;
+
+                case MessengerLib.Action.DeleteAcc:
+
+                    if (msnUser != null)
+                    {
+                        user = info[2];
+
+                        //auditoria
+                        Console.WriteLine(String.Format("Usuário excluído: {0}", user));
+
+                        Util.DeleteAccount(user);
+
+                    }
+
+                    break;
+
+
             }
         }
 

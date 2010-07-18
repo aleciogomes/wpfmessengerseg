@@ -11,37 +11,35 @@ namespace WPFMessengerServer.Control.Model
         public int TimeAlert { get; set; }
 
         public DateTime? UnblockDate;
-        public string UnblockDateString
+        public string UnblockDateString(bool mySQL)
         {
-            get
-            {
-                if (UnblockDate.HasValue)
-                {
-                    return String.Format("'{0}'", UnblockDate.Value.ToString(MessengerLib.Config.DateFormatMySQL));
-                }
-                else
-                {
-                    return "null";
-                }
-            }
+            return FormatDateString(UnblockDate, mySQL);
         }
 
-
         public DateTime? Expiration;
-        public string ExpirationString
+        public string ExpirationString(bool mySQL)
         {
-            get
+            return FormatDateString(Expiration, mySQL);
+        }
+
+        private string FormatDateString(DateTime? date, bool mySQL)
+        {
+            if (date.HasValue)
             {
-                if (Expiration.HasValue)
+                if (mySQL)
                 {
-                    return String.Format("'{0}'", Expiration.Value.ToString(MessengerLib.Config.DateFormatMySQL));
+                    return String.Format("'{0}'", date.Value.ToString(MessengerLib.Config.DateFormatMySQL));
                 }
                 else
                 {
-                    return "null";
+                    return String.Format(MessengerLib.Config.DateFormat, date);
                 }
-            }
 
+            }
+            else
+            {
+                return (mySQL ? "null" : String.Empty);
+            }
         }
 
     }

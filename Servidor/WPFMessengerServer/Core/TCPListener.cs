@@ -113,7 +113,7 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.GetUsrs:
+                case MessengerLib.Action.GetUsers:
 
                     if (msnUser != null)
                     {
@@ -134,6 +134,16 @@ namespace WPFMessengerServer
                     else
                     {
                         answer = MessengerLib.Config.EndStackMessage;
+                    }
+
+                    break;
+                case MessengerLib.Action.GetUserInfo:
+
+                    string user2 = info[2];
+
+                    if (msnUser != null)
+                    {
+                        answer = Util.GetUserInfo(user2);
                     }
 
                     break;

@@ -33,7 +33,6 @@ namespace WPFMessengerServer.Control.DAO
                     sql.Append(" SELECT ");
                     sql.Append(" ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio ");
                     sql.Append(" FROM usuario ");
-                    sql.Append(" WHERE fl_bloqueada = 0 ");
                     command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
                     reader = command.ExecuteReader();
 
@@ -52,28 +51,19 @@ namespace WPFMessengerServer.Control.DAO
                             {
                                 user.Expiration = DateTime.Parse(reader.GetString("dt_validade"));
                             }
-                            catch
-                            {
-                                user.Expiration = null;
-                            }
+                            catch { }
 
                             try
                             {
                                 user.UnblockDate = DateTime.Parse(reader.GetString("dt_liberacaoBloqueio"));
                             }
-                            catch
-                            {
-                                user.UnblockDate = null;
-                            }
+                            catch { }
 
                             try
                             {
                                 user.TimeAlert = int.Parse(reader.GetString("nr_prazoAlerta"));
                             }
-                            catch
-                            {
-                                user.TimeAlert = 0;
-                            }
+                            catch { }
 
                             user.Blocked = Convert.ToBoolean(int.Parse(reader.GetString("fl_bloqueada")));
 
@@ -109,7 +99,7 @@ namespace WPFMessengerServer.Control.DAO
 
                 try
                 {
-                    sql.Append(" SELECT nm_usuario, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}'");
+                    sql.Append(" SELECT nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}'");
 
                     Object[] sqlParams = null;
 
@@ -132,35 +122,26 @@ namespace WPFMessengerServer.Control.DAO
                         Model.MSNUser user = new Model.MSNUser();
 
                         user.Login = login;
-                        user.Password = password;
+                        user.Password = reader.GetString("ds_pwhash"); ;
                         user.Name = reader.GetString("nm_usuario");
 
                         try
                         {
                             user.Expiration = DateTime.Parse(reader.GetString("dt_validade"));
                         }
-                        catch
-                        {
-                            user.Expiration = null;
-                        }
+                        catch{}
 
                         try
                         {
                             user.UnblockDate = DateTime.Parse(reader.GetString("dt_liberacaoBloqueio"));
                         }
-                        catch
-                        {
-                            user.UnblockDate = null;
-                        }
+                        catch { }
 
                         try
                         {
                             user.TimeAlert = int.Parse(reader.GetString("nr_prazoAlerta"));
                         }
-                        catch
-                        {
-                            user.TimeAlert = 0;
-                        }
+                        catch { }
 
                         user.Blocked = Convert.ToBoolean(int.Parse(reader.GetString("fl_bloqueada")));
 
@@ -184,7 +165,7 @@ namespace WPFMessengerServer.Control.DAO
         }
 
 
-        public void Update(string user, string newName, string newUser, string newPassword)
+        public void Update(string user, Model.MSNUser msnUser)
         {
             StringBuilder sql = new StringBuilder();
             sql.Append(" UPDATE Usuario SET ");
@@ -194,10 +175,33 @@ namespace WPFMessengerServer.Control.DAO
             sql.Append(" WHERE ds_login = '{3}' ");
 
             Object[] sqlParams = new Object[]{
-                newUser,
-                newName,
-                newPassword,
+                msnUser.Login,
+                msnUser.Name,
+                msnUser.Password,
                 user
+            };
+
+            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+        }
+
+        public void UpdateOtherInfo(Model.MSNUser msnUser)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.Append(" UPDATE Usuario SET ");
+            sql.Append(" dt_validade  = {0} ");
+            sql.Append(",nr_prazoAlerta = '{1}' ");
+            sql.Append(",fl_bloqueada = '{2}' ");
+            sql.Append(",dt_liberacaoBloqueio = {3} ");
+            sql.Append(" WHERE ds_login = '{4}' ");
+
+            int blocked = (msnUser.Blocked ? 1 : 0);
+
+            Object[] sqlParams = new Object[]{
+                msnUser.ExpirationString(true),
+                msnUser.TimeAlert,
+                blocked,
+                msnUser.UnblockDateString(true),
+                msnUser.Login
             };
 
             this.ExecQuery(String.Format(sql.ToString(), sqlParams));
@@ -217,11 +221,23 @@ namespace WPFMessengerServer.Control.DAO
                 user.Login,
                 user.Name,
                 user.Password,
-                user.ExpirationString,
+                user.ExpirationString(true),
                 user.TimeAlert,
                 blocked,
-                user.UnblockDateString,
+                user.UnblockDateString(true),
             };
+
+            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+        }
+
+
+        public void Delete(string user)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.Append(" DELETE FROM Usuario ");
+            sql.Append(" WHERE ds_login = '{0}' ");
+
+            Object[] sqlParams = new Object[] { user };
 
             this.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
@@ -240,5 +256,6 @@ namespace WPFMessengerServer.Control.DAO
         {
             return this.Get(user, String.Empty);
         }
+
     }
 }

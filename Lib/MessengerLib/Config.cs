@@ -1,4 +1,5 @@
 ﻿
+using System;
 namespace MessengerLib
 {
      public static class Config
@@ -15,6 +16,11 @@ namespace MessengerLib
 
          public static string DateFormat = "{0:dd/MM/yyyy}";
          public static string DateFormatMySQL = "yyyy-MM-dd";
+
+         public static string FormatUserDisplay(string name, string login)
+         {
+             return String.Format("{0} (id: {1})", name, login);
+         }
 
     }
 }

@@ -72,8 +72,8 @@ namespace WPFMessengerSeg
                return;
            }
 
-           MSNSession.User.UserLogin = userID.Text.ToString();
-           MSNSession.User.UserPassword = MessengerLib.Encoder.GenerateMD5(userPassword.Password.ToString());
+           MSNSession.User.Login = userID.Text.ToString();
+           MSNSession.User.Password = MessengerLib.Encoder.GenerateMD5(userPassword.Password.ToString());
 
            btLogin.IsEnabled = false;
            userID.IsEnabled = false;

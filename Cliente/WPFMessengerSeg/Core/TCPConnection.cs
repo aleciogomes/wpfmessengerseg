@@ -41,12 +41,12 @@ namespace WPFMessengerSeg.Core
                         if (countAttributes == 0)
                         {
                             user = new MSNUser();
-                            user.UserLogin = value;
+                            user.Login = value;
                             countAttributes++;
                         }
                         else if (countAttributes == 1)
                         {
-                            user.UserName = value;
+                            user.Name = value;
                             countAttributes++;
                         }
                         else
@@ -93,9 +93,9 @@ namespace WPFMessengerSeg.Core
                 IList<MSNUser> lista = GetListUsers();
                 foreach (MSNUser user in lista)
                 {
-                    if (user.UserLogin == MSNSession.User.UserLogin)
+                    if (user.Login == MSNSession.User.Login)
                     {
-                        MSNSession.User.UserName = user.UserName;
+                        MSNSession.User.Name = user.Name;
                     }
                 }
             }
@@ -103,12 +103,48 @@ namespace WPFMessengerSeg.Core
             return info[0];
         }
 
-        public static string GetUserAvailable(string newUser)
+        public static string GetUserAvailable(string newUserLogin)
         {
-            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), newUser);
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), newUserLogin);
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UserAvailable, info);
 
             return EstabilishConnection(cmd, false);
+        }
+
+        public static MSNUser GetUserInfo(string userLogin)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), userLogin);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetUserInfo, info);
+
+            string[] result =  EstabilishConnection(cmd, false).Split(':');
+
+            MSNUser user = new MSNUser();
+
+            user.Name = result[0];
+            user.Login = userLogin;
+            user.Password = result[1];
+
+            try
+            {
+                user.Expiration = DateTime.Parse(result[2]);
+            }
+            catch { }
+
+            try
+            {
+                user.TimeAlert = int.Parse(result[3]);
+            }
+            catch { }
+
+            user.Blocked = Convert.ToBoolean(result[4]);
+
+            try
+            {
+                user.UnblockDate = DateTime.Parse(result[5]);
+            }
+            catch { }
+
+            return user;
         }
 
         private static bool ValidetReturn(string returnString)
@@ -125,7 +161,7 @@ namespace WPFMessengerSeg.Core
 
         private static String GetUsers()
         {
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetUsrs, GetAuthentication());
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetUsers, GetAuthentication());
             return EstabilishConnection(cmd, true);
         }
 
@@ -171,7 +207,7 @@ namespace WPFMessengerSeg.Core
             return lista;
         }
 
-        private static String EstabilishConnection(String command, bool useCharStop)
+        private static string EstabilishConnection(String command, bool useCharStop)
         {
             try
             {
@@ -205,7 +241,7 @@ namespace WPFMessengerSeg.Core
             }
         }
 
-        private static String ConvertMessage(Stream stream, bool useCharStop)
+        private static string ConvertMessage(Stream stream, bool useCharStop)
         {
             byte[] bb = new byte[1000];
 
@@ -264,7 +300,7 @@ namespace WPFMessengerSeg.Core
         {
             if (String.IsNullOrEmpty(authentication))
             {
-                authentication = String.Format("{0}:{1}", MSNSession.User.UserLogin, MSNSession.User.UserPassword);
+                authentication = String.Format("{0}:{1}", MSNSession.User.Login, MSNSession.User.Password);
             }
 
             return authentication;

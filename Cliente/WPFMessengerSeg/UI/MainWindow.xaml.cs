@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using WPFMessengerSeg.Core;
-using System.Windows.Controls;
-using System;
-using System.Diagnostics;
-using System.Windows.Documents;
-using WPFMessengerSeg.UI;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
-using System.Windows.Media;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interop;
+using System.Windows.Media;
+using WPFMessengerSeg.Core;
+using WPFMessengerSeg.Core.events;
+using WPFMessengerSeg.UI;
 
 namespace WPFMessengerSeg
 {
@@ -41,8 +42,8 @@ namespace WPFMessengerSeg
             this.dicOnlineUsers = new Dictionary<string, MSNUser>();
             this.dicOfflineUsers = new Dictionary<string, MSNUser>();
 
-            this.lblUsuario.Text= MSNSession.User.UserLogin.ToString();
-            this.lblNome.Text = MSNSession.User.UserName;
+            this.lblUsuario.Text= MSNSession.User.Login.ToString();
+            this.lblNome.Text = MSNSession.User.Name;
 
             //atualiza lista de usuários a cada 6 segundos
             this.timeRefreshUsers = TimeSpan.FromSeconds(6);
@@ -97,18 +98,18 @@ namespace WPFMessengerSeg
         private void InitalizeTree()
         {
             MSNUser user = new MSNUser();
-            user.UserLogin = String.Empty;
-            user.UserName = "Todos os usuários";
+            user.Login = String.Empty;
+            user.Name = "Todos os usuários";
 
             TreeViewItem node = new TreeViewItem();
-            node.Header = user.UserName;
+            node.Header = user.Name;
             node.FontSize = 12;
             node.Foreground = new SolidColorBrush(Colors.LimeGreen);
             node.PreviewMouseDoubleClick += ShowTalkWindow;
             treeItemRootOnline.Items.Add(node);
 
             this.dicOnlineUsers.Add(node.Header.ToString(), user);
-            this.talkManager.UserList.Add(user.UserLogin, user);
+            this.talkManager.UserList.Add(user.Login, user);
 
             this.treeItemRootOnline.IsExpanded = true;
             this.treeItemRootOnline.Header = rootTitleOnline.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
@@ -125,10 +126,10 @@ namespace WPFMessengerSeg
             foreach (MSNUser user in listUsers)
             {
 
-                userDisplay = FormatUserDisplay(user);
+                userDisplay = MessengerLib.Config.FormatUserDisplay(user.Name, user.Login);
 
                 //se não é o usuário logado
-                if (user.UserLogin != MSNSession.User.UserLogin)
+                if (user.Login != MSNSession.User.Login)
                 {
                     node = new TreeViewItem();
                     node.Header = userDisplay;
@@ -146,16 +147,27 @@ namespace WPFMessengerSeg
                     //Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
 
                 }
-
             }
 
+            this.RefreshGroupHeader();
+
+            InitializeRefresher();
+        }
+
+        private void RefreshGroupHeader()
+        {
             treeItemRootOnline.Header = rootTitleOnline.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));
             treeItemRootOnline.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
 
             treeItemRootOffline.Header = rootTitleOffline.Replace("(0)", String.Format("({0})", treeItemRootOffline.Items.Count));
             treeItemRootOffline.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("Header", System.ComponentModel.ListSortDirection.Ascending));
+        }
 
-            InitializeRefresher();
+        private void RemoveDeletedUser(object sender, Arguments e)
+        {
+            this.RemoveItemByHeader(treeItemRootOnline, e.Header);
+            this.RemoveItemByHeader(treeItemRootOffline, e.Header);
+            this.RefreshGroupHeader();
         }
 
         private void AddOnline(MSNUser user, TreeViewItem node)
@@ -171,9 +183,9 @@ namespace WPFMessengerSeg
             {
                 node.PreviewMouseDoubleClick += ShowTalkWindow;
 
-                if (!talkManager.UserList.ContainsKey(user.UserLogin))
+                if (!talkManager.UserList.ContainsKey(user.Login))
                 {
-                    talkManager.UserList.Add(user.UserLogin, user);
+                    talkManager.UserList.Add(user.Login, user);
                 }
 
                 treeItemRootOnline.Items.Add(node);
@@ -198,9 +210,9 @@ namespace WPFMessengerSeg
                 {
                     node.PreviewMouseDoubleClick += ShowTalkWindow;
 
-                    if (!talkManager.UserList.ContainsKey(user.UserLogin))
+                    if (!talkManager.UserList.ContainsKey(user.Login))
                     {
-                        talkManager.UserList.Add(user.UserLogin, user);
+                        talkManager.UserList.Add(user.Login, user);
                     }
                 }
                 node.Foreground = new SolidColorBrush(Colors.Gray);
@@ -309,11 +321,6 @@ namespace WPFMessengerSeg
             selectedWindow.Focus();
         }
 
-        private String FormatUserDisplay(MSNUser user)
-        {
-            return String.Format("{0} (id: {1})", user.UserName, user.UserLogin);
-        }
-
         private void EnableAdminOptions()
         {
             this.menuAdmin.Visibility = Visibility.Visible;
@@ -334,8 +341,8 @@ namespace WPFMessengerSeg
 
             accWindow.ShowDialog();
 
-            this.lblUsuario.Text = MSNSession.User.UserLogin;
-            this.lblNome.Text = MSNSession.User.UserName;
+            this.lblUsuario.Text = MSNSession.User.Login;
+            this.lblNome.Text = MSNSession.User.Name;
 
         }
 
@@ -343,7 +350,8 @@ namespace WPFMessengerSeg
 
         private void ManageUsers_Click(object sender, RoutedEventArgs e)
         {
-            AdminWindow manage = new AdminWindow();
+            AdminWindow manage  = new AdminWindow();
+            manage.UserDeleted += new DeleteUserHandler(this.RemoveDeletedUser);
             manage.Owner = this;
             manage.ShowDialog();
         }

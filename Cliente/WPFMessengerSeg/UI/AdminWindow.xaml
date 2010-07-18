@@ -19,7 +19,7 @@
                     </Grid.RowDefinitions>
 
                     <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">Selecione o usuário:</Label>
-                    <ComboBox Grid.Column="1" Margin="10,5,10,5"  Name="comboUsers" />
+                    <ComboBox Grid.Column="1" Margin="10,5,10,5"  Name="comboUsers"  SelectionChanged="comboUsers_SelectionChanged"/>
                     <Button Grid.Column="2" Name="btCadastrar" Background="Transparent" BorderBrush="{x:Null}" Width="20" Click="btCadastrar_Click">
                         <Image  Source="../resources/addUser.png"/>
                     </Button>
@@ -45,7 +45,7 @@
                     <TextBox  Grid.Row="0" Grid.Column="1" Name="userID"  Width="Auto" Margin="10,5,10,5" IsEnabled="false"/>
 
                     <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">Senha:</Label>
-                    <PasswordBox  Grid.Row="1" Grid.Column="1" Name="userPassword" Width="Auto" Margin="10,5,10,5" IsEnabled="false"/>
+                    <PasswordBox  Grid.Row="1" Grid.Column="1" Name="userPassword" Width="Auto" Margin="10,5,10,5" IsEnabled="false" GotFocus="userPassword_GotFocus"/>
 
                     <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">Confirme a senha:</Label>
                     <PasswordBox  Grid.Row="2" Grid.Column="1" Name="userPassword2" Width="Auto" Margin="10,5,10,5" IsEnabled="false"/>
@@ -80,7 +80,7 @@
                     <CheckBox Grid.Row="2" Grid.Column="1" Margin="10,8,10,5" Name="userEnabled" IsEnabled="False"/>
 
                     <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right">Última liberação da conta:</Label>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" Name="userLastDesblock">00/00/0000</TextBlock>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" Name="userUnblockDate">00/00/0000</TextBlock>
                 </Grid>
             </GroupBox>
 
@@ -88,7 +88,7 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
-                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="120" />
                     <ColumnDefinition Width="110" />
                     <ColumnDefinition Width="110" />
                 </Grid.ColumnDefinitions>
@@ -98,8 +98,8 @@
 
 
                 <Button Name="btIncluir" Background="CadetBlue" Foreground="BlanchedAlmond" IsEnabled="True"  Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="110" Click="btIncluir_Click">Incluir</Button>
-                <Button Name="btAlterar" Background="CadetBlue" Foreground="BlanchedAlmond" IsEnabled="True"  Margin="0,0,5,0" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="110" >Alterar</Button>
-                <Button Name="btExcluir" Background="CadetBlue" Foreground="BlanchedAlmond" IsEnabled="True"  Margin="0,0,5,0" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="110" >Excluir</Button>
+                <Button Name="btAlterar" Background="CadetBlue" Foreground="BlanchedAlmond" IsEnabled="True"  Margin="0,0,5,0" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="110" Click="btAlterar_Click" >Alterar</Button>
+                <Button Name="btExcluir" Background="CadetBlue" Foreground="BlanchedAlmond" IsEnabled="True"  Margin="0,0,5,0" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="110" Click="btExcluir_Click" >Excluir</Button>
                 <Button Name="btFechar" Background="CadetBlue" Foreground="BlanchedAlmond" IsEnabled="True" Margin="5,0,5,0" Grid.Row="0" Grid.Column="3" Click="btFechar_Click">Fechar</Button>
 
             </Grid>
