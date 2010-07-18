@@ -87,7 +87,8 @@ namespace WPFMessengerServer
                     if (msnUser == null)
                     {
                         //auditoria
-                        Console.WriteLine(String.Format("Login inválido: {0}/{1}", user, password));
+                        Util.RegEvent(user, String.Format("Login inválido: {0}/{1}", user, password));
+                        Console.WriteLine(String.Format("Login inválido: {0}/{1}"), user, password);
 
                         answer = "Não foi possível entrar. Verifique seu usuário e senha.";
                     }
@@ -96,7 +97,8 @@ namespace WPFMessengerServer
                         if (!Util.IsOnline(msnUser.Login))
                         {
                             //auditoria
-                            Console.WriteLine(String.Format("Usuário conectado: {0}", user));
+                            Util.RegEvent(user, "Login efetuado");
+                            Console.WriteLine(String.Format("Login realizado: {0}", user));
 
                             Util.AddOnline(msnUser);
                             answer = String.Format("{0}:{1}", MessengerLib.Config.OKMessage, msnUser.Expiration);
@@ -104,6 +106,7 @@ namespace WPFMessengerServer
                         else
                         {
                             //auditoria
+                            Util.RegEvent(user, "Tentativa de logar com conta já conectada");
                             Console.WriteLine(String.Format("Tentativa de logar com conta já online: {0}", user));
 
                             answer = "Essa conta já está online no sistema.";
@@ -121,6 +124,7 @@ namespace WPFMessengerServer
                     }
                     else
                     {
+                        Util.RegEvent(user, "Tentativa de buscar lista de usuários sem login do sistema");
                         answer = MessengerLib.Config.EndStackMessage;
                     }
 
@@ -133,6 +137,7 @@ namespace WPFMessengerServer
                     }
                     else
                     {
+                        Util.RegEvent(user, "Tentativa de buscar mensagens sem login do sistema");
                         answer = MessengerLib.Config.EndStackMessage;
                     }
 
@@ -145,6 +150,10 @@ namespace WPFMessengerServer
                     {
                         answer = Util.GetUserInfo(user2);
                     }
+                    else
+                    {
+                        Util.RegEvent(user, "Tentativa de buscar informações de usuário sem login do sistema");
+                    }
 
                     break;
 
@@ -156,6 +165,10 @@ namespace WPFMessengerServer
                     {
                         answer = Util.GetFeatures(userID);
                     }
+                    else
+                    {
+                        Util.RegEvent(user, String.Format("Tentativa de buscar permissões do usuário {0} sem login do sistema", userID));
+                    }
 
                     break;
 
@@ -163,16 +176,24 @@ namespace WPFMessengerServer
 
                     string newUser = info[2];
 
-                    if (Util.GetContact(newUser) != null)
-                    {
-                        //auditoria
-                        Console.WriteLine(String.Format("Tentativa de cadastrar um usuário que já existe: {0}", newUser));
+                     if (msnUser != null)
+                     {
+                        
+                        if (Util.GetContact(newUser) != null)
+                        {
+                            //auditoria
+                            Console.WriteLine(String.Format("Tentativa de cadastrar um usuário que já existe: {0}", newUser));
 
-                        answer = "Usuário já existente na base. Escolha outro login.";
+                            answer = "Usuário já existente na base. Escolha outro login.";
+                        }
+                        else
+                        {
+                            answer = MessengerLib.Config.OKMessage;
+                        }
                     }
                     else
                     {
-                        answer = MessengerLib.Config.OKMessage;
+                        Util.RegEvent(user, String.Format("Tentativa de verificar se o usuário {0} está disponível sem login do sistema", newUser));
                     }
 
                     break;

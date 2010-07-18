@@ -4,7 +4,7 @@ namespace MessengerLib
 {
      public static class Config
     {
-         public static string ErrorMessage = "ERRO";
+         public static string ErrorMessage = "ERRO NO SERVIDOR";
          public static string OKMessage = "OK";
 
          public static string EndStackMessage = "0:";

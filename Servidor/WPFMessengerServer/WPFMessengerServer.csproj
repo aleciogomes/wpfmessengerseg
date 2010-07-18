@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\DAO\MSNLog.cs" />
     <Compile Include="Control\DAO\MSNFeature.cs" />
     <Compile Include="Control\DAO\MSNPermission.cs" />
     <Compile Include="Control\Model\MSNMessage.cs" />
@@ -66,7 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\scriptBD.sql" />
-    <None Include="resources\users.qbquery" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\MySql.Data.dll" />

@@ -9,9 +9,11 @@ namespace WPFMessengerServer
 {
     public static class Util
     {
+        //Banco de dados
         private static Control.DAO.MSNUser daoUser = new Control.DAO.MSNUser();
         private static Control.DAO.MSNFeature daoFeature = new Control.DAO.MSNFeature();
         private static Control.DAO.MSNPermission daoPermission = new Control.DAO.MSNPermission();
+        private static Control.DAO.MSNLog daoLog = new Control.DAO.MSNLog();
 
 
         private static IList<Control.Model.MSNUser> listOnline = new List<Control.Model.MSNUser>();
@@ -182,6 +184,19 @@ namespace WPFMessengerServer
 
             return sb.ToString();
         }
+
+        //auditoria
+        public static void RegEvent(string user, string message)
+        {
+            string desc = String.Format("{0} -- USUÁRIO: {1} ", message, user);
+
+            MessengerLib.Core.MSNLog log = new MessengerLib.Core.MSNLog();
+            log.Event = desc;
+            log.Date = DateTime.Now;
+
+            daoLog.Insert(log);
+        }
+
 
     }
 }

@@ -97,6 +97,9 @@ namespace WPFMessengerSeg
 
         private void InitalizeTree()
         {
+            /* 
+             * Não é possível enviar msg para todos por enquanto
+             * 
             MSNUser user = new MSNUser();
             user.Login = String.Empty;
             user.Name = "Todos os usuários";
@@ -110,6 +113,7 @@ namespace WPFMessengerSeg
 
             this.dicOnlineUsers.Add(node.Header.ToString(), user);
             this.talkManager.UserList.Add(user.Login, user);
+            */
 
             this.treeItemRootOnline.IsExpanded = true;
             this.treeItemRootOnline.Header = rootTitleOnline.Replace("(0)", String.Format("({0})", treeItemRootOnline.Items.Count));

@@ -109,6 +109,16 @@ namespace WPFMessengerServer.Control
             }
         }
 
+        public static void ExecQuery(string sql)
+        {
+            lock (lockBD)
+            {
+                Instance.openConnection();
+                Instance.executeQuery(sql);
+                Instance.closeConnection();
+            }
+        }
+
         public void executeQuery(String query)
         {
             MySqlCommand command = null;

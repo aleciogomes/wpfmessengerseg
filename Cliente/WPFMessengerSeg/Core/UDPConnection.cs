@@ -84,7 +84,7 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
-        public static void UpdatePermissions(IList<Operation> list, int userID)
+        public static void UpdatePermissions(IList<Operation> list, MSNUser user)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -93,7 +93,7 @@ namespace WPFMessengerSeg.Core
                 sb.Append(String.Format("{0}:", op.ToString()));
             }
 
-            string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), userID, sb.ToString());
+            string info = String.Format("{0}:{1}:{2}:{3}", TCPConnection.GetAuthentication(), user.Login, user.ID, sb.ToString());
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UpdatePermissions, info);
 
             Transfer(cmd);

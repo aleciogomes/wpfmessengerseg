@@ -17,12 +17,21 @@
                     </Grid.RowDefinitions>
 
                     <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">Selecione a data:</Label>
-                    <ComboBox Grid.Column="1" Margin="10,5,10,5"  Name="comboEvents"/>
+                    <ComboBox Grid.Column="1" Margin="10,5,10,5" Name="comboEvents"/>
                 </Grid>
             </GroupBox>
 
             <GroupBox Header="Relatório" Margin="30,20,30,0" Height="285">
-                
+
+                <ListView Name="listEvents" >
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="140" Header="Data" DisplayMemberBinding="{Binding Path=Date}"/>
+                            <GridViewColumn Width="140" Header="Descrição do evento" DisplayMemberBinding="{Binding Path=Event}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
             </GroupBox>
 
 
