@@ -25,7 +25,7 @@ namespace WPFMessengerSeg.Core
 
             string returnString = GetUsers();
 
-            if (ValidetReturn(returnString) && !returnString.Equals(MessengerLib.Config.EndStackMessage))
+            if (ValidetReturn(returnString))
             {
                 string[] returnVector = returnString.Split(':');
                 string value = null;
@@ -166,7 +166,7 @@ namespace WPFMessengerSeg.Core
 
                 string returnString = EstabilishConnection(cmd, false);
 
-                if (ValidetReturn(returnString) && !returnString.Equals(MessengerLib.Config.EndStackMessage))
+                if (ValidetReturn(returnString))
                 {
 
                     string[] returnVector = returnString.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -221,6 +221,59 @@ namespace WPFMessengerSeg.Core
 
                 }
             }
+
+        }
+
+        public static string[] GetLogDates()
+        {
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLogDates, GetAuthentication());
+            string returnString = EstabilishConnection(cmd, false);
+
+            if (ValidetReturn(returnString))
+            {
+                return returnString.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            return new string[]{};
+        }
+
+        public static IList<MessengerLib.Core.MSNLog> GetLog(DateTime logDate)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), logDate.ToString());
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLog, info);
+            string returnString = EstabilishConnection(cmd, false);
+
+            IList<MessengerLib.Core.MSNLog> list = new List<MessengerLib.Core.MSNLog>();
+
+            if (ValidetReturn(returnString))
+            {
+                string[] returnVector = returnString.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries); ;
+                int countAttributes = 0;
+
+                MessengerLib.Core.MSNLog log = null;
+
+                foreach (string value in returnVector)
+                {
+                    if (!String.IsNullOrEmpty(value))
+                    {
+                        if (countAttributes == 0)
+                        {
+                            log = new MessengerLib.Core.MSNLog();
+                            log.Date = DateTime.Parse(value);
+                            countAttributes++;
+                        }
+                        else
+                        {
+                            //reinicia
+                            countAttributes = 0;
+                            log.Event = value;
+                            list.Add(log);
+                        }
+                    }
+                }
+            }
+
+            return list;
 
         }
 
@@ -320,9 +373,9 @@ namespace WPFMessengerSeg.Core
 
         private static string ConvertMessage(Stream stream, bool useCharStop)
         {
-            byte[] bb = new byte[1000];
+            byte[] bb = new byte[5000];
 
-            int index = stream.Read(bb, 0, 1000);
+            int index = stream.Read(bb, 0, 5000);
 
             StringBuilder message = new StringBuilder();
             char? charAtual = null;

@@ -48,9 +48,7 @@ namespace WPFMessengerSeg.UI
             this.comboUsers.Items.Clear();
 
             //atualiza a lista
-            IList<MSNUser> listUsers = (from msnUser in TCPConnection.GetListUsers()
-                                        select msnUser).ToList();
-
+            IList<MSNUser> listUsers = TCPConnection.GetListUsers();
 
             foreach (MSNUser user in listUsers)
             {

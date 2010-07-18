@@ -46,7 +46,7 @@ namespace WPFMessengerSeg.Core
         {
             if (date.HasValue)
             {
-                return String.Format(MessengerLib.Config.DateFormat, date);
+                return ((DateTime)date).ToString(MessengerLib.Config.DateFormat);
             }
             else
             {

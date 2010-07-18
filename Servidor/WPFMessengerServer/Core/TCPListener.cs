@@ -72,7 +72,7 @@ namespace WPFMessengerServer
         private void ProcessRequest(TcpClient tcpClient, string request)
         {
 
-            string[] info = ActionHandler.GetMessage(request).Split(':');
+            string[] info = ActionHandler.GetMessage(request).Split(new char[] { ':' }, 3);
 
             string user = info[0];
             string password = info[1];
@@ -168,6 +168,34 @@ namespace WPFMessengerServer
                     else
                     {
                         Util.RegEvent(user, String.Format("Tentativa de buscar permissões do usuário {0} sem login do sistema", userID));
+                    }
+
+                    break;
+
+                case MessengerLib.Action.GetLog:
+
+                    if (msnUser != null)
+                    {
+                        DateTime logDate = DateTime.Parse(info[2]);
+
+                        answer = Util.GetLog(logDate);
+                    }
+                    else
+                    {
+                        Util.RegEvent(user, "Tentativa de buscar log sem login do sistema");
+                    }
+
+                    break;
+
+                case MessengerLib.Action.GetLogDates:
+
+                    if (msnUser != null)
+                    {
+                        answer = Util.GetLogDates();
+                    }
+                    else
+                    {
+                        Util.RegEvent(user, "Tentativa de buscar datas dos logs sem login do sistema");
                     }
 
                     break;

@@ -14,8 +14,9 @@ namespace MessengerLib
 
          public static string ServerURL = "127.0.0.1";
 
-         public static string DateFormat = "{0:dd/MM/yyyy}";
+         public static string DateFormat = "dd/MM/yyyy";
          public static string DateFormatMySQL = "yyyy-MM-dd";
+         public static string DateFormatMySQLFull = "yyyy-MM-dd HH:mm:ss";
 
          public static string FormatUserDisplay(string name, string login)
          {
