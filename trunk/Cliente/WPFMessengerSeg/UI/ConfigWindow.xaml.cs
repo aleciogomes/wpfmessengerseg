@@ -112,7 +112,7 @@ namespace WPFMessengerSeg.UI
             //resseta a lista do usuário selecionado
             selectedUser.ListFeature = null;
 
-            UDPConnection.UpdatePermissions(list, selectedUser.ID);
+            UDPConnection.UpdatePermissions(list, selectedUser);
             MessageBox.Show("Dados alterados com sucesso", "Alteração de permissões", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 

@@ -19,7 +19,7 @@ namespace WPFMessengerServer.Control.DAO
                 user.ID, operation
             };
 
-            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
         public void Delete(Model.MSNUser user)
@@ -30,17 +30,7 @@ namespace WPFMessengerServer.Control.DAO
 
             Object[] sqlParams = new Object[] { user.ID };
 
-            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
-        }
-
-        private void ExecQuery(string sql)
-        {
-            lock (DBUtil.lockBD)
-            {
-                DBUtil.Instance.openConnection();
-                DBUtil.Instance.executeQuery(sql);
-                DBUtil.Instance.closeConnection();
-            }
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
     }

@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Core\MSNLog.cs" />
     <Compile Include="Core\MSNFeature.cs" />
     <Compile Include="Core\MSNOperation.cs" />
     <Compile Include="Encoder.cs" />

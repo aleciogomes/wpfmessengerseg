@@ -50,7 +50,6 @@ namespace WPFMessengerServer.Core
             {
                 case MessengerLib.Action.SendMsg:
 
-
                     string destiny  = info[2];
 
                     //pode conter emoticons na msg
@@ -59,12 +58,17 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
+                        Util.RegEvent(userLogin, String.Format("Mensagem enviada para {0}", destiny));
                         Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", userLogin, destiny));
 
                         if (Util.GetContact(destiny) != null)
                         {
                             Util.AddMessage(msnUser, destiny, msg);
                         }
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, "Tentativa de enviar mensagem sem login do sistema");
                     }
 
                     break;
@@ -74,9 +78,14 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
+                        Util.RegEvent(userLogin, "Logoff efetuado");
                         Console.WriteLine(String.Format("Usuário desconectado: {0}", userLogin));
 
                         Util.ShutdownUser(msnUser.Login);
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, "Tentativa de realizar logoff sem login do sistema");
                     }
 
                     break;
@@ -94,11 +103,15 @@ namespace WPFMessengerServer.Core
                         msnUser.Password = info[5];
 
                         //auditoria
+                        Util.RegEvent(userLogin, String.Format("Dados da conta {0} alterados", msnUser.Login));
                         Console.WriteLine(String.Format("Alterando dados da conta {0}: {1}", msnUser.Name, userLogin));
 
                         Util.UpdateAccount(userLogin, msnUser);
                     }
-
+                    else
+                    {
+                        Util.RegEvent(userLogin, String.Format("Tentativa de alterar dados da conta {0} sem login do sistema", info[3]));
+                    }
 
                     break;
                 case MessengerLib.Action.UpdateAccOtherInfo:
@@ -131,9 +144,14 @@ namespace WPFMessengerServer.Core
                         catch { }
 
                         //auditoria
+                        Util.RegEvent(userLogin, String.Format("Dados adicionas da conta {0} alterados", msnUser.Login));
                         Console.WriteLine(String.Format("Alterando outros dados da conta {0}", msnUser.Login));
 
                         Util.UpdateAccountOtherInfo(msnUser);
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, String.Format("Tentativa de alterar dados da conta {0} sem login do sistema", info[2]));
                     }
 
                     break;
@@ -145,7 +163,8 @@ namespace WPFMessengerServer.Core
                     {
 
                         msnUser = new MSNUser();
-                        msnUser.ID = int.Parse(info[2]);
+                        msnUser.Login = info[2];
+                        msnUser.ID = int.Parse(info[3]);
 
                         IList<string> listOperation = new List<string>();
 
@@ -158,7 +177,15 @@ namespace WPFMessengerServer.Core
                             }
                         }
 
+                        //auditoria
+                        Util.RegEvent(userLogin, String.Format("Permissões da conta {0} alteradas", msnUser.Login));
+                        Console.WriteLine(String.Format("Permissões da conta conta {0} alteradas", msnUser.Login));
+
                         Util.UpdatePermissions(msnUser, listOperation);
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, String.Format("Tentativa de alterar permissões do usuário {0} sem login do sistema", info[2]));
                     }
 
                     break;
@@ -196,9 +223,14 @@ namespace WPFMessengerServer.Core
                         catch { }
 
                         //auditoria
+                        Util.RegEvent(userLogin, String.Format("Nova conta {0} criada", msnUser.Login));
                         Console.WriteLine(String.Format("Nova conta criada: {0}", msnUser.Login));
 
                         Util.CreateAccount(msnUser);
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, String.Format("Tentativa de criar conta {0} sem login do sistema", info[2]));
                     }
 
                     break;
@@ -210,10 +242,15 @@ namespace WPFMessengerServer.Core
                         userLogin = info[2];
 
                         //auditoria
+                        Util.RegEvent(userLogin, String.Format("Conta {0} excluída", userLogin));
                         Console.WriteLine(String.Format("Usuário excluído: {0}", userLogin));
 
                         Util.DeleteAccount(userLogin);
 
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, String.Format("Tentativa de excluir conta {0} sem login do sistema", info[2]));
                     }
 
                     break;

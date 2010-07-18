@@ -175,7 +175,7 @@ namespace WPFMessengerServer.Control.DAO
                 userLogin
             };
 
-            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
         public void UpdateOtherInfo(Model.MSNUser msnUser)
@@ -198,7 +198,7 @@ namespace WPFMessengerServer.Control.DAO
                 msnUser.Login
             };
 
-            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
         public void Insert(Model.MSNUser user)
@@ -221,7 +221,7 @@ namespace WPFMessengerServer.Control.DAO
                 user.UnblockDateString(true),
             };
 
-            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
 
@@ -233,17 +233,7 @@ namespace WPFMessengerServer.Control.DAO
 
             Object[] sqlParams = new Object[] { userLogin };
 
-            this.ExecQuery(String.Format(sql.ToString(), sqlParams));
-        }
-
-        private void ExecQuery(string sql)
-        {
-            lock (DBUtil.lockBD)
-            {
-                DBUtil.Instance.openConnection();
-                DBUtil.Instance.executeQuery(sql);
-                DBUtil.Instance.closeConnection();
-            }
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
         public Model.MSNUser GetContact(string user)
