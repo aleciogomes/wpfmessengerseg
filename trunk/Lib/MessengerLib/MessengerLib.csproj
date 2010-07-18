@@ -49,7 +49,11 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Core\MSNFeature.cs" />
+    <Compile Include="Core\MSNOperation.cs" />
     <Compile Include="Encoder.cs" />
+    <Compile Include="Feature.cs" />
+    <Compile Include="Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

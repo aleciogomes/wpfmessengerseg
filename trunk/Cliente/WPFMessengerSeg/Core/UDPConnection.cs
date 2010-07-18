@@ -2,6 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using MessengerLib;
+using System.Collections.Generic;
 
 namespace WPFMessengerSeg.Core
 {
@@ -81,6 +83,22 @@ namespace WPFMessengerSeg.Core
 
             Transfer(cmd);
         }
+
+        public static void UpdatePermissions(IList<Operation> list, int userID)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach(Operation op in list)
+            {
+                sb.Append(String.Format("{0}:", op.ToString()));
+            }
+
+            string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), userID, sb.ToString());
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UpdatePermissions, info);
+
+            Transfer(cmd);
+        }
+
 
         private static bool Transfer(string cmd)
         {

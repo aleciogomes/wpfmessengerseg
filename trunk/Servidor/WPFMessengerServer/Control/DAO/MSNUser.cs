@@ -8,19 +8,12 @@ namespace WPFMessengerServer.Control.DAO
     public class MSNUser
     {
 
-        private Object lockBD;
-
-        public MSNUser()
-        {
-            this.lockBD = new Object();
-        }
-
         public IList<Model.MSNUser> GetList()
         {
 
             IList<Model.MSNUser> list = new List<Model.MSNUser>();
 
-            lock (lockBD)
+            lock (DBUtil.lockBD)
             {
 
                 DBUtil.Instance.openConnection();
@@ -31,7 +24,7 @@ namespace WPFMessengerServer.Control.DAO
                 try
                 {
                     sql.Append(" SELECT ");
-                    sql.Append(" ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio ");
+                    sql.Append(" cd_usuario, ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio ");
                     sql.Append(" FROM usuario ");
                     command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
                     reader = command.ExecuteReader();
@@ -43,6 +36,7 @@ namespace WPFMessengerServer.Control.DAO
                         while (reader.Read())
                         {
                             user = new Model.MSNUser();
+                            user.ID = reader.GetInt32("cd_usuario");
                             user.Login = reader.GetString("ds_login");
                             user.Password = reader.GetString("ds_pwhash");
                             user.Name = reader.GetString("nm_usuario");
@@ -61,11 +55,11 @@ namespace WPFMessengerServer.Control.DAO
 
                             try
                             {
-                                user.TimeAlert = int.Parse(reader.GetString("nr_prazoAlerta"));
+                                user.TimeAlert = reader.GetInt32("nr_prazoAlerta");
                             }
                             catch { }
 
-                            user.Blocked = Convert.ToBoolean(int.Parse(reader.GetString("fl_bloqueada")));
+                            user.Blocked = Convert.ToBoolean(reader.GetInt32("fl_bloqueada"));
 
                             list.Add(user);
                         }
@@ -86,10 +80,10 @@ namespace WPFMessengerServer.Control.DAO
             return list;
         }
 
-        public Model.MSNUser Get(string login, string password)
+        public Model.MSNUser Get(string userLogin, string userPassword)
         {
 
-            lock (lockBD)
+            lock (DBUtil.lockBD)
             {
 
                 DBUtil.Instance.openConnection();
@@ -103,14 +97,14 @@ namespace WPFMessengerServer.Control.DAO
 
                     Object[] sqlParams = null;
 
-                    if (!String.IsNullOrEmpty(password))
+                    if (!String.IsNullOrEmpty(userPassword))
                     {
                         sql.Append(" and ds_pwhash = '{1}' ");
-                        sqlParams = new Object[] { login, password };
+                        sqlParams = new Object[] { userLogin, userPassword };
                     }
                     else
                     {
-                        sqlParams = new Object[] { login };
+                        sqlParams = new Object[] { userLogin };
                     }
 
                     command = new MySqlCommand(String.Format(sql.ToString(), sqlParams), DBUtil.Instance.Connection);
@@ -121,7 +115,7 @@ namespace WPFMessengerServer.Control.DAO
                     {
                         Model.MSNUser user = new Model.MSNUser();
 
-                        user.Login = login;
+                        user.Login = userLogin;
                         user.Password = reader.GetString("ds_pwhash"); ;
                         user.Name = reader.GetString("nm_usuario");
 
@@ -139,11 +133,11 @@ namespace WPFMessengerServer.Control.DAO
 
                         try
                         {
-                            user.TimeAlert = int.Parse(reader.GetString("nr_prazoAlerta"));
+                            user.TimeAlert = reader.GetInt32("nr_prazoAlerta");
                         }
                         catch { }
 
-                        user.Blocked = Convert.ToBoolean(int.Parse(reader.GetString("fl_bloqueada")));
+                        user.Blocked = Convert.ToBoolean(reader.GetInt32("fl_bloqueada"));
 
                         return user;
                     }
@@ -165,7 +159,7 @@ namespace WPFMessengerServer.Control.DAO
         }
 
 
-        public void Update(string user, Model.MSNUser msnUser)
+        public void Update(string userLogin, Model.MSNUser msnUser)
         {
             StringBuilder sql = new StringBuilder();
             sql.Append(" UPDATE Usuario SET ");
@@ -178,7 +172,7 @@ namespace WPFMessengerServer.Control.DAO
                 msnUser.Login,
                 msnUser.Name,
                 msnUser.Password,
-                user
+                userLogin
             };
 
             this.ExecQuery(String.Format(sql.ToString(), sqlParams));
@@ -231,20 +225,20 @@ namespace WPFMessengerServer.Control.DAO
         }
 
 
-        public void Delete(string user)
+        public void Delete(string userLogin)
         {
             StringBuilder sql = new StringBuilder();
             sql.Append(" DELETE FROM Usuario ");
             sql.Append(" WHERE ds_login = '{0}' ");
 
-            Object[] sqlParams = new Object[] { user };
+            Object[] sqlParams = new Object[] { userLogin };
 
             this.ExecQuery(String.Format(sql.ToString(), sqlParams));
         }
 
         private void ExecQuery(string sql)
         {
-            lock (lockBD)
+            lock (DBUtil.lockBD)
             {
                 DBUtil.Instance.openConnection();
                 DBUtil.Instance.executeQuery(sql);

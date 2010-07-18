@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using MessengerLib.Core;
 
 namespace WPFMessengerServer.Control.Model
 {
     public class MSNUser
     {
+        public IList<MSNFeature> ListFeature { get; set; } 
+
         public Boolean Blocked { get; set; }
+        public int ID { get; set; }
         public String Name { get; set; }
         public String Login { get; set; }
         public String Password { get; set; }

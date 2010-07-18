@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using MessengerLib;
 using WPFMessengerServer.Control.Model;
+using System.Collections.Generic;
 
 namespace WPFMessengerServer.Core
 {
@@ -36,14 +37,14 @@ namespace WPFMessengerServer.Core
         private void HandleClient(object data)
         {
             string request  = data.ToString(),
-                   user     = String.Empty,
-                   password = String.Empty;
+                   userLogin     = String.Empty,
+                   userPassword = String.Empty;
 
             string[] info = ActionHandler.GetMessage(request).Split(':');
-            user = info[0];
-            password = info[1];
+            userLogin = info[0];
+            userPassword = info[1];
 
-            MSNUser msnUser = Util.GetUser(user, password);
+            MSNUser msnUser = Util.GetUser(userLogin, userPassword);
 
             switch (ActionHandler.GetAction(request))
             {
@@ -58,7 +59,7 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
-                        Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", user, destiny));
+                        Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", userLogin, destiny));
 
                         if (Util.GetContact(destiny) != null)
                         {
@@ -73,7 +74,7 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
-                        Console.WriteLine(String.Format("Usuário desconectado: {0}", user));
+                        Console.WriteLine(String.Format("Usuário desconectado: {0}", userLogin));
 
                         Util.ShutdownUser(msnUser.Login);
                     }
@@ -85,7 +86,7 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
 
-                        user = info[2];
+                        userLogin = info[2];
 
                         msnUser = new MSNUser();
                         msnUser.Name = info[3];
@@ -93,9 +94,9 @@ namespace WPFMessengerServer.Core
                         msnUser.Password = info[5];
 
                         //auditoria
-                        Console.WriteLine(String.Format("Alterando dados da conta {0}: {1}", msnUser.Name, user));
+                        Console.WriteLine(String.Format("Alterando dados da conta {0}: {1}", msnUser.Name, userLogin));
 
-                        Util.UpdateAccount(user, msnUser);
+                        Util.UpdateAccount(userLogin, msnUser);
                     }
 
 
@@ -137,6 +138,31 @@ namespace WPFMessengerServer.Core
 
                     break;
 
+                case MessengerLib.Action.UpdatePermissions:
+
+                    //valida a conta de admin
+                    if (msnUser != null)
+                    {
+
+                        msnUser = new MSNUser();
+                        msnUser.ID = int.Parse(info[2]);
+
+                        IList<string> listOperation = new List<string>();
+
+                        //busca as permissões
+                        if(info.Length > 3)
+                        {
+                            for (int i = 3; i < info.Length; i++ )
+                            {
+                                listOperation.Add(info[i]);
+                            }
+                        }
+
+                        Util.UpdatePermissions(msnUser, listOperation);
+                    }
+
+                    break;
+                
                 case MessengerLib.Action.CreateAcc:
 
                     //valida a conta de admin
@@ -181,17 +207,16 @@ namespace WPFMessengerServer.Core
 
                     if (msnUser != null)
                     {
-                        user = info[2];
+                        userLogin = info[2];
 
                         //auditoria
-                        Console.WriteLine(String.Format("Usuário excluído: {0}", user));
+                        Console.WriteLine(String.Format("Usuário excluído: {0}", userLogin));
 
-                        Util.DeleteAccount(user);
+                        Util.DeleteAccount(userLogin);
 
                     }
 
                     break;
-
 
             }
         }

@@ -1,9 +1,17 @@
 ﻿using System;
+using MessengerLib.Core;
+using System.Collections.Generic;
+using MessengerLib;
+using System.Linq;
 
 namespace WPFMessengerSeg.Core
 {
     public class MSNUser
     {
+
+        public IList<MSNFeature> ListFeature { get; set; } 
+
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Login { get; set; }
         public bool Online { get; set; }
@@ -44,6 +52,27 @@ namespace WPFMessengerSeg.Core
             {
                 return String.Empty;
             }
+        }
+
+        public static bool HasFeature(MSNUser user, Operation operation)
+        {
+
+            IList<MSNOperation> query = null;
+
+            //procura em todos os recursos pela operação
+            foreach (MSNFeature feature in user.ListFeature)
+            {
+                query = (from op in feature.ListOperation 
+                            where op.Name == operation
+                            select op ).ToList();
+
+                if (query.Count > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string ValidateChanges(string currentUser, string name ,string user, bool validatePass, string password, string password2)
