@@ -126,7 +126,7 @@ namespace WPFMessengerServer
                             Console.WriteLine(String.Format("Login realizado: {0}", user));
 
                             Util.AddOnline(msnUser);
-                            answer = String.Format("{0}:{1}:{2}:{3}", MessengerLib.Config.OKMessage, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert);
+                            answer = String.Format("{0}:{1}:{2}:{3}:{4}", MessengerLib.Config.OKMessage, msnUser.ID, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert);
                         }
                         else
                         {

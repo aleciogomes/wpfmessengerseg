@@ -3,6 +3,7 @@ using MessengerLib.Core;
 using System.Collections.Generic;
 using MessengerLib;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace WPFMessengerSeg.Core
 {
@@ -51,6 +52,28 @@ namespace WPFMessengerSeg.Core
             }
         }
 
+        public static bool IsValidPassword(string password)
+        {
+            /*REQUISITOS DA SENHA:
+             * - de 5 a 7 caracteres
+             * - No minimo:
+             *   - 1 caracter em caixa alta
+             *   - 1 caracter em caixa baixa
+             *   - 1 digito
+             *   - 1 caracter especial
+             */
+            string regExp = @"^.*(?=.{5,7})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$";
+
+            if (Regex.IsMatch(password, regExp))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static bool HasFeature(MSNUser user, Operation operation)
         {
 
@@ -88,6 +111,15 @@ namespace WPFMessengerSeg.Core
                 if (!password.Equals(password2))
                 {
                     result = "As senhas não coincidem.";
+                    return result;
+                }
+
+                if (!IsValidPassword(password))
+                {
+                    result = "A senha deve conter de 5 a 7 caracteres, com letras, dígitos, sinais.";
+
+                    //auditoria
+                    UDPConnection.InvalidPassword(currentUser);
                     return result;
                 }
             }

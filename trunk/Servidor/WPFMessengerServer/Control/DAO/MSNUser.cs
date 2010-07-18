@@ -93,7 +93,7 @@ namespace WPFMessengerServer.Control.DAO
 
                 try
                 {
-                    sql.Append(" SELECT nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}'");
+                    sql.Append(" SELECT cd_usuario, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}'");
 
                     Object[] sqlParams = null;
 
@@ -115,6 +115,7 @@ namespace WPFMessengerServer.Control.DAO
                     {
                         Model.MSNUser user = new Model.MSNUser();
 
+                        user.ID = reader.GetInt32("cd_usuario");
                         user.Login = userLogin;
                         user.Password = reader.GetString("ds_pwhash"); ;
                         user.Name = reader.GetString("nm_usuario");

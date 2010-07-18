@@ -113,10 +113,7 @@ namespace WPFMessengerServer
                 sb.Append(String.Format("{0}|{1}|", log.Date.ToString(), log.Event));
             }
 
-            if (sb.Length == 0)
-            {
-                sb.Append(MessengerLib.Config.EndStackMessage);
-            }
+            sb.Append(MessengerLib.Config.EndStackMessage);
 
             return sb.ToString();
         }
