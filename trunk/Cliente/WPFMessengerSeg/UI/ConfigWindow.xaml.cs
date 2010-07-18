@@ -33,10 +33,11 @@ namespace WPFMessengerSeg.UI
             listCheckbox.Add(this.Auditor);
 
             listCheckbox.Add(this.SendMsg);
-            listCheckbox.Add(this.SendMsgOffUser);
             listCheckbox.Add(this.RecMsg);
             listCheckbox.Add(this.SendEmoticons);
             listCheckbox.Add(this.RecEmoticons);
+
+            listCheckbox.Add(this.SendMsgOffUser);
 
             this.ControlFields(false);
         }

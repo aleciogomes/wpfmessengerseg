@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WPFMessengerSeg.UI.ConfigWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Permissões de usuários" Height="490" Width="500" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Icon="../resources/config.png">
+    Title="Permissões de usuários" Height="520" Width="500" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Icon="../resources/config.png">
     <Grid Background="PapayaWhip">
         <StackPanel Margin="0,0,0,0" VerticalAlignment="Stretch" Height="Auto">
 
@@ -22,7 +22,7 @@
                 
             </GroupBox>
 
-            <GroupBox Header="Permissões do usuário" Margin="30,20,30,0" Height="310">
+            <GroupBox Header="Permissões do usuário" Margin="30,20,30,0" Height="340">
                 <StackPanel Margin="0,0,0,0" VerticalAlignment="Stretch" Height="Auto">
 
                     <GroupBox Header="Administração" Margin="30,10,30,0" Height="100">
@@ -44,7 +44,7 @@
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Header="Chat" Margin="30,10,30,0" Height="155">
+                    <GroupBox Header="Chat" Margin="30,10,30,0" Height="130">
                         <Grid Width="Auto" Height="Auto">
 
                             <Grid.ColumnDefinitions>
@@ -55,14 +55,27 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
-                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <CheckBox Grid.Row="0" Margin="5" Name="SendMsg">Enviar mensagens</CheckBox>
-                            <CheckBox Grid.Row="1" Margin="5" Name="SendMsgOffUser">Enviar mensagens para usuários offline</CheckBox>
-                            <CheckBox Grid.Row="2" Margin="5" Name="RecMsg">Receber mensagens</CheckBox>
-                            <CheckBox Grid.Row="3" Margin="5" Name="SendEmoticons">Enviar emoticons</CheckBox>
-                            <CheckBox Grid.Row="4" Margin="5" Name="RecEmoticons">Receber emoticons</CheckBox>
+                            <CheckBox Grid.Row="1" Margin="5" Name="RecMsg">Receber mensagens</CheckBox>
+                            <CheckBox Grid.Row="2" Margin="5" Name="SendEmoticons">Enviar emoticons</CheckBox>
+                            <CheckBox Grid.Row="3" Margin="5" Name="RecEmoticons">Receber emoticons</CheckBox>
+
+                        </Grid>
+                    </GroupBox>
+                    
+                    <GroupBox Header="Lista de contatos" Margin="30,10,30,0" Height="50">
+                        <Grid Width="Auto" Height="Auto">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions >
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <CheckBox Grid.Row="0" Margin="5" Name="SendMsgOffUser">Enviar mensagens para usuários offline</CheckBox>
 
                         </Grid>
                     </GroupBox>

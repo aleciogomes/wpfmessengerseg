@@ -109,6 +109,11 @@ namespace WPFMessengerSeg
 
             if (connected)
             {
+                if (!String.IsNullOrEmpty(TCPConnection.ExpirationWarning))
+                {
+                    MessageBox.Show(TCPConnection.ExpirationWarning, "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
                 MainWindow main = new MainWindow();
                 main.Show();
 

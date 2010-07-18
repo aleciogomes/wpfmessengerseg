@@ -17,6 +17,7 @@ namespace MessengerLib
     {
          Main
         ,Chat
+        ,ContactList
     }
 
 }
