@@ -99,6 +99,14 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
+        public static void InvalidPassword(string userLogin)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), userLogin);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.InvalidPassword, info);
+
+            Transfer(cmd);
+        }
+
 
         private static bool Transfer(string cmd)
         {

@@ -30,6 +30,11 @@ namespace WPFMessengerSeg
 
         private bool firstRefresh = true;
 
+        //permissões
+        private bool offlineTalk = false;
+        private bool sendMsg = false;
+        private bool recMsg = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,21 +58,19 @@ namespace WPFMessengerSeg
 
             this.InitalizeTree();
 
-            //verifica permissões de admin
-            if (1 == 1)
-            {
-                this.EnableAdminOptions();
-            }
-
+            //carrega as permissões do usuário apenas uma vez
+            this.ReadPermissions();
         }
 
         #region Listagem de usuários
 
         private void InitializeRefresher()
         {
-
-            //verifica se existem novas mensagens para o usuário logado
-            talkManager.IntializerMsgRefresher();
+            if (this.recMsg)
+            {
+                //verifica se existem novas mensagens para o usuário logado
+                talkManager.IntializerMsgRefresher();
+            }
 
             //verifica se existem novos usuários logados
             BackgroundWorker bw = new BackgroundWorker();
@@ -148,8 +151,6 @@ namespace WPFMessengerSeg
                         AddOffline(user, node);
                     }
 
-                    //Console.WriteLine(String.Format("Usuário adicionado: {0}", user.UserName));
-
                 }
             }
 
@@ -180,16 +181,20 @@ namespace WPFMessengerSeg
             string header = node.Header.ToString(); 
 
             //garante que o usuário não seja mostrado como um usuário OFFLINE
-            dicOfflineUsers.Remove(header);
+            //dicOfflineUsers.Remove(header);
             this.RemoveItemByHeader(treeItemRootOffline, header);
 
             if (!dicOnlineUsers.ContainsKey(header))
             {
-                node.PreviewMouseDoubleClick += ShowTalkWindow;
-
-                if (!talkManager.UserList.ContainsKey(user.Login))
+                //verifica se o usuário logado pode falar com usuários
+                if(this.sendMsg)
                 {
-                    talkManager.UserList.Add(user.Login, user);
+                    node.PreviewMouseDoubleClick += ShowTalkWindow;
+
+                    if (!talkManager.UserList.ContainsKey(user.Login))
+                    {
+                        talkManager.UserList.Add(user.Login, user);
+                    }
                 }
 
                 treeItemRootOnline.Items.Add(node);
@@ -203,14 +208,14 @@ namespace WPFMessengerSeg
             string header = node.Header.ToString(); 
 
             //garante que o usuário não seja mostrado como um usuário ONLINE
-            dicOnlineUsers.Remove(header);
+            //dicOnlineUsers.Remove(header);
             this.RemoveItemByHeader(treeItemRootOnline, header);
 
             //verifica se já está adicionado
             if (!dicOfflineUsers.ContainsKey(header))
             {
                 //verifica se o usuário logado pode falar com usuários offline
-                if (1 == 2)
+                if (this.offlineTalk)
                 {
                     node.PreviewMouseDoubleClick += ShowTalkWindow;
 
@@ -320,15 +325,53 @@ namespace WPFMessengerSeg
 
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
 
-            TalkWindow selectedWindow = talkManager.addTalk(dicOnlineUsers[selectedItem.Header.ToString()]);
+            MSNUser user;
+            dicOnlineUsers.TryGetValue(selectedItem.Header.ToString(), out user);
+
+            if(user == null){
+                dicOfflineUsers.TryGetValue(selectedItem.Header.ToString(), out user);
+            }
+
+            TalkWindow selectedWindow = talkManager.addTalk(user);
             selectedWindow.Show();
             selectedWindow.Focus();
         }
 
-        private void EnableAdminOptions()
+        private void ReadPermissions()
         {
-            this.menuAdmin.Visibility = Visibility.Visible;
-            this.menuAuditoria.Visibility = Visibility.Visible;
+            bool manageUser,
+                 configUsers,
+                 events;
+
+            manageUser = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RegUsers);
+            configUsers = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.ChangeProp);
+            events = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.Auditor);
+
+            if (manageUser || manageUser)
+            {
+                this.menuAdmin.Visibility = Visibility.Visible;
+
+                if (manageUser)
+                {
+                    this.menuManageUsers.Visibility = Visibility.Visible;
+                }
+
+                if (manageUser)
+                {
+                    this.menuConfigUsers.Visibility = Visibility.Visible;
+                }
+            }
+
+            if (events)
+            {
+                this.menuAuditoria.Visibility = Visibility.Visible;
+                this.menuEvents.Visibility = Visibility.Visible;
+            }
+
+            this.offlineTalk = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendMsgOffUser);
+            this.sendMsg = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendMsg);
+            this.recMsg = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RecMsg);
+
         }
 
         #region Ações do menu

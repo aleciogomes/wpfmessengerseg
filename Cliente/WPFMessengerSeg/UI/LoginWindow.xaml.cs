@@ -114,6 +114,9 @@ namespace WPFMessengerSeg
                     MessageBox.Show(TCPConnection.ExpirationWarning, "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
+                //carega a lista de permissões
+                TCPConnection.LoadFeatures(MSNSession.User);
+
                 MainWindow main = new MainWindow();
                 main.Show();
 

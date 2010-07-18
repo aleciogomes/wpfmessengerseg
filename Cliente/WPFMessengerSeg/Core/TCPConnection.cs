@@ -85,22 +85,23 @@ namespace WPFMessengerSeg.Core
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());
             string result = EstabilishConnection(cmd, false);
 
-            string[] info = result.Split(new char[] { ':' }, 4);
+            string[] info = result.Split(':');
 
             if(info.Length > 1){
 
-                MSNSession.User.Name = info[1];
+                MSNSession.User.ID = int.Parse(info[1]);
+                MSNSession.User.Name = info[2];
 
                 try
                 {
-                    MSNSession.User.Expiration = DateTime.Parse(info[2]);
+                    MSNSession.User.Expiration = DateTime.Parse(info[3]);
                 }
                 catch
                 {
                     MSNSession.User.Expiration = null;
                 }
 
-                MSNSession.User.TimeAlert = int.Parse(info[3]);
+                MSNSession.User.TimeAlert = int.Parse(info[4]);
 
 
                 if (MSNSession.User.TimeAlert > 0 && MSNSession.User.Expiration.HasValue)
@@ -238,7 +239,7 @@ namespace WPFMessengerSeg.Core
         public static string[] GetLogDates()
         {
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLogDates, GetAuthentication());
-            string returnString = EstabilishConnection(cmd, false);
+            string returnString = EstabilishConnection(cmd, true);
 
             if (ValidetReturn(returnString))
             {
@@ -290,7 +291,7 @@ namespace WPFMessengerSeg.Core
 
         private static bool ValidetReturn(string returnString)
         {
-            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(MessengerLib.Config.ErrorMessage) < 0)
+            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(MessengerLib.Config.ErrorMessage) < 0 && !returnString.Equals(MessengerLib.Config.EndStackMessage))
             {
                 return true;
             }

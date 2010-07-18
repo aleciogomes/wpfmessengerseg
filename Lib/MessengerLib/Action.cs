@@ -42,5 +42,6 @@ namespace MessengerLib
         ,CreateAcc
         ,DeleteAcc
         ,UserAvailable
+        ,InvalidPassword
     }
 }

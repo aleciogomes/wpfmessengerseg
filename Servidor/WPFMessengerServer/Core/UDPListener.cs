@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using MessengerLib;
 using WPFMessengerServer.Control.Model;
-using System.Collections.Generic;
 
 namespace WPFMessengerServer.Core
 {
@@ -58,8 +58,8 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
-                        Util.RegEvent(userLogin, String.Format("Mensagem enviada para {0}", destiny));
-                        Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", userLogin, destiny));
+                        Util.RegEvent(msnUser.Login, String.Format("Mensagem enviada para {0}", destiny));
+                        Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", msnUser.Login, destiny));
 
                         if (Util.GetContact(destiny) != null)
                         {
@@ -78,8 +78,8 @@ namespace WPFMessengerServer.Core
                     if (msnUser != null)
                     {
                         //auditoria
-                        Util.RegEvent(userLogin, "Logoff efetuado");
-                        Console.WriteLine(String.Format("Usuário desconectado: {0}", userLogin));
+                        Util.RegEvent(msnUser.Login, "Logoff efetuado");
+                        Console.WriteLine(String.Format("Usuário desconectado: {0}", msnUser.Login));
 
                         Util.ShutdownUser(msnUser.Login);
                     }
@@ -237,12 +237,13 @@ namespace WPFMessengerServer.Core
 
                 case MessengerLib.Action.DeleteAcc:
 
+                    userLogin = info[2];
+
                     if (msnUser != null)
                     {
-                        userLogin = info[2];
 
                         //auditoria
-                        Util.RegEvent(userLogin, String.Format("Conta {0} excluída", userLogin));
+                        Util.RegEvent(msnUser.Login, String.Format("Conta {0} excluída", userLogin));
                         Console.WriteLine(String.Format("Usuário excluído: {0}", userLogin));
 
                         Util.DeleteAccount(userLogin);
@@ -250,11 +251,27 @@ namespace WPFMessengerServer.Core
                     }
                     else
                     {
-                        Util.RegEvent(userLogin, String.Format("Tentativa de excluir conta {0} sem login do sistema", info[2]));
+                        Util.RegEvent(userLogin, String.Format("Tentativa de excluir conta {0} sem login do sistema", userLogin));
                     }
 
                     break;
 
+                case MessengerLib.Action.InvalidPassword:
+
+                    userLogin = info[2];
+
+                    if (msnUser != null)
+                    {
+                        //auditoria
+                        Util.RegEvent(msnUser.Login, String.Format("Tentativa de atribur senha fraca para conta {0}", userLogin));
+                        Console.WriteLine(String.Format("Tentativa de atribur senha fraca para conta {0}", userLogin));
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, String.Format("Tentativa de simular erro de senha", userLogin));
+                    }
+
+                    break;
             }
         }
 

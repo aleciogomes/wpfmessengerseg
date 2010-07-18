@@ -25,6 +25,9 @@ namespace WPFMessengerSeg.UI
         //define como estático, para nao recriar toda vez que abrir uma janela de conversa
         private static Dictionary<string, Uri> EmoticonList { get; set; }
 
+        private static bool sendEmoticons = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendEmoticons);
+        private static bool receiveEmoticons = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RecEmoticons);
+
         internal MSNUser DestinyUser
         {
             get { return destinyUser; }
@@ -48,10 +51,16 @@ namespace WPFMessengerSeg.UI
 
             this.SetLabelText(lblCurrentUser, MSNSession.User.Name);
 
-            if (EmoticonList == null)
+            if (!sendEmoticons)
+            {
+                EmoticonList = new Dictionary<string, Uri>();
+                this.TBEmoticon.Visibility = Visibility.Hidden;
+            }
+            else if (EmoticonList == null )
             {
                 InitializeEmoticonList();
             }
+
 
             hwnd = IntPtr.Zero;
 
@@ -235,12 +244,19 @@ namespace WPFMessengerSeg.UI
 
         private Image GetImageFromEmoticon(Uri adress)
         {
-            BitmapImage bitmap = new BitmapImage(adress);
-            Image image = new Image();
-            image.Source = bitmap;
-            image.Width = 14;
+            if (receiveEmoticons)
+            {
+                BitmapImage bitmap = new BitmapImage(adress);
+                Image image = new Image();
+                image.Source = bitmap;
+                image.Width = 14;
 
-            return image;
+                return image;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private void Icon_Click(object sender, RoutedEventArgs e)
