@@ -73,6 +73,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\AuditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -80,6 +84,10 @@
     <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ConfigWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\TalkWindow.xaml">
       <SubType>Designer</SubType>
@@ -112,6 +120,9 @@
     <Compile Include="UI\AdminWindow.xaml.cs">
       <DependentUpon>AdminWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\AuditorWindow.xaml.cs">
+      <DependentUpon>AuditorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
@@ -127,6 +138,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="UI\ConfigWindow.xaml.cs">
+      <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\TalkWindow.xaml.cs">
       <DependentUpon>TalkWindow.xaml</DependentUpon>
@@ -166,9 +180,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\addUser.png" />
+    <Resource Include="resources\account.png" />
     <Content Include="resources\alert.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\config.png" />
+    <Resource Include="resources\events.png" />
+    <Resource Include="resources\logoff.png" />
+    <Resource Include="resources\manageUser.png" />
     <Resource Include="resources\emoticon\slant.png" />
     <Resource Include="resources\emoticon\shocked.png" />
     <Resource Include="resources\emoticon\rockout.png" />
