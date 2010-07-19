@@ -23,12 +23,12 @@ namespace WPFMessengerSeg.Core
 
         private IList<MSNMessage> messageList;
 
-        public Dictionary<MSNUser, TalkWindow> TalkList { get; set; }
+        public Dictionary<string, TalkWindow> TalkList { get; set; }
         public Dictionary<string, MSNUser> UserList { get; set; }
 
         public TalkManager(MainWindow main)
         {
-            TalkList = new Dictionary<MSNUser, TalkWindow>();
+            TalkList = new Dictionary<string, TalkWindow>();
             UserList = new Dictionary<string, MSNUser>();
             this.main = main;
 
@@ -46,15 +46,15 @@ namespace WPFMessengerSeg.Core
         {
             TalkWindow selectedWindow;
 
-            if (!TalkList.ContainsKey(destiny))
+            if (!TalkList.ContainsKey(destiny.Login))
             {
                 selectedWindow = new TalkWindow(destiny);
                 selectedWindow.Owner = main;
-                TalkList.Add(destiny, selectedWindow);
+                TalkList.Add(destiny.Login, selectedWindow);
             }
             else
             {
-                selectedWindow = TalkList[destiny];
+                selectedWindow = TalkList[destiny.Login];
             }
 
             return selectedWindow;
@@ -98,7 +98,7 @@ namespace WPFMessengerSeg.Core
             mp.Play();
 
             TalkWindow window = null;
-            TalkList.TryGetValue(ownerUser, out window);
+            TalkList.TryGetValue(ownerUser.Login, out window);
 
             if (window == null)
             {

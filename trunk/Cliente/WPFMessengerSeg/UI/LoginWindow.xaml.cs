@@ -20,6 +20,8 @@ namespace WPFMessengerSeg
 
     public partial class LoginWindow : Window
     {
+        private int tryingLogin;
+        private const int maxTryingLogin = 5;
 
         public LoginWindow()
         {
@@ -28,6 +30,8 @@ namespace WPFMessengerSeg
             InitializeComponent();
 
             KeyDown += Window_KeyDown;
+
+            this.tryingLogin = 0;
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -60,7 +64,14 @@ namespace WPFMessengerSeg
 
         private void btLogin_Click(object sender, RoutedEventArgs e)
         {
- 
+
+            if (this.tryingLogin == maxTryingLogin)
+            {
+                MessageBox.Show(String.Format("{0} tentativas de acertar usuário/senha", maxTryingLogin), "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Thread.Sleep(TimeSpan.FromSeconds(30));
+                return;
+            }
+
            lblError.Visibility = Visibility.Hidden;
            userID.Focus();
            userPassword.Focus();
@@ -124,6 +135,8 @@ namespace WPFMessengerSeg
             }
             else
             {
+                tryingLogin++;
+
                 btLogin.IsEnabled = true;
                 userID.IsEnabled = true;
                 userPassword.IsEnabled = true;
