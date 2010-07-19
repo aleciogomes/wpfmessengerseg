@@ -417,5 +417,18 @@ namespace WPFMessengerSeg
 
         #endregion
 
+        private void btFavorito_Click(object sender, RoutedEventArgs e)
+        {
+            AuthenticationWindow authentication = new AuthenticationWindow();
+            authentication.Owner = this;
+            authentication.ShowDialog();
+
+            //credenciais OK
+            if((bool) authentication.DialogResult)
+            {
+                MessageBox.Show(talkManager.TopTalker, "TopTalker", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
     }
 }

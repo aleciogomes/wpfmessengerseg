@@ -26,7 +26,7 @@ namespace WPFMessengerSeg.UI
         private static bool sendEmoticons = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendEmoticons);
         private static bool receiveEmoticons = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RecEmoticons);
 
-        internal MSNUser DestinyUser
+        private MSNUser DestinyUser
         {
             get { return destinyUser; }
             set { 

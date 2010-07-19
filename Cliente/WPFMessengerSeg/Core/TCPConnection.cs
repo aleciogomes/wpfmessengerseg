@@ -87,6 +87,13 @@ namespace WPFMessengerSeg.Core
 
         }
 
+        public static string ConfirmLogin(string userLogin, string userPassword)
+        {
+            authentication = String.Empty;
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.ConfirmLogin, String.Format("{0}:{1}", userLogin, userPassword));
+            return EstabilishConnection(cmd, false);
+        }
+
         public static string Login()
         {
             authentication = String.Empty;
