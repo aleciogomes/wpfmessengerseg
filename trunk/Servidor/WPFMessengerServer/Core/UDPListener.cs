@@ -237,10 +237,10 @@ namespace WPFMessengerServer.Core
 
                 case MessengerLib.Action.DeleteAcc:
 
-                    userLogin = info[2];
-
                     if (msnUser != null)
                     {
+
+                        userLogin = info[2];
 
                         //auditoria
                         Util.RegEvent(msnUser.Login, String.Format("Conta {0} excluída", userLogin));
@@ -251,24 +251,55 @@ namespace WPFMessengerServer.Core
                     }
                     else
                     {
-                        Util.RegEvent(userLogin, String.Format("Tentativa de excluir conta {0} sem login do sistema", userLogin));
+                        Util.RegEvent(userLogin, String.Format("Tentativa de excluir conta {0} sem login do sistema", info[2]));
                     }
 
                     break;
 
-                case MessengerLib.Action.InvalidPassword:
-
-                    userLogin = info[2];
+                case MessengerLib.Action.EventInvalidPassword:
 
                     if (msnUser != null)
                     {
+                        userLogin = info[2];
+
                         //auditoria
                         Util.RegEvent(msnUser.Login, String.Format("Tentativa de atribur senha fraca para conta {0}", userLogin));
                         Console.WriteLine(String.Format("Tentativa de atribur senha fraca para conta {0}", userLogin));
                     }
                     else
                     {
-                        Util.RegEvent(userLogin, String.Format("Tentativa de simular erro de senha", userLogin));
+                        Util.RegEvent(userLogin, String.Format("Tentativa de simular erro de senha para conta {0} sem login do sistema", info[2]));
+                    }
+
+                    break;
+
+                case MessengerLib.Action.EventSendEmoticonInMsg:
+
+                    if (msnUser != null)
+                    {
+                        //auditoria
+                        Util.RegEvent(msnUser.Login, "Enviou mensagem com emoticon");
+                        Console.WriteLine(String.Format("Enviou mensagem com emoticon: {0}", msnUser.Login));
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, "Tentativa de simular envio de emoticon sem login do sistema");
+                    }
+
+                    break;
+
+
+                case MessengerLib.Action.EventRecEmoticonInMsg:
+
+                    if (msnUser != null)
+                    {
+                        //auditoria
+                        Util.RegEvent(msnUser.Login, "Recebeu mensagem com emoticon");
+                        Console.WriteLine(String.Format("Recebeu mensagem com emoticon: {0}", msnUser.Login));
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, "Tentativa de simular recebimento de emoticon sem login do sistema");
                     }
 
                     break;

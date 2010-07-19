@@ -1,15 +1,13 @@
-﻿using System.Windows;
-using WPFMessengerSeg.Core;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
-using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
-using System.Timers;
-using System.Windows.Interop;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using WPFMessengerSeg.Core;
 
 namespace WPFMessengerSeg.UI
 {
@@ -138,12 +136,12 @@ namespace WPFMessengerSeg.UI
                 UDPConnection.SendMessage(this.destinyUser, message);
                 msgBox.Document.Blocks.Clear();
 
-                this.InsertMessage(MSNSession.User, message);
+                this.InsertMessage(MSNSession.User, message, true);
             }
 
         }
 
-        public void InsertMessage(MSNUser user, string newMessage)
+        public void InsertMessage(MSNUser user, string newMessage, bool sendMsg)
         {
 
             Paragraph p = new Paragraph();
@@ -157,7 +155,7 @@ namespace WPFMessengerSeg.UI
 
             //mensagem enviada
             newMessage = newMessage.Replace("\n", "\n\t");
-            FormatParagraph(ref p, user, newMessage);
+            FormatParagraph(ref p, user, newMessage, sendMsg);
 
             p.Inlines.Add(System.Environment.NewLine);
 
@@ -180,12 +178,16 @@ namespace WPFMessengerSeg.UI
             return run;
         }
 
-        private void FormatParagraph(ref Paragraph p, MSNUser user, string text)
+        private void FormatParagraph(ref Paragraph p, MSNUser user, string text, bool sendMsg)
         {
+
+            bool hasEmoticon = false;
 
             string canditateToIcon = null;
             string availableText = text;
             string flushText = String.Empty;
+
+            Image emoticon = null;
 
             if (availableText.Length >= 2)
             {
@@ -217,8 +219,18 @@ namespace WPFMessengerSeg.UI
                         }
 
                         availableText = availableText.Substring(canditateToIcon.Length);
+                        emoticon = GetImageFromEmoticon(EmoticonList[canditateToIcon]);
 
-                        p.Inlines.Add(GetImageFromEmoticon(EmoticonList[canditateToIcon]));
+                        if (emoticon != null)
+                        {
+                            p.Inlines.Add(emoticon);
+                            hasEmoticon = true;
+                        }
+                        else
+                        {
+                            p.Inlines.Add(canditateToIcon);
+                        }
+                        
                     }
                     else
                     {
@@ -238,6 +250,20 @@ namespace WPFMessengerSeg.UI
             else
             {
                 p.Inlines.Add(FormatRun(user, text));
+            }
+
+            //grava log se recebeu msg com emoticon
+            if (hasEmoticon)
+            {
+                if (sendMsg)
+                {
+                    UDPConnection.SendEmoticonInMsg();
+                }
+                else
+                {
+                    UDPConnection.ReceiveEmoticonInMsg();
+                }
+                
             }
 
         }

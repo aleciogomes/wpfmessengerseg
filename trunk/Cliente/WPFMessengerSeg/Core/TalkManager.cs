@@ -105,7 +105,7 @@ namespace WPFMessengerSeg.Core
 
             }
 
-            window.InsertMessage(ownerUser, message);
+            window.InsertMessage(ownerUser, message, false);
         }
 
     }
