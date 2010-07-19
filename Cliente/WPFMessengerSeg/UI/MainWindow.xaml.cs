@@ -151,6 +151,11 @@ namespace WPFMessengerSeg
                         AddOffline(user, node);
                     }
 
+                    if (!talkManager.UserList.ContainsKey(user.Login))
+                    {
+                        talkManager.UserList.Add(user.Login, user);
+                    }
+
                 }
             }
 
@@ -190,11 +195,6 @@ namespace WPFMessengerSeg
                 if(this.sendMsg)
                 {
                     node.PreviewMouseDoubleClick += ShowTalkWindow;
-
-                    if (!talkManager.UserList.ContainsKey(user.Login))
-                    {
-                        talkManager.UserList.Add(user.Login, user);
-                    }
                 }
 
                 treeItemRootOnline.Items.Add(node);
@@ -218,11 +218,6 @@ namespace WPFMessengerSeg
                 if (this.offlineTalk)
                 {
                     node.PreviewMouseDoubleClick += ShowTalkWindow;
-
-                    if (!talkManager.UserList.ContainsKey(user.Login))
-                    {
-                        talkManager.UserList.Add(user.Login, user);
-                    }
                 }
                 node.Foreground = new SolidColorBrush(Colors.Gray);
                 treeItemRootOffline.Items.Add(node);

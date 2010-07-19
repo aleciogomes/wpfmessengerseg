@@ -99,7 +99,7 @@ namespace WPFMessengerServer
                             Console.WriteLine("Senha inválida");
                         }
 
-                        answer = "Não foi possível entrar. Verifique seu usuário e senha.";
+                        answer = "Não foi possível entrar. Verifique o usuário e senha.";
                     }
                     else
                     {
@@ -117,7 +117,7 @@ namespace WPFMessengerServer
                             Util.RegEvent(user, "Tentativa de logar com conta expirada");
                             Console.WriteLine(String.Format("Tentativa de logar com conta expirada: {0}", user));
 
-                            answer = "Conta expirada";
+                            answer = "Conta expirada.";
                         }
                         else if (!Util.IsOnline(msnUser.Login))
                         {
