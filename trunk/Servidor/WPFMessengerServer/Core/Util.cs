@@ -194,6 +194,7 @@ namespace WPFMessengerServer
                 {
                     foreach (MSNMessage msg in dicMessages[user])
                     {
+                        Console.WriteLine("Mensagem para {0}: {1}", user, msg.Message);
                         sb.Append(String.Format("{0}:{1}", msg.Forwarder.Login, msg.Message));
                     }
 

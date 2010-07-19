@@ -347,7 +347,8 @@ namespace WPFMessengerSeg.Core
                     {
                         if (i % 2 != 0)
                         {
-                            message.Message = value;
+                            //desincriptografa a mensagem
+                            message.Message = MessengerLib.Encoder.DecryptMessage(value);
                         }
                         else
                         {

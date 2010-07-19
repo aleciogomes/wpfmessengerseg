@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MessengerLib
@@ -8,19 +10,29 @@ namespace MessengerLib
 
         private static Encoding encoderISO = Encoding.GetEncoding("iso-8859-1");
 
-        /*
-        private const string keyMD5 = "wpfMSNKey";
+        private static byte[] KeyAndIV = ASCIIEncoding.ASCII.GetBytes("wpfKey@#");
 
-        public string Encrypt()
+        public static string EncryptMessage(string message)
         {
-
+            DESCryptoServiceProvider cryptoProvider = new DESCryptoServiceProvider();
+            MemoryStream memoryStream = new MemoryStream();
+            CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoProvider.CreateEncryptor(KeyAndIV, KeyAndIV), CryptoStreamMode.Write);
+            StreamWriter writer = new StreamWriter(cryptoStream);
+            writer.Write(message);
+            writer.Flush();
+            cryptoStream.FlushFinalBlock();
+            writer.Flush();
+            return Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length);
         }
 
-        public string Decrypt()
+        public static string DecryptMessage(string message)
         {
-
+            DESCryptoServiceProvider cryptoProvider = new DESCryptoServiceProvider();
+            MemoryStream memoryStream = new MemoryStream(Convert.FromBase64String(message));
+            CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoProvider.CreateDecryptor(KeyAndIV, KeyAndIV), CryptoStreamMode.Read);
+            StreamReader reader = new StreamReader(cryptoStream);
+            return reader.ReadToEnd();
         }
-        */
 
         public static Encoding GetEncoding()
         {
