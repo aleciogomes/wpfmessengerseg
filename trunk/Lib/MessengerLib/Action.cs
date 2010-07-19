@@ -29,6 +29,7 @@ namespace MessengerLib
     {
          Login
         ,Logoff
+        ,ConfirmLogin
         ,GetUsers
         ,GetUserInfo
         ,GetMsg

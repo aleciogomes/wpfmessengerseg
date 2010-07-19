@@ -141,6 +141,21 @@ namespace WPFMessengerServer
 
                     break;
 
+                case MessengerLib.Action.ConfirmLogin:
+
+                    if (msnUser != null)
+                    {
+                        Util.RegEvent(msnUser.Login, "Informação TopTalker acessada");
+                        answer = MessengerLib.Config.OKMessage;
+                    }
+                    else
+                    {
+                        Util.RegEvent(user, "Tentativar de acessar informação TopTalker com credenciais inválidas");
+                        answer = "Credenciais inválidas.";
+                    }
+
+                    break;
+
                 case MessengerLib.Action.GetUsers:
 
                     if (msnUser != null)

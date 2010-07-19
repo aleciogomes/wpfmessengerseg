@@ -10,8 +10,12 @@ using System.Windows.Media;
 
 namespace WPFMessengerSeg.Core
 {
-    class TalkManager
+    public class TalkManager
     {
+
+        private Dictionary<int, int> dicChats;
+        public string TopTalker;
+        private int topTalkerCount;
 
         private MainWindow main;
 
@@ -31,6 +35,11 @@ namespace WPFMessengerSeg.Core
             mp = new MediaPlayer();
             Uri mp3Adress = new Uri(@".\resources\alert.mp3", UriKind.Relative);
             mp.Open(mp3Adress);
+
+            this.dicChats = new Dictionary<int, int>();
+
+            this.TopTalker = "Nenhuma mensagem foi recebida até o momento";
+            this.topTalkerCount = 0;
         }
 
         public TalkWindow addTalk(MSNUser destiny)
@@ -106,6 +115,17 @@ namespace WPFMessengerSeg.Core
             }
 
             window.InsertMessage(ownerUser, message, false);
+
+            if (!this.dicChats.ContainsKey(ownerUser.ID))
+            {
+                this.dicChats.Add(ownerUser.ID, 0);
+            }
+            this.dicChats[ownerUser.ID]++;
+
+            if (this.dicChats[ownerUser.ID] > this.topTalkerCount)
+            {
+                this.TopTalker = ownerUser.Name;
+            }
         }
 
     }
