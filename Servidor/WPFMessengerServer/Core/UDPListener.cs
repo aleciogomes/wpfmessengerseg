@@ -59,7 +59,7 @@ namespace WPFMessengerServer.Core
                     {
                         //auditoria
                         Util.RegEvent(msnUser.Login, String.Format("Mensagem enviada para {0}", destiny));
-                        Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}", msnUser.Login, destiny));
+                        Console.WriteLine(String.Format("Mensagem enviada de {0} para {1}: {2}", msnUser.Login, destiny, msg));
 
                         if (Util.GetContact(destiny) != null)
                         {

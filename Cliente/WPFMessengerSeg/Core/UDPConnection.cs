@@ -15,6 +15,9 @@ namespace WPFMessengerSeg.Core
 
         public static bool SendMessage(MSNUser destintyUser, string message)
         {
+            //criptografa a mensagem
+            message = MessengerLib.Encoder.EncryptMessage(message);
+
             string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), destintyUser.Login, message);
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.SendMsg, info);
 
