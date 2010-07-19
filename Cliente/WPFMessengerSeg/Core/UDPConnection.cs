@@ -102,8 +102,20 @@ namespace WPFMessengerSeg.Core
         public static void InvalidPassword(string userLogin)
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), userLogin);
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.InvalidPassword, info);
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.EventInvalidPassword, info);
 
+            Transfer(cmd);
+        }
+
+        public static void SendEmoticonInMsg()
+        {
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.EventSendEmoticonInMsg,  TCPConnection.GetAuthentication());
+            Transfer(cmd);
+        }
+
+        public static void ReceiveEmoticonInMsg()
+        {
+            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.EventRecEmoticonInMsg, TCPConnection.GetAuthentication());
             Transfer(cmd);
         }
 

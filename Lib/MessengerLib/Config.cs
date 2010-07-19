@@ -7,7 +7,7 @@ namespace MessengerLib
          public static string ErrorMessage = "ERRO NO SERVIDOR";
          public static string OKMessage = "OK";
 
-         public static string EndStackMessage = "0:";
+         public static string EndStackMessage = "#:";
 
          public static int TCPPort = 1012;
          public static int UDPPort = 1011;

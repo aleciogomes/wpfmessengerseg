@@ -44,7 +44,15 @@ namespace WPFMessengerSeg.Core
                         if (countAttributes == 0)
                         {
                             user = new MSNUser();
-                            user.ID = int.Parse(value);
+                            try
+                            {
+                                user.ID = int.Parse(value);
+                            }
+                            catch
+                            {
+                                //fim da cadeia de caracteres
+                                break;
+                            }
                             countAttributes++;
                         }
                         else if (countAttributes == 1)
@@ -239,7 +247,7 @@ namespace WPFMessengerSeg.Core
         public static string[] GetLogDates()
         {
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLogDates, GetAuthentication());
-            string returnString = EstabilishConnection(cmd, true);
+            string returnString = EstabilishConnection(cmd, false);
 
             if (ValidetReturn(returnString))
             {
@@ -253,7 +261,7 @@ namespace WPFMessengerSeg.Core
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), logDate.ToString());
             string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLog, info);
-            string returnString = EstabilishConnection(cmd, false);
+            string returnString = EstabilishConnection(cmd, true);
 
             IList<MessengerLib.Core.MSNLog> list = new List<MessengerLib.Core.MSNLog>();
 
@@ -271,8 +279,16 @@ namespace WPFMessengerSeg.Core
                         if (countAttributes == 0)
                         {
                             log = new MessengerLib.Core.MSNLog();
-                            log.Date = DateTime.Parse(value);
-                            countAttributes++;
+
+                            try
+                            {
+                                log.Date = DateTime.Parse(value);
+                                countAttributes++;
+                            }
+                            catch
+                            {
+                                break;
+                            }
                         }
                         else
                         {
@@ -385,9 +401,9 @@ namespace WPFMessengerSeg.Core
 
         private static string ConvertMessage(Stream stream, bool useCharStop)
         {
-            byte[] bb = new byte[5000];
+            byte[] bb = new byte[1000];
 
-            int index = stream.Read(bb, 0, 5000);
+            int index = stream.Read(bb, 0, 1000);
 
             StringBuilder message = new StringBuilder();
             char? charAtual = null;

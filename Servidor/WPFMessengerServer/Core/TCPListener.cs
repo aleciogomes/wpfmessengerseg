@@ -159,6 +159,11 @@ namespace WPFMessengerServer
                     if (msnUser != null)
                     {
                         answer = Util.GetMessages(user);
+
+                        if (!answer.Equals(MessengerLib.Config.EndStackMessage))
+                        {
+                            Util.RegEvent(user, "Mensagem recebida");
+                        }
                     }
                     else
                     {
@@ -203,6 +208,7 @@ namespace WPFMessengerServer
                     {
                         DateTime logDate = DateTime.Parse(info[2]);
 
+                        Util.RegEvent(msnUser.Login, "Buscou log de eventos");
                         answer = Util.GetLog(logDate);
                     }
                     else

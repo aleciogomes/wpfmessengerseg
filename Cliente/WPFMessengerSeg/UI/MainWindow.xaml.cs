@@ -181,7 +181,7 @@ namespace WPFMessengerSeg
             string header = node.Header.ToString(); 
 
             //garante que o usuário não seja mostrado como um usuário OFFLINE
-            //dicOfflineUsers.Remove(header);
+            dicOfflineUsers.Remove(header);
             this.RemoveItemByHeader(treeItemRootOffline, header);
 
             if (!dicOnlineUsers.ContainsKey(header))
@@ -208,7 +208,7 @@ namespace WPFMessengerSeg
             string header = node.Header.ToString(); 
 
             //garante que o usuário não seja mostrado como um usuário ONLINE
-            //dicOnlineUsers.Remove(header);
+            dicOnlineUsers.Remove(header);
             this.RemoveItemByHeader(treeItemRootOnline, header);
 
             //verifica se já está adicionado
@@ -326,10 +326,10 @@ namespace WPFMessengerSeg
             TreeViewItem selectedItem = (TreeViewItem)treeUsers.SelectedItem;
 
             MSNUser user;
-            dicOnlineUsers.TryGetValue(selectedItem.Header.ToString(), out user);
+            dicOfflineUsers.TryGetValue(selectedItem.Header.ToString(), out user);
 
             if(user == null){
-                dicOfflineUsers.TryGetValue(selectedItem.Header.ToString(), out user);
+                dicOnlineUsers.TryGetValue(selectedItem.Header.ToString(), out user);
             }
 
             TalkWindow selectedWindow = talkManager.addTalk(user);
