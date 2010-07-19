@@ -11,10 +11,10 @@ AUTENTICAÇÃO
 ==================
 CONTROLE DE ACESSO
 ==================
-[-] Implementar ACL com Usuário, Recurso e Operação (grupo é extra)
+[X] Implementar ACL com Usuário, Recurso e Operação (grupo é extra)
 [X] Deve ter uma forma de alterar as ACLs no sistema
 [X] Consistir pelo menos 3 recursos
-[ ] Auditoria mínima slide 8 (Auditoria: requisições com acesso = sucesso)
+[X] Auditoria mínima slide 8 (Auditoria: requisições com acesso = sucesso)
 
 ======
 SIGILO
