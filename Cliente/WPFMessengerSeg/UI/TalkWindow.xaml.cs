@@ -49,16 +49,12 @@ namespace WPFMessengerSeg.UI
 
             this.SetLabelText(lblCurrentUser, MSNSession.User.Name);
 
+            InitializeEmoticonList();
+
             if (!sendEmoticons)
             {
-                EmoticonList = new Dictionary<string, Uri>();
                 this.TBEmoticon.Visibility = Visibility.Hidden;
             }
-            else if (EmoticonList == null )
-            {
-                InitializeEmoticonList();
-            }
-
 
             hwnd = IntPtr.Zero;
 
@@ -219,7 +215,15 @@ namespace WPFMessengerSeg.UI
                         }
 
                         availableText = availableText.Substring(canditateToIcon.Length);
-                        emoticon = GetImageFromEmoticon(EmoticonList[canditateToIcon]);
+
+                        if ((sendMsg && sendEmoticons) || (!sendMsg && receiveEmoticons))
+                        {
+                            emoticon = GetImageFromEmoticon(EmoticonList[canditateToIcon]);
+                        }
+                        else
+                        {
+                            emoticon = null;
+                        }
 
                         if (emoticon != null)
                         {
@@ -270,19 +274,12 @@ namespace WPFMessengerSeg.UI
 
         private Image GetImageFromEmoticon(Uri adress)
         {
-            if (receiveEmoticons)
-            {
-                BitmapImage bitmap = new BitmapImage(adress);
-                Image image = new Image();
-                image.Source = bitmap;
-                image.Width = 14;
+            BitmapImage bitmap = new BitmapImage(adress);
+            Image image = new Image();
+            image.Source = bitmap;
+            image.Width = 14;
 
-                return image;
-            }
-            else
-            {
-                return null;
-            }
+            return image;
         }
 
         private void Icon_Click(object sender, RoutedEventArgs e)
