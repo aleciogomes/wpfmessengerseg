@@ -144,6 +144,7 @@ namespace WPFMessengerSeg.UI
 
                 this.userID.Text = selectedUser.Login;
                 this.userPassword.Password = new StringBuilder().Append('X', selectedUser.Login.Length).ToString();
+                this.userPassword2.Clear();
                 this.userName.Text = selectedUser.Name;
 
                 this.userExpiration.Text = selectedUser.ExpirationString;
