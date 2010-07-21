@@ -26,9 +26,9 @@ namespace WPFMessengerSeg.UI
 
         private void btAutenticar_Click(object sender, RoutedEventArgs e)
         {
-            string result = TCPConnection.ConfirmLogin(this.userID.Text, MessengerLib.Encoder.GenerateMD5(this.userPassword.Password));
+            string result = TCPConnection.ConfirmLogin(this.userID.Text, MessengerLib.Util.Encoder.GenerateMD5(this.userPassword.Password));
 
-            if (!result.Equals(MessengerLib.Config.OKMessage))
+            if (!result.Equals(MessengerLib.Util.Config.OKMessage))
             {
                 MessageBox.Show(result, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.DialogResult = false;

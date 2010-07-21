@@ -58,7 +58,7 @@ namespace WPFMessengerSeg.UI
             {
                 if (passChanged)
                 {
-                    newPassword = MessengerLib.Encoder.GenerateMD5(newPassword);
+                    newPassword = MessengerLib.Util.Encoder.GenerateMD5(newPassword);
                 }
                 else
                 {

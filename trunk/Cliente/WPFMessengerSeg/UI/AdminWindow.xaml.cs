@@ -43,7 +43,7 @@ namespace WPFMessengerSeg.UI
             this.btIncluir.Visibility = Visibility.Hidden;
             this.btAlterar.Visibility = Visibility.Hidden;
             this.btExcluir.Visibility = Visibility.Hidden;
-            this.userUnblockDate.Text = DateTime.Now.ToString(MessengerLib.Config.DateFormat);
+            this.userUnblockDate.Text = DateTime.Now.ToString(MessengerLib.Util.Config.DateFormat);
         }
 
         private void LoadUsers()
@@ -119,7 +119,7 @@ namespace WPFMessengerSeg.UI
                 //remove o usuário da listagem na tela principal
                 if (UserDeleted != null)
                 {
-                    UserDeleted(this, new Arguments(MessengerLib.Config.FormatUserDisplay(selectedUser.Name, selectedUser.Login)));
+                    UserDeleted(this, new Arguments(MessengerLib.Util.Config.FormatUserDisplay(selectedUser.Name, selectedUser.Login)));
                 }
 
                 //recarrega para garantir que vai trazer todos os usuários (inclusive os adicionados e removidos por outros admins)
@@ -198,7 +198,7 @@ namespace WPFMessengerSeg.UI
             {
                 if (this.passChanged)
                 {
-                    newPassword = MessengerLib.Encoder.GenerateMD5(newPassword);
+                    newPassword = MessengerLib.Util.Encoder.GenerateMD5(newPassword);
                 }
                 else
                 {
@@ -210,7 +210,7 @@ namespace WPFMessengerSeg.UI
 
                 try
                 {
-                    expiration = DateTime.Parse(this.userExpiration.Text).ToString(MessengerLib.Config.DateFormat);
+                    expiration = DateTime.Parse(this.userExpiration.Text).ToString(MessengerLib.Util.Config.DateFormat);
                 }
                 catch
                 {
@@ -241,7 +241,7 @@ namespace WPFMessengerSeg.UI
                     //está reabilitando o usuário
                     if (selectedUser.Blocked && (bool) this.userEnabled.IsChecked)
                     {
-                        unblockDate = DateTime.Now.ToString(MessengerLib.Config.DateFormat);
+                        unblockDate = DateTime.Now.ToString(MessengerLib.Util.Config.DateFormat);
                         this.userUnblockDate.Text = unblockDate;
                     }
 

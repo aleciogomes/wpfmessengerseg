@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MessengerLib
+namespace MessengerLib.Handler
 {
     public static class ActionHandler
     {

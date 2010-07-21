@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MessengerLib.Handler;
 using MySql.Data.MySqlClient;
 
 namespace WPFMessengerServer.Control.DAO
@@ -48,14 +49,14 @@ namespace WPFMessengerServer.Control.DAO
                             {
                                 feature = new MessengerLib.Core.MSNFeature();
                                 feature.ID = featureID;
-                                feature.Name = MessengerLib.FeatureHandler.GetFeature(reader.GetString("ds_recurso"));
+                                feature.Name = FeatureHandler.GetFeature(reader.GetString("ds_recurso"));
 
                                 list.Add(feature);
                             }
 
                             operation = new MessengerLib.Core.MSNOperation();
                             operation.ID = reader.GetInt32("cd_operacao"); ;
-                            operation.Name = MessengerLib.OperationHandler.GetOperation(reader.GetString("ds_operacao"));
+                            operation.Name = OperationHandler.GetOperation(reader.GetString("ds_operacao"));
 
                             feature.ListOperation.Add(operation);
                         }

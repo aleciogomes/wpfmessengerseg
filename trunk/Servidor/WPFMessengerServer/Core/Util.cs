@@ -47,7 +47,7 @@ namespace WPFMessengerServer
             }
 
             //fim da cadeia de caracteres
-            sb.Append(MessengerLib.Config.EndStackMessage);
+            sb.Append(MessengerLib.Util.Config.EndStackMessage);
 
             return sb.ToString();
         }
@@ -69,7 +69,7 @@ namespace WPFMessengerServer
 
             if (sb.Length == 0)
             {
-                sb.Append(MessengerLib.Config.EndStackMessage);
+                sb.Append(MessengerLib.Util.Config.EndStackMessage);
             }
 
             return sb.ToString();
@@ -93,12 +93,12 @@ namespace WPFMessengerServer
 
             foreach(DateTime date in daoLog.GetDateList())
             {
-                sb.Append(String.Format("{0}:", date.ToString(MessengerLib.Config.DateFormat)));
+                sb.Append(String.Format("{0}:", date.ToString(MessengerLib.Util.Config.DateFormat)));
             }
 
             if (sb.Length == 0)
             {
-                sb.Append(MessengerLib.Config.EndStackMessage);
+                sb.Append(MessengerLib.Util.Config.EndStackMessage);
             }
 
             return sb.ToString();
@@ -113,7 +113,7 @@ namespace WPFMessengerServer
                 sb.Append(String.Format("{0}|{1}|", log.Date.ToString(), log.Event));
             }
 
-            sb.Append(MessengerLib.Config.EndStackMessage);
+            sb.Append(MessengerLib.Util.Config.EndStackMessage);
 
             return sb.ToString();
         }
@@ -203,13 +203,13 @@ namespace WPFMessengerServer
 
                     if (sb.Length == 0)
                     {
-                        sb.Append(MessengerLib.Config.EndStackMessage);
+                        sb.Append(MessengerLib.Util.Config.EndStackMessage);
                     }
 
                 }
                 else
                 {
-                    sb.Append(MessengerLib.Config.EndStackMessage);
+                    sb.Append(MessengerLib.Util.Config.EndStackMessage);
                 }
 
             }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using WPFMessengerSeg.Core;
 using System.Windows.Controls;
-using MessengerLib;
+using MessengerLib.Handler;
+using WPFMessengerSeg.Core;
 
 namespace WPFMessengerSeg.UI
 {

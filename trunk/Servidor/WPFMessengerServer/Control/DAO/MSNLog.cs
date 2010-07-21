@@ -29,8 +29,8 @@ namespace WPFMessengerServer.Control.DAO
                     sql.Append(" WHERE dt_auditoria between '{0} 00:00:00' and '{1} 23:59:59' ");
 
                     Object[] sqlParams = new Object[]{
-                         date.ToString(MessengerLib.Config.DateFormatMySQL)
-                        ,date.ToString(MessengerLib.Config.DateFormatMySQL)
+                         date.ToString(MessengerLib.Util.Config.DateFormatMySQL)
+                        ,date.ToString(MessengerLib.Util.Config.DateFormatMySQL)
                     };
 
                     command = new MySqlCommand(String.Format(sql.ToString(), sqlParams), DBUtil.Instance.Connection);
@@ -121,7 +121,7 @@ namespace WPFMessengerServer.Control.DAO
             sql.Append(" ( '{0}', '{1}' )");
 
             Object[] sqlParams = new Object[]{
-                log.Date.ToString(MessengerLib.Config.DateFormatMySQLFull), log.Event
+                log.Date.ToString(MessengerLib.Util.Config.DateFormatMySQLFull), log.Event
             };
 
             DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using MessengerLib;
+using MessengerLib.Handler;
 using WPFMessengerServer.Control.Model;
 
 namespace WPFMessengerServer
@@ -62,7 +62,7 @@ namespace WPFMessengerServer
                 }
 
                 //mensagem recebida
-                this.ProcessRequest(tcpClient, MessengerLib.Encoder.GetEncoding().GetString(message, 0, qtdBytes));
+                this.ProcessRequest(tcpClient, MessengerLib.Util.Encoder.GetEncoding().GetString(message, 0, qtdBytes));
 
             }
 
@@ -82,7 +82,7 @@ namespace WPFMessengerServer
 
             switch (ActionHandler.GetAction(request))
             {
-                case MessengerLib.Action.Login:
+                case MessengerLib.Handler.Action.Login:
 
                     if (msnUser == null)
                     {
@@ -126,7 +126,7 @@ namespace WPFMessengerServer
                             Console.WriteLine(String.Format("Login realizado: {0}", user));
 
                             Util.AddOnline(msnUser);
-                            answer = String.Format("{0}:{1}:{2}:{3}:{4}", MessengerLib.Config.OKMessage, msnUser.ID, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert);
+                            answer = String.Format("{0}:{1}:{2}:{3}:{4}", MessengerLib.Util.Config.OKMessage, msnUser.ID, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert);
                         }
                         else
                         {
@@ -141,12 +141,12 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.ConfirmLogin:
+                case MessengerLib.Handler.Action.ConfirmLogin:
 
                     if (msnUser != null)
                     {
                         Util.RegEvent(msnUser.Login, "Informação TopTalker acessada");
-                        answer = MessengerLib.Config.OKMessage;
+                        answer = MessengerLib.Util.Config.OKMessage;
                     }
                     else
                     {
@@ -156,7 +156,7 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.GetUsers:
+                case MessengerLib.Handler.Action.GetUsers:
 
                     if (msnUser != null)
                     {
@@ -165,17 +165,17 @@ namespace WPFMessengerServer
                     else
                     {
                         Util.RegEvent(user, "Tentativa de buscar lista de usuários sem login do sistema");
-                        answer = MessengerLib.Config.EndStackMessage;
+                        answer = MessengerLib.Util.Config.EndStackMessage;
                     }
 
                     break;
-                case MessengerLib.Action.GetMsg:
+                case MessengerLib.Handler.Action.GetMsg:
 
                     if (msnUser != null)
                     {
                         answer = Util.GetMessages(user);
 
-                        if (!answer.Equals(MessengerLib.Config.EndStackMessage))
+                        if (!answer.Equals(MessengerLib.Util.Config.EndStackMessage))
                         {
                             Util.RegEvent(user, "Mensagem recebida");
                         }
@@ -183,11 +183,11 @@ namespace WPFMessengerServer
                     else
                     {
                         Util.RegEvent(user, "Tentativa de buscar mensagens sem login do sistema");
-                        answer = MessengerLib.Config.EndStackMessage;
+                        answer = MessengerLib.Util.Config.EndStackMessage;
                     }
 
                     break;
-                case MessengerLib.Action.GetUserInfo:
+                case MessengerLib.Handler.Action.GetUserInfo:
 
                     string user2 = info[2];
 
@@ -202,7 +202,7 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.GetFeatures:
+                case MessengerLib.Handler.Action.GetFeatures:
 
                     int userID = int.Parse(info[2]);
 
@@ -217,7 +217,7 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.GetLog:
+                case MessengerLib.Handler.Action.GetLog:
 
                     if (msnUser != null)
                     {
@@ -233,7 +233,7 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.GetLogDates:
+                case MessengerLib.Handler.Action.GetLogDates:
 
                     if (msnUser != null)
                     {
@@ -246,7 +246,7 @@ namespace WPFMessengerServer
 
                     break;
 
-                case MessengerLib.Action.UserAvailable:
+                case MessengerLib.Handler.Action.UserAvailable:
 
                     string newUser = info[2];
 
@@ -262,7 +262,7 @@ namespace WPFMessengerServer
                         }
                         else
                         {
-                            answer = MessengerLib.Config.OKMessage;
+                            answer = MessengerLib.Util.Config.OKMessage;
                         }
                     }
                     else
@@ -273,7 +273,7 @@ namespace WPFMessengerServer
                     break;
 
                 default:
-                    answer = MessengerLib.Config.ErrorMessage;
+                    answer = MessengerLib.Util.Config.ErrorMessage;
                     break;
             }
 
@@ -286,7 +286,7 @@ namespace WPFMessengerServer
         {
 
             NetworkStream stream = tcpClient.GetStream();
-            byte[] buffer = MessengerLib.Encoder.GetEncoding().GetBytes(message);
+            byte[] buffer = MessengerLib.Util.Encoder.GetEncoding().GetBytes(message);
 
             //envia Resposta
             stream.Write(buffer, 0, buffer.Length);

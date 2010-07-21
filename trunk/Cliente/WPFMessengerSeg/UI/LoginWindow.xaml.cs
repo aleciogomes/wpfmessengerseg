@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
-using System.Threading;
+using MessengerLib.Core;
 using WPFMessengerSeg.Core;
-using System.ComponentModel;
-using System.Windows.Controls.Primitives;
 
 
 namespace WPFMessengerSeg
@@ -32,6 +27,14 @@ namespace WPFMessengerSeg
             KeyDown += Window_KeyDown;
 
             this.tryingLogin = 0;
+
+            MSNConfig.LoadServerURL(AppDomain.CurrentDomain.BaseDirectory);
+
+            if (String.IsNullOrEmpty(MSNConfig.ServerURL))
+            {
+                MSNConfig.CreateDefaultConfig();
+            }
+
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -84,7 +87,7 @@ namespace WPFMessengerSeg
            }
 
            MSNSession.User.Login = userID.Text.ToString();
-           MSNSession.User.Password = MessengerLib.Encoder.GenerateMD5(userPassword.Password.ToString());
+           MSNSession.User.Password = MessengerLib.Util.Encoder.GenerateMD5(userPassword.Password.ToString());
 
            btLogin.IsEnabled = false;
            userID.IsEnabled = false;
@@ -116,7 +119,7 @@ namespace WPFMessengerSeg
             string result = e.Result.ToString();
 
             //verifica se o resultado é 'OK'
-            bool connected = (result.Equals(MessengerLib.Config.OKMessage));
+            bool connected = (result.Equals(MessengerLib.Util.Config.OKMessage));
 
             if (connected)
             {

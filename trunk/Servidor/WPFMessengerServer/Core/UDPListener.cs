@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using MessengerLib;
 using WPFMessengerServer.Control.Model;
+using MessengerLib.Handler;
 
 namespace WPFMessengerServer.Core
 {
@@ -27,7 +28,7 @@ namespace WPFMessengerServer.Core
             while (true)
             {
                 data = udpListener.Receive(ref iep);
-                dataString = MessengerLib.Encoder.GetEncoding().GetString(data, 0, data.Length);
+                dataString = MessengerLib.Util.Encoder.GetEncoding().GetString(data, 0, data.Length);
 
                 Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClient));
                 clientThread.Start(dataString);
@@ -48,7 +49,7 @@ namespace WPFMessengerServer.Core
 
             switch (ActionHandler.GetAction(request))
             {
-                case MessengerLib.Action.SendMsg:
+                case MessengerLib.Handler.Action.SendMsg:
 
                     string destiny  = info[2];
 
@@ -73,7 +74,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.Logoff:
+                case MessengerLib.Handler.Action.Logoff:
 
                     if (msnUser != null)
                     {
@@ -90,7 +91,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.UpdateAccMainInfo:
+                case MessengerLib.Handler.Action.UpdateAccMainInfo:
 
                     if (msnUser != null)
                     {
@@ -114,7 +115,7 @@ namespace WPFMessengerServer.Core
                     }
 
                     break;
-                case MessengerLib.Action.UpdateAccOtherInfo:
+                case MessengerLib.Handler.Action.UpdateAccOtherInfo:
 
                     //valida a conta de admin
                     if (msnUser != null)
@@ -156,7 +157,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.UpdatePermissions:
+                case MessengerLib.Handler.Action.UpdatePermissions:
 
                     //valida a conta de admin
                     if (msnUser != null)
@@ -190,7 +191,7 @@ namespace WPFMessengerServer.Core
 
                     break;
                 
-                case MessengerLib.Action.CreateAcc:
+                case MessengerLib.Handler.Action.CreateAcc:
 
                     //valida a conta de admin
                     if (msnUser != null)
@@ -235,7 +236,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.DeleteAcc:
+                case MessengerLib.Handler.Action.DeleteAcc:
 
                     if (msnUser != null)
                     {
@@ -256,7 +257,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.EventInvalidPassword:
+                case MessengerLib.Handler.Action.EventInvalidPassword:
 
                     if (msnUser != null)
                     {
@@ -273,7 +274,7 @@ namespace WPFMessengerServer.Core
 
                     break;
 
-                case MessengerLib.Action.EventSendEmoticonInMsg:
+                case MessengerLib.Handler.Action.EventSendEmoticonInMsg:
 
                     if (msnUser != null)
                     {
@@ -289,7 +290,7 @@ namespace WPFMessengerServer.Core
                     break;
 
 
-                case MessengerLib.Action.EventRecEmoticonInMsg:
+                case MessengerLib.Handler.Action.EventRecEmoticonInMsg:
 
                     if (msnUser != null)
                     {

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace MessengerLib
+namespace MessengerLib.Handler
 {
     public class OperationHandler
     {
