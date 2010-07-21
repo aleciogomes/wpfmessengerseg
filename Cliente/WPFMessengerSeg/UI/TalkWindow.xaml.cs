@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using MessengerLib.Handler;
 using WPFMessengerSeg.Core;
 
 namespace WPFMessengerSeg.UI
@@ -23,8 +24,8 @@ namespace WPFMessengerSeg.UI
         //define como estático, para nao recriar toda vez que abrir uma janela de conversa
         private static Dictionary<string, Uri> EmoticonList { get; set; }
 
-        private static bool sendEmoticons = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendEmoticons);
-        private static bool receiveEmoticons = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RecEmoticons);
+        private static bool sendEmoticons = MSNUser.HasFeature(MSNSession.User, Operation.SendEmoticons);
+        private static bool receiveEmoticons = MSNUser.HasFeature(MSNSession.User, Operation.RecEmoticons);
 
         private MSNUser DestinyUser
         {

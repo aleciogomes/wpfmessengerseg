@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
+using MessengerLib.Handler;
 using WPFMessengerSeg.Core;
 using WPFMessengerSeg.Core.events;
 using WPFMessengerSeg.UI;
@@ -133,7 +134,7 @@ namespace WPFMessengerSeg
             foreach (MSNUser user in listUsers)
             {
 
-                userDisplay = MessengerLib.Config.FormatUserDisplay(user.Name, user.Login);
+                userDisplay = MessengerLib.Util.Config.FormatUserDisplay(user.Name, user.Login);
 
                 //se não é o usuário logado
                 if (user.Login != MSNSession.User.Login)
@@ -338,9 +339,9 @@ namespace WPFMessengerSeg
                  configUsers,
                  events;
 
-            manageUser = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RegUsers);
-            configUsers = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.ChangeProp);
-            events = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.Auditor);
+            manageUser = MSNUser.HasFeature(MSNSession.User, Operation.RegUsers);
+            configUsers = MSNUser.HasFeature(MSNSession.User, Operation.ChangeProp);
+            events = MSNUser.HasFeature(MSNSession.User, Operation.Auditor);
 
             if (manageUser || manageUser)
             {
@@ -363,9 +364,9 @@ namespace WPFMessengerSeg
                 this.menuEvents.Visibility = Visibility.Visible;
             }
 
-            this.offlineTalk = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendMsgOffUser);
-            this.sendMsg = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.SendMsg);
-            this.recMsg = MSNUser.HasFeature(MSNSession.User, MessengerLib.Operation.RecMsg);
+            this.offlineTalk = MSNUser.HasFeature(MSNSession.User, Operation.SendMsgOffUser);
+            this.sendMsg = MSNUser.HasFeature(MSNSession.User, Operation.SendMsg);
+            this.recMsg = MSNUser.HasFeature(MSNSession.User, Operation.RecMsg);
 
         }
 

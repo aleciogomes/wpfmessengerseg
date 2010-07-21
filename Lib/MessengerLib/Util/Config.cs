@@ -1,8 +1,8 @@
 ﻿
 using System;
-namespace MessengerLib
+namespace MessengerLib.Util
 {
-     public static class Config
+    public static class Config
     {
          public static string ErrorMessage = "ERRO NO SERVIDOR";
          public static string OKMessage = "OK";
@@ -12,7 +12,7 @@ namespace MessengerLib
          public static int TCPPort = 1012;
          public static int UDPPort = 1011;
 
-         public static string ServerURL = "127.0.0.1";
+         internal const string ServerURL = "127.0.0.1";
 
          public static string DateFormat = "dd/MM/yyyy";
          public static string DateFormatMySQL = "yyyy-MM-dd";

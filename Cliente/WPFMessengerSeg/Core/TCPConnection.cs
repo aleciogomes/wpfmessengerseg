@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using MessengerLib.Core;
-using MessengerLib;
+using MessengerLib.Handler;
 
 namespace WPFMessengerSeg.Core
 {
@@ -90,14 +90,14 @@ namespace WPFMessengerSeg.Core
         public static string ConfirmLogin(string userLogin, string userPassword)
         {
             authentication = String.Empty;
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.ConfirmLogin, String.Format("{0}:{1}", userLogin, userPassword));
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.ConfirmLogin, String.Format("{0}:{1}", userLogin, userPassword));
             return EstabilishConnection(cmd, false);
         }
 
         public static string Login()
         {
             authentication = String.Empty;
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.Login, GetAuthentication());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.Login, GetAuthentication());
             string result = EstabilishConnection(cmd, false);
 
             string[] info = result.Split(':');
@@ -140,7 +140,7 @@ namespace WPFMessengerSeg.Core
         public static string GetUserAvailable(string newUserLogin)
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), newUserLogin);
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.UserAvailable, info);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.UserAvailable, info);
 
             return EstabilishConnection(cmd, false);
         }
@@ -148,7 +148,7 @@ namespace WPFMessengerSeg.Core
         public static MSNUser GetUserInfo(string userLogin)
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), userLogin);
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetUserInfo, info);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetUserInfo, info);
 
             string[] result =  EstabilishConnection(cmd, false).Split(':');
 
@@ -189,7 +189,7 @@ namespace WPFMessengerSeg.Core
                 user.ListFeature = new List<MSNFeature>();
 
                 string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), user.ID);
-                string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetFeatures, info);
+                string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetFeatures, info);
 
                 string returnString = EstabilishConnection(cmd, false);
 
@@ -218,7 +218,7 @@ namespace WPFMessengerSeg.Core
                         featureString = featureVector[0];
                         feature = new MSNFeature();
                         feature.ID = int.Parse(featureString.Split(':')[0]);
-                        feature.Name = MessengerLib.FeatureHandler.GetFeature(featureString.Split(':')[1]);
+                        feature.Name = FeatureHandler.GetFeature(featureString.Split(':')[1]);
 
                         operationVector = featureVector[1].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -238,7 +238,7 @@ namespace WPFMessengerSeg.Core
                             {
                                 //reinicia
                                 countAttributes = 0;
-                                operation.Name = MessengerLib.OperationHandler.GetOperation(value);
+                                operation.Name = OperationHandler.GetOperation(value);
                                 feature.ListOperation.Add(operation);
                             }
                         }
@@ -253,7 +253,7 @@ namespace WPFMessengerSeg.Core
 
         public static string[] GetLogDates()
         {
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLogDates, GetAuthentication());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetLogDates, GetAuthentication());
             string returnString = EstabilishConnection(cmd, false);
 
             if (ValidetReturn(returnString))
@@ -267,7 +267,7 @@ namespace WPFMessengerSeg.Core
         public static IList<MessengerLib.Core.MSNLog> GetLog(DateTime logDate)
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), logDate.ToString());
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetLog, info);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetLog, info);
             string returnString = EstabilishConnection(cmd, true);
 
             IList<MessengerLib.Core.MSNLog> list = new List<MessengerLib.Core.MSNLog>();
@@ -314,7 +314,7 @@ namespace WPFMessengerSeg.Core
 
         private static bool ValidetReturn(string returnString)
         {
-            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(MessengerLib.Config.ErrorMessage) < 0 && !returnString.Equals(MessengerLib.Config.EndStackMessage))
+            if (!String.IsNullOrEmpty(returnString) && returnString.IndexOf(MessengerLib.Util.Config.ErrorMessage) < 0 && !returnString.Equals(MessengerLib.Util.Config.EndStackMessage))
             {
                 return true;
             }
@@ -326,13 +326,13 @@ namespace WPFMessengerSeg.Core
 
         private static String GetUsers()
         {
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetUsers, GetAuthentication());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetUsers, GetAuthentication());
             return EstabilishConnection(cmd, true);
         }
 
         public static IList<MSNMessage> GetMyMessages()
         {
-            string cmd = MessengerLib.ActionHandler.FormatAction(MessengerLib.Action.GetMsg, GetAuthentication());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetMsg, GetAuthentication());
             string messageString = EstabilishConnection(cmd, false);
 
             string value = null;
@@ -340,7 +340,7 @@ namespace WPFMessengerSeg.Core
             IList<MSNMessage> lista = new List<MSNMessage>();
             MSNMessage message = null;
 
-            while (!messageString.Equals(MessengerLib.Config.EndStackMessage))
+            while (!messageString.Equals(MessengerLib.Util.Config.EndStackMessage))
             {
                 string[] returnVector = messageString.Split(new char[] { ':' }, 2);
 
@@ -355,7 +355,7 @@ namespace WPFMessengerSeg.Core
                         if (i % 2 != 0)
                         {
                             //desincriptografa a mensagem
-                            message.Message = MessengerLib.Encoder.DecryptMessage(value);
+                            message.Message = MessengerLib.Util.Encoder.DecryptMessage(value);
                         }
                         else
                         {
@@ -379,7 +379,7 @@ namespace WPFMessengerSeg.Core
             {
                 TcpClient tcpclnt = new TcpClient();
                 //Console.WriteLine("Conectando.....");
-                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(MessengerLib.Config.ServerURL), MessengerLib.Config.TCPPort);
+                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(MessengerLib.Core.MSNConfig.ServerURL), MessengerLib.Util.Config.TCPPort);
                 tcpclnt.Connect(serverEndPoint);
 
                 //Console.WriteLine("Conectado!");
@@ -403,7 +403,7 @@ namespace WPFMessengerSeg.Core
             catch (Exception erro)
             {
                 Console.WriteLine("Erro: " + erro.StackTrace);
-                return MessengerLib.Config.ErrorMessage;
+                return MessengerLib.Util.Config.ErrorMessage;
             }
         }
 
@@ -432,7 +432,7 @@ namespace WPFMessengerSeg.Core
                         compararParada = String.Format("{0}{1}", charAnterior, charAtual);
                         charAnterior = charAtual;
 
-                        if (compararParada.Equals(MessengerLib.Config.EndStackMessage))
+                        if (compararParada.Equals(MessengerLib.Util.Config.EndStackMessage))
                         {
                             continuarLendo = false;
                         }

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace WPFMessengerSeg.Core
+namespace WPFMessengerSeg.Core.util
 {
-    public static class Win32Utils
+    public static class Win32
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]

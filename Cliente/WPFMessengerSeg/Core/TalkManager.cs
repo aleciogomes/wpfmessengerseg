@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WPFMessengerSeg.UI;
 using System.ComponentModel;
 using System.Windows;
-using System.Media;
 using System.Windows.Media;
+using WPFMessengerSeg.Core.util;
+using WPFMessengerSeg.UI;
 
 namespace WPFMessengerSeg.Core
 {
@@ -110,7 +108,7 @@ namespace WPFMessengerSeg.Core
                 window.WindowState = WindowState.Minimized;
                 window.Visibility = Visibility.Visible;
                 
-                Win32Utils.Flash(window);
+                Win32.Flash(window);
 
             }
 

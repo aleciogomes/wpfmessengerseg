@@ -47,15 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Handler\Action.cs" />
+    <Compile Include="Util\Config.cs" />
     <Compile Include="Core\MSNLog.cs" />
     <Compile Include="Core\MSNFeature.cs" />
     <Compile Include="Core\MSNOperation.cs" />
-    <Compile Include="Encoder.cs" />
-    <Compile Include="Feature.cs" />
-    <Compile Include="Operation.cs" />
+    <Compile Include="Util\Encoder.cs" />
+    <Compile Include="Handler\Feature.cs" />
+    <Compile Include="Core\MSNConfig.cs" />
+    <Compile Include="Handler\Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\XML.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

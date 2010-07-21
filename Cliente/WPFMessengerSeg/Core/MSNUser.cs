@@ -1,9 +1,9 @@
 ﻿using System;
-using MessengerLib.Core;
 using System.Collections.Generic;
-using MessengerLib;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MessengerLib.Core;
+using MessengerLib.Handler;
 
 namespace WPFMessengerSeg.Core
 {
@@ -44,7 +44,7 @@ namespace WPFMessengerSeg.Core
         {
             if (date.HasValue)
             {
-                return ((DateTime)date).ToString(MessengerLib.Config.DateFormat);
+                return ((DateTime)date).ToString(MessengerLib.Util.Config.DateFormat);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace WPFMessengerSeg.Core
             }
 
             //usuário já em utilização
-            if (!(testUser.Equals(MessengerLib.Config.OKMessage) || String.IsNullOrEmpty(testUser)))
+            if (!(testUser.Equals(MessengerLib.Util.Config.OKMessage) || String.IsNullOrEmpty(testUser)))
             {
                 result = testUser;
                 return result;

@@ -33,11 +33,11 @@ namespace WPFMessengerServer.Control.Model
             {
                 if (mySQL)
                 {
-                    return String.Format("'{0}'", date.Value.ToString(MessengerLib.Config.DateFormatMySQL));
+                    return String.Format("'{0}'", date.Value.ToString(MessengerLib.Util.Config.DateFormatMySQL));
                 }
                 else
                 {
-                    return ((DateTime)date).ToString(MessengerLib.Config.DateFormat);
+                    return ((DateTime)date).ToString(MessengerLib.Util.Config.DateFormat);
                 }
 
             }
