@@ -16,22 +16,31 @@ namespace MessengerLib.Util
             this.doc = new XmlDocument();
         }
 
-        public void IntializeXML()
+        public void IntializeXML(string rootElement)
         {
             XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
             this.doc.AppendChild(docNode);
 
-            this.rootNode = doc.CreateElement("config");
+            this.rootNode = doc.CreateElement(rootElement);
 
             this.doc.AppendChild(this.rootNode);
         }
 
-        public void CreateGroupElement(string name, string value)
+        public XmlNode CreateElement(string name)
+        {
+            return doc.CreateElement(name);
+        }
+
+        public void AppendNode(XmlNode node)
+        {
+            this.rootNode.AppendChild(node);
+        }
+
+        public void InsertIntoGroup(XmlNode group, string name, string value)
         {
             XmlNode node = doc.CreateElement(name);
-            node.AppendChild(doc.CreateTextNode(value));
-
-            this.rootNode.AppendChild(node);
+            node.InnerText = value;
+            group.AppendChild(node);
         }
 
         public string ReadTagValue(Stream file, string tag)
@@ -68,6 +77,13 @@ namespace MessengerLib.Util
         {
             return this.doc.InnerXml;
         }
- 
+
+
+        public void AppendHashNode()
+        {
+            XmlNode node = CreateElement("hash");
+            node.InnerText = MessengerLib.Util.Encoder.GenerateMD5(ToString());
+            AppendNode(node);
+        }
     }
 }
