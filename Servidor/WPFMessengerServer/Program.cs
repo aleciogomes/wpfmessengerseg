@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using WPFMessengerServer.Core;
-using System.Net;
 
 namespace WPFMessengerServer
 {
@@ -11,7 +10,6 @@ namespace WPFMessengerServer
         public static void Main(string[] args)
         {
             Console.WriteLine("-------------- Servidor WPFMessengerSeg Iniciado --------------");
-            Console.WriteLine("IP: " + Dns.GetHostAddresses(Dns.GetHostName()));
             Console.WriteLine("Porta TCP: " + MessengerLib.Util.Config.TCPPort);
             Console.WriteLine("Porta UDP: " + MessengerLib.Util.Config.UDPPort);
 

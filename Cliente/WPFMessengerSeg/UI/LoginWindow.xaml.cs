@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using MessengerLib.Core;
 using WPFMessengerSeg.Core;
+using WPFMessengerSeg.Core.util;
 
 
 namespace WPFMessengerSeg
@@ -17,6 +18,7 @@ namespace WPFMessengerSeg
     {
         private int tryingLogin;
         private const int maxTryingLogin = 5;
+        private bool invalidConfigHash = false;
 
         public LoginWindow()
         {
@@ -28,11 +30,23 @@ namespace WPFMessengerSeg
 
             this.tryingLogin = 0;
 
-            MSNConfig.LoadServerURL(AppDomain.CurrentDomain.BaseDirectory);
+            MSNConfig.LoadServerURL( AppDomain.CurrentDomain.BaseDirectory);
 
-            if (String.IsNullOrEmpty(MSNConfig.ServerURL))
+            //valida arquivo de configuração:
+            if (MSNConfig.InvalidHash)
             {
-                MSNConfig.CreateDefaultConfig();
+                userID.IsEnabled = false;
+                userPassword.IsEnabled = false;
+                btLogin.IsEnabled = false;
+                MessageBox.Show("Arquivo de configuração inválido", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                //sem arquivo de configuração
+                if (String.IsNullOrEmpty(MSNConfig.ServerURL))
+                {
+                    MSNConfig.LoadTempURL();
+                }
             }
 
         }
@@ -70,6 +84,7 @@ namespace WPFMessengerSeg
 
             if (this.tryingLogin == maxTryingLogin)
             {
+                tryingLogin = 0;
                 MessageBox.Show(String.Format("{0} tentativas de acertar usuário/senha", maxTryingLogin), "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 Thread.Sleep(TimeSpan.FromSeconds(30));
                 return;
@@ -123,6 +138,22 @@ namespace WPFMessengerSeg
 
             if (connected)
             {
+
+                //cria o arquivo de configuração se:
+                    //nunca criou um config pra esse usuário
+                    //já criou, pra essa mesma máquina
+                if (MSNConfig.IsTempURL)
+                {
+                    if (String.IsNullOrEmpty(MSNSession.User.ConfigMotherBoardID))
+                    {
+                        MSNSession.User.ConfigMotherBoardID = Win32.MotherBoardID;
+                        UDPConnection.SaveMotherBoardID();
+                    }
+                    MSNConfig.CreateDefaultConfig(AppDomain.CurrentDomain.BaseDirectory);
+
+                    MessageBox.Show("Arquivo de configuração criado!", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
                 if (!String.IsNullOrEmpty(TCPConnection.ExpirationWarning))
                 {
                     MessageBox.Show(TCPConnection.ExpirationWarning, "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -148,7 +179,6 @@ namespace WPFMessengerSeg
                 loginBar.Visibility = Visibility.Hidden;
                 loginBar.BeginAnimation(ProgressBar.ValueProperty, null);
             }
-
         }
 
     }

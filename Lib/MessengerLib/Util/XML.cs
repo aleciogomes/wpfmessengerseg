@@ -26,9 +26,20 @@ namespace MessengerLib.Util
             this.doc.AppendChild(this.rootNode);
         }
 
+        public void LoadStream(Stream file)
+        {
+            this.doc.Load(file);
+        }
+
         public XmlNode CreateElement(string name)
         {
             return doc.CreateElement(name);
+        }
+
+
+        public XmlNode GetRootNode()
+        {
+            return this.rootNode;
         }
 
         public void AppendNode(XmlNode node)
@@ -40,15 +51,14 @@ namespace MessengerLib.Util
         {
             XmlNode node = doc.CreateElement(name);
             node.InnerText = value;
+
             group.AppendChild(node);
         }
 
-        public string ReadTagValue(Stream file, string tag)
+        public string ReadTagValue(string tag)
         {
             try
             {
-                this.doc.Load(file);
-
                 XmlElement root = doc.DocumentElement;
 
                 XmlNodeList list = root.GetElementsByTagName(tag);

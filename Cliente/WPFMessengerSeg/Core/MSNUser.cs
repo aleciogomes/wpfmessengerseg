@@ -13,11 +13,12 @@ namespace WPFMessengerSeg.Core
         public IList<MSNFeature> ListFeature { get; set; } 
 
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Login { get; set; }
-        public bool Online { get; set; }
+        public String Name { get; set; }
+        public String Login { get; set; }
+        public Boolean Online { get; set; }
+        public String ConfigMotherBoardID { get; set; }
 
-        public string Password { get; set; }
+        public String Password { get; set; }
 
         public DateTime? Expiration { get; set; }
         public string ExpirationString
@@ -32,7 +33,7 @@ namespace WPFMessengerSeg.Core
         public int TimeAlert { get; set; }
 
         public DateTime? UnblockDate { get; set; }
-        public string UnblockDateString
+        public String UnblockDateString
         {
             get
             {

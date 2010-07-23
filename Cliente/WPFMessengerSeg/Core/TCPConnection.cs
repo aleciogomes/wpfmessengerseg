@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using MessengerLib.Core;
 using MessengerLib.Handler;
+using WPFMessengerSeg.Core.util;
 
 namespace WPFMessengerSeg.Core
 {
@@ -118,18 +119,27 @@ namespace WPFMessengerSeg.Core
 
                 MSNSession.User.TimeAlert = int.Parse(info[4]);
 
+                MSNSession.User.ConfigMotherBoardID = info[5];
 
-                if (MSNSession.User.TimeAlert > 0 && MSNSession.User.Expiration.HasValue)
+                //já foi grava o id da placa mãe de onde foi gerado o config
+                if (!String.IsNullOrEmpty(MSNSession.User.ConfigMotherBoardID) && !MSNSession.User.ConfigMotherBoardID.Equals(Win32.MotherBoardID) && MSNConfig.IsTempURL)
                 {
-                    DateTime expiration = (DateTime) MSNSession.User.Expiration;
-
-                    TimeSpan difference = expiration.Subtract(DateTime.Now.Date);
-
-                    if (difference.Days <= MSNSession.User.TimeAlert)
+                    return "Arquivo de configuração não encontrado";
+                    UDPConnection.Logoff();
+                }
+                else
+                {
+                    if (MSNSession.User.TimeAlert > 0 && MSNSession.User.Expiration.HasValue)
                     {
-                        ExpirationWarning = String.Format("Sua conta será expirada em {0} dia(s). Entre em contato com o administrador do sistema!", difference.Days);
-                    }
+                        DateTime expiration = (DateTime)MSNSession.User.Expiration;
 
+                        TimeSpan difference = expiration.Subtract(DateTime.Now.Date);
+
+                        if (difference.Days <= MSNSession.User.TimeAlert)
+                        {
+                            ExpirationWarning = String.Format("Sua conta será expirada em {0} dia(s). Entre em contato com o administrador do sistema!", difference.Days);
+                        }
+                    }
                 }
 
             }

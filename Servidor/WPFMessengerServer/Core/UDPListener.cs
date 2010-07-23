@@ -304,6 +304,23 @@ namespace WPFMessengerServer.Core
                     }
 
                     break;
+
+                case MessengerLib.Handler.Action.SaveMotherBoardID:
+
+                    if (msnUser != null)
+                    {
+                        //auditoria
+                        Util.RegEvent(msnUser.Login, "Config do cliente gerado");
+                        Console.WriteLine(String.Format("Config do cliente gerado: {0}", msnUser.Login));
+
+                        Util.SaveMotherBoardID(msnUser.Login, info[2]);
+                    }
+                    else
+                    {
+                        Util.RegEvent(userLogin, "Tentativa de simular gravação do id de placa mãe login do sistema");
+                    }
+
+                    break;
             }
         }
 

@@ -19,7 +19,7 @@ CREATE  TABLE IF NOT EXISTS `WPFMESS`.`USUARIO` (
   `nr_prazoAlerta` INT ,
   `fl_bloqueada` CHAR ,
   `dt_liberacaoBloqueio` DATE ,
-  `fl_configCriado` CHAR,  
+  `ds_configMbID` VARCHAR(50) ,
   PRIMARY KEY (`cd_usuario`) )
 ENGINE = InnoDB;
 
@@ -70,20 +70,20 @@ CREATE TABLE IF NOT EXISTS `WPFMESS`.`AUDITORIA` (
 )
 ENGINE = InnoDB;
 
-INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, fl_configCriado)
-VALUES ('admin', 'Administrador', '21232F297A57A5A743894A0E4A801FC3', NULL, 0, FALSE, NULL, FALSE);
+INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
+VALUES ('admin', 'Administrador', '21232F297A57A5A743894A0E4A801FC3', NULL, 0, FALSE, NULL, NULL);
 
-INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, fl_configCriado)
-VALUES ('moore', 'Alan Moore', 'a595aab986c3206e1a637f4f18d41f62', NULL, 0, FALSE, NULL, FALSE);
+INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
+VALUES ('moore', 'Alan Moore', 'a595aab986c3206e1a637f4f18d41f62', NULL, 0, FALSE, NULL, NULL);
 
-INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, fl_configCriado)
-VALUES ('blair', 'Bruxa de Blair', '695d3555929f09cca1f9cc2295df8ca2', NULL, 0, FALSE, NULL, FALSE);
+INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
+VALUES ('blair', 'Bruxa de Blair', '695d3555929f09cca1f9cc2295df8ca2', NULL, 0, FALSE, NULL, NULL);
 
-INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, fl_configCriado)
-VALUES ('adams', 'Família Adams', '3cc4a9a458d45578ecd7bbab6ec2aee5', NULL, 0, FALSE, NULL, FALSE);
+INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
+VALUES ('adams', 'Família Adams', '3cc4a9a458d45578ecd7bbab6ec2aee5', NULL, 0, FALSE, NULL, NULL);
 
-INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, fl_configCriado)
-VALUES ('anna', 'Anna Hickmann', 'a70f9e38ff015afaa9ab0aacabee2e13', NULL, 0, FALSE, NULL, FALSE);
+INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
+VALUES ('anna', 'Anna Hickmann', 'a70f9e38ff015afaa9ab0aacabee2e13', NULL, 0, FALSE, NULL, NULL);
 
 INSERT INTO `WPFMESS`.`RECURSO` VALUES (1, 'main');
 INSERT INTO `WPFMESS`.`RECURSO` VALUES (2, 'chat');
