@@ -46,5 +46,6 @@ namespace MessengerLib.Handler
         ,EventInvalidPassword
         ,EventSendEmoticonInMsg
         ,EventRecEmoticonInMsg
+        ,SaveMotherBoardID
     }
 }

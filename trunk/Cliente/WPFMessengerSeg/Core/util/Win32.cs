@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Management;
 
 namespace WPFMessengerSeg.Core.util
 {
@@ -32,10 +33,39 @@ namespace WPFMessengerSeg.Core.util
             fi.uCount = 10;
             fi.dwTimeout = 0;
             FlashWindowEx(ref fi);
-        } 
+        }
 
+        private static string motherBoardID = String.Empty;
+        public static string MotherBoardID
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(motherBoardID))
+                {
+                    motherBoardID = GetMotherBoardID();
+                }
+                    
+                return motherBoardID;
 
+            }
+        }
 
+        private static string GetMotherBoardID()
+        {
+            string mbID = String.Empty;
+
+            ManagementObjectCollection mbsList = null;
+            ManagementObjectSearcher mbs = new ManagementObjectSearcher("Select SerialNumber From Win32_BaseBoard");
+            mbsList = mbs.Get();
+
+            foreach (ManagementObject mo in mbsList)
+            {
+                mbID = mo["SerialNumber"].ToString();
+                break;
+            }
+
+            return mbID;
+        }
 
 
     }

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WPFMessengerServer.Control.Model;
-using System.Linq;
-using WPFMessengerServer.Control.DAO;
 
 namespace WPFMessengerServer
 {
@@ -73,6 +72,11 @@ namespace WPFMessengerServer
             }
 
             return sb.ToString();
+        }
+
+        public static void SaveMotherBoardID(string userLogin, string mbID)
+        {
+            daoUser.SaveMotherBoardID(userLogin, mbID);
         }
 
         public static void UpdatePermissions(Control.Model.MSNUser user, IList<string> listOperation)

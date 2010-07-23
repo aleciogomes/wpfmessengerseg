@@ -24,7 +24,7 @@ namespace WPFMessengerServer.Control.DAO
                 try
                 {
                     sql.Append(" SELECT ");
-                    sql.Append(" cd_usuario, ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio ");
+                    sql.Append(" cd_usuario, ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID ");
                     sql.Append(" FROM usuario ");
                     command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
                     reader = command.ExecuteReader();
@@ -40,6 +40,12 @@ namespace WPFMessengerServer.Control.DAO
                             user.Login = reader.GetString("ds_login");
                             user.Password = reader.GetString("ds_pwhash");
                             user.Name = reader.GetString("nm_usuario");
+
+                            try
+                            {
+                                user.ConfigMotherBoardID = reader.GetString("ds_configMbID");
+                            }
+                            catch { }
 
                             try
                             {
@@ -93,7 +99,7 @@ namespace WPFMessengerServer.Control.DAO
 
                 try
                 {
-                    sql.Append(" SELECT cd_usuario, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio FROM usuario WHERE ds_login = '{0}'");
+                    sql.Append(" SELECT cd_usuario, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID FROM usuario WHERE ds_login = '{0}'");
 
                     Object[] sqlParams = null;
 
@@ -119,6 +125,12 @@ namespace WPFMessengerServer.Control.DAO
                         user.Login = userLogin;
                         user.Password = reader.GetString("ds_pwhash"); ;
                         user.Name = reader.GetString("nm_usuario");
+
+                        try
+                        {
+                            user.ConfigMotherBoardID = reader.GetString("ds_configMbID");
+                        }
+                        catch { }
 
                         try
                         {
@@ -159,6 +171,20 @@ namespace WPFMessengerServer.Control.DAO
             return null;
         }
 
+        public void SaveMotherBoardID(string userLogin, string mbID)
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.Append(" UPDATE Usuario SET ");
+            sql.Append(" ds_configMbID  = '{0}' ");
+            sql.Append(" WHERE ds_login = '{1}' ");
+
+            Object[] sqlParams = new Object[]{
+                mbID,
+                userLogin,
+            };
+
+            DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
+        }
 
         public void Update(string userLogin, Model.MSNUser msnUser)
         {

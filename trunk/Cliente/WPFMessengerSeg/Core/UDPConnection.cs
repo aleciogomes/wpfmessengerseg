@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using MessengerLib.Handler;
+using WPFMessengerSeg.Core.util;
 
 namespace WPFMessengerSeg.Core
 {
@@ -11,7 +12,6 @@ namespace WPFMessengerSeg.Core
     {
         private static IPAddress ipAdress = IPAddress.Parse(MessengerLib.Core.MSNConfig.ServerURL);
         private static UdpClient udp = new UdpClient();
-
 
         public static bool SendMessage(MSNUser destintyUser, string message)
         {
@@ -119,6 +119,14 @@ namespace WPFMessengerSeg.Core
         public static void ReceiveEmoticonInMsg()
         {
             string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventRecEmoticonInMsg, TCPConnection.GetAuthentication());
+            Transfer(cmd);
+        }
+
+        public static void SaveMotherBoardID()
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), MSNSession.User.ConfigMotherBoardID);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.SaveMotherBoardID, info);
+
             Transfer(cmd);
         }
 

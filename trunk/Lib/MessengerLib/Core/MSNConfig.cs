@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MessengerLib.Util;
 using System.IO;
+using MessengerLib.Util;
 
 namespace MessengerLib.Core
 {
@@ -11,43 +8,80 @@ namespace MessengerLib.Core
     {
         private const string CONFIG_FILE    = "wpfmsn.cfg";
         private const string SERVER_TAG     = "serverMSN";
+        private const string HASH_TAG       = "hash";
+        private const string HASH_KEY       = "wpfKeyConfigM$n";
 
-        public static string ServerURL     = String.Empty;
+        public static string ServerURL  = String.Empty;
+        public static bool InvalidHash = false;
+
+        private static bool isTempURL = false;
+
+        public static bool IsTempURL
+        {
+            get
+            {
+                return isTempURL;
+            }
+        }
+
+        public static void LoadTempURL()
+        {
+            isTempURL = true;
+            ServerURL = Util.Config.ServerURL;
+        }
 
         public static void LoadServerURL(string configPath)
         {
-            XML docXML = new XML();
-
-            string content = File.ReadAllText(Path.Combine(configPath, CONFIG_FILE));
-            content = Util.Encoder.DecryptMessage(content);
-
-            /*
-            string tagValue = docXML.ReadTagValue(fStream, SERVER_TAG);
-
-            if (!String.IsNullOrEmpty(tagValue))
+            try
             {
-                ServerURL = tagValue;
+              
+
+                string content = File.ReadAllText(Path.Combine(configPath, CONFIG_FILE));
+
+                try
+                {
+                    content = Util.Encoder.DecryptMessage(content);
+
+                    Stream stream = new MemoryStream(Util.Encoder.GetEncoding().GetBytes(content));
+
+                    XML docXML = new XML();
+                    docXML.LoadStream(stream);
+
+                    ServerURL = docXML.ReadTagValue(SERVER_TAG);
+                    string configHash = docXML.ReadTagValue(HASH_TAG);
+
+                    //verifica
+                    if (!configHash.Equals(Util.Encoder.GenerateMD5(HASH_KEY)))
+                    {
+                        InvalidHash = true;
+                    }
+                }
+                catch
+                {
+                    InvalidHash = true;
+                }
+
             }
-             * */
+            catch{}
         }
 
-        public static string CreateDefaultConfig()
+        public static void CreateDefaultConfig(string configPath)
         {
             ServerURL = Config.ServerURL;
 
             XML docXML = new XML();
 
-            docXML.IntializeXML();
-            docXML.CreateGroupElement(SERVER_TAG, ServerURL);
+            docXML.IntializeXML("config");
+            docXML.InsertIntoGroup(docXML.GetRootNode(), SERVER_TAG, ServerURL);
+            docXML.InsertIntoGroup(docXML.GetRootNode(), HASH_TAG, Util.Encoder.GenerateMD5(HASH_KEY));
 
             string xmlContent = docXML.ToString();
+            xmlContent = Util.Encoder.EncryptMessage(xmlContent);
 
-            return Util.Encoder.EncryptMessage(xmlContent);
-        }
-
-        private static void SaveDefaultConfig()
-        {
-
+            using (StreamWriter file = new StreamWriter(Path.Combine(configPath, CONFIG_FILE)))
+            {
+                file.Write(xmlContent);
+            }
         }
 
     }
