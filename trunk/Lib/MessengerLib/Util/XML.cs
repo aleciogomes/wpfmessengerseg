@@ -63,18 +63,33 @@ namespace MessengerLib.Util
 
                 XmlNodeList list = root.GetElementsByTagName(tag);
 
-                StringBuilder sb = new StringBuilder();
+                string value = string.Empty;
 
                 foreach (XmlNode node in list)
                 {
-                    sb.Append(node.InnerText);
+                    value = node.InnerText;
+                    break;
                 }
 
-                return sb.ToString();
+                return value;
             }
             catch
             {
                 return String.Empty;
+            }
+        }
+
+        public void UpdateTagValue(string tag, string newValue)
+        {
+            XmlNodeList list = doc.GetElementsByTagName(tag);
+
+            foreach (XmlNode node in list)
+            {
+                if (node.Name.Equals(tag))
+                {
+                    node.InnerText = newValue;
+                    break;
+                } 
             }
         }
 

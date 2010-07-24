@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Management;
+using System.Net;
 
 namespace WPFMessengerSeg.Core.util
 {
@@ -65,6 +66,24 @@ namespace WPFMessengerSeg.Core.util
             }
 
             return mbID;
+        }
+
+        public static string GetIP()
+        {
+            string ipAddress = String.Empty;
+            string host = String.Empty;
+
+            host = Dns.GetHostName();
+
+            IPHostEntry ipEntry = Dns.GetHostByName(host);
+            IPAddress[] addr = ipEntry.AddressList;
+
+            foreach(IPAddress address in addr){
+                ipAddress = address.ToString();
+                break;
+            }
+
+            return ipAddress;
         }
 
 

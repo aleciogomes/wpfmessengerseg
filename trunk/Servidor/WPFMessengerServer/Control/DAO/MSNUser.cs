@@ -8,7 +8,7 @@ namespace WPFMessengerServer.Control.DAO
     public class MSNUser
     {
 
-        public IList<Model.MSNUser> GetList()
+        public IList<Model.MSNUser> GetList(Model.MSNUser requester, bool onlyContacts)
         {
 
             IList<Model.MSNUser> list = new List<Model.MSNUser>();
@@ -26,7 +26,23 @@ namespace WPFMessengerServer.Control.DAO
                     sql.Append(" SELECT ");
                     sql.Append(" cd_usuario, ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID ");
                     sql.Append(" FROM usuario ");
-                    command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
+
+                    if (onlyContacts)
+                    {
+                        sql.Append(" WHERE EXISTS ");
+                        sql.Append(" ( ");
+                        sql.Append("   SELECT contato.cd_usuario from contato ");
+                        sql.Append("   WHERE usuario.cd_usuario = contato.cd_contato and contato.cd_usuario = {0} ");
+                        sql.Append(" ) ");
+
+                        Object[] sqlParams = new Object[] { requester.ID };
+                        command = new MySqlCommand(String.Format(sql.ToString(), sqlParams), DBUtil.Instance.Connection);
+                    }
+                    else
+                    {
+                        command = new MySqlCommand(sql.ToString(), DBUtil.Instance.Connection);
+                    }
+                   
                     reader = command.ExecuteReader();
 
                     Model.MSNUser user = null;

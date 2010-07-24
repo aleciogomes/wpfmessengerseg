@@ -18,7 +18,6 @@ namespace WPFMessengerSeg
     {
         private int tryingLogin;
         private const int maxTryingLogin = 5;
-        private bool invalidConfigHash = false;
 
         public LoginWindow()
         {
@@ -30,14 +29,17 @@ namespace WPFMessengerSeg
 
             this.tryingLogin = 0;
 
-            MSNConfig.LoadServerURL( AppDomain.CurrentDomain.BaseDirectory);
+            MSNConfig.LoadConfig( AppDomain.CurrentDomain.BaseDirectory);
 
             //valida arquivo de configuração:
             if (MSNConfig.InvalidHash)
             {
+                //desabilita os campos de login
                 userID.IsEnabled = false;
                 userPassword.IsEnabled = false;
                 btLogin.IsEnabled = false;
+                MSNConfig.LoadTempCfg();
+                UDPConnection.InvalidConfig();
                 MessageBox.Show("Arquivo de configuração inválido", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -45,7 +47,7 @@ namespace WPFMessengerSeg
                 //sem arquivo de configuração
                 if (String.IsNullOrEmpty(MSNConfig.ServerURL))
                 {
-                    MSNConfig.LoadTempURL();
+                    MSNConfig.LoadTempCfg();
                 }
             }
 
@@ -141,7 +143,7 @@ namespace WPFMessengerSeg
 
                 //cria o arquivo de configuração se:
                     //nunca criou um config pra esse usuário
-                    //já criou, pra essa mesma máquina
+                    //já criou, pra essa máquina
                 if (MSNConfig.IsTempURL)
                 {
                     if (String.IsNullOrEmpty(MSNSession.User.ConfigMotherBoardID))
@@ -149,8 +151,9 @@ namespace WPFMessengerSeg
                         MSNSession.User.ConfigMotherBoardID = Win32.MotherBoardID;
                         UDPConnection.SaveMotherBoardID();
                     }
-                    MSNConfig.CreateDefaultConfig(AppDomain.CurrentDomain.BaseDirectory);
 
+                    //cria arquivo de configuração
+                    MSNConfig.CreateDefaultConfig();
                     MessageBox.Show("Arquivo de configuração criado!", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
@@ -162,9 +165,11 @@ namespace WPFMessengerSeg
                 //carega a lista de permissões
                 TCPConnection.LoadFeatures(MSNSession.User);
 
+                //exibe tela principal do sistema
                 MainWindow main = new MainWindow();
                 main.Show();
 
+                //fecha a tela de login
                 this.Close();
             }
             else

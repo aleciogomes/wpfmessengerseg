@@ -19,13 +19,13 @@ namespace WPFMessengerSeg.Core
         private static string authentication = String.Empty;
         public static string ExpirationWarning = String.Empty;
 
-        public static IList<MSNUser> GetListUsers()
+        public static IList<MSNUser> GetListUsers(bool onlyContacts)
         {
 
             IList<MSNUser> list = new List<MSNUser>();
             MSNUser user = null;
 
-            string returnString = GetUsers();
+            string returnString = GetUsers(onlyContacts);
 
             if (ValidetReturn(returnString))
             {
@@ -124,8 +124,8 @@ namespace WPFMessengerSeg.Core
                 //já foi grava o id da placa mãe de onde foi gerado o config
                 if (!String.IsNullOrEmpty(MSNSession.User.ConfigMotherBoardID) && !MSNSession.User.ConfigMotherBoardID.Equals(Win32.MotherBoardID) && MSNConfig.IsTempURL)
                 {
-                    return "Arquivo de configuração não encontrado";
                     UDPConnection.Logoff();
+                    return "Arquivo de configuração não encontrado";
                 }
                 else
                 {
@@ -334,9 +334,11 @@ namespace WPFMessengerSeg.Core
             }
         }
 
-        private static String GetUsers()
+        private static String GetUsers(bool onlyContacts)
         {
-            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetUsers, GetAuthentication());
+
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), onlyContacts.ToString());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetUsers, info);
             return EstabilishConnection(cmd, true);
         }
 
@@ -389,7 +391,7 @@ namespace WPFMessengerSeg.Core
             {
                 TcpClient tcpclnt = new TcpClient();
                 //Console.WriteLine("Conectando.....");
-                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(MessengerLib.Core.MSNConfig.ServerURL), MessengerLib.Util.Config.TCPPort);
+                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(MSNConfig.ServerURL), MSNConfig.TCPPort);
                 tcpclnt.Connect(serverEndPoint);
 
                 //Console.WriteLine("Conectado!");

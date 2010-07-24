@@ -93,7 +93,7 @@ namespace WPFMessengerSeg
 
             //Console.WriteLine(String.Format("Atualizou lista de usuários: {0}", System.DateTime.Now));
 
-            listUsers = TCPConnection.GetListUsers();
+            listUsers = TCPConnection.GetListUsers(true);
         }
 
 
