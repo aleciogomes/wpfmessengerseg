@@ -27,8 +27,8 @@ namespace MessengerLib.Handler
 
     public enum Action
     {
+        //TCP
          Login
-        ,Logoff
         ,ConfirmLogin
         ,GetUsers
         ,GetUserInfo
@@ -36,16 +36,20 @@ namespace MessengerLib.Handler
         ,GetFeatures
         ,GetLogDates
         ,GetLog
-        ,SendMsg
-        ,UpdateAccMainInfo
-        ,UpdateAccOtherInfo
-        ,UpdatePermissions
+        ,UserAvailable
+
+        //UDP
+        ,Logoff
         ,CreateAcc
         ,DeleteAcc
-        ,UserAvailable
-        ,EventInvalidPassword
+        ,UpdatePermissions
+        ,UpdateAccMainInfo
+        ,UpdateAccOtherInfo
+        ,SendMsg
         ,EventSendEmoticonInMsg
         ,EventRecEmoticonInMsg
+        ,EventInvalidPassword
+        ,EventInvalidConfig
         ,SaveMotherBoardID
     }
 }

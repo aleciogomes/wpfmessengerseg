@@ -5,9 +5,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 CREATE SCHEMA IF NOT EXISTS `WPFMESS` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 
 -- -----------------------------------------------------
--- Table `WPFMESS`.`USUARIO`
+-- Usuário
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `WPFMESS`.`PERMISSAO`;
 DROP TABLE IF EXISTS `WPFMESS`.`USUARIO` ;
 
 CREATE  TABLE IF NOT EXISTS `WPFMESS`.`USUARIO` (
@@ -23,7 +22,24 @@ CREATE  TABLE IF NOT EXISTS `WPFMESS`.`USUARIO` (
   PRIMARY KEY (`cd_usuario`) )
 ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `WPFMESS`.`MENSAGEMOFF` ;
+DROP TABLE IF EXISTS `WPFMESS`.`CONTATO` ;
+
+CREATE TABLE IF NOT EXISTS `WPFMESS`.`CONTATO` (
+  `cd_usuario` INT NOT NULL,
+  `cd_contato` INT NOT NULL,
+  PRIMARY KEY (`cd_usuario`, `cd_contato`),
+  CONSTRAINT `fk_contato_usuario`
+    FOREIGN KEY (`cd_usuario`)
+    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`),
+  CONSTRAINT `fk_contato_contato`
+    FOREIGN KEY (`cd_contato`)
+    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`),
+)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Recursos, operações e permissões
+-- -----------------------------------------------------
 
 DROP TABLE IF EXISTS `WPFMESS`.`RECURSO` ;
 
@@ -62,6 +78,10 @@ CREATE TABLE IF NOT EXISTS `WPFMESS`.`PERMISSAO` (
 )
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Auditoria
+-- -----------------------------------------------------
+
 DROP TABLE IF EXISTS `WPFMESS`.`AUDITORIA` ;
 
 CREATE TABLE IF NOT EXISTS `WPFMESS`.`AUDITORIA` (
@@ -69,6 +89,10 @@ CREATE TABLE IF NOT EXISTS `WPFMESS`.`AUDITORIA` (
   `ds_auditoria` TEXT NOT NULL
 )
 ENGINE = InnoDB;
+
+-- !!!!!!!!!!!!!!!!!!!!!!!!!
+-- INSERTS Usuario
+-- !!!!!!!!!!!!!!!!!!!!!!!!!
 
 INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
 VALUES ('admin', 'Administrador', '21232F297A57A5A743894A0E4A801FC3', NULL, 0, FALSE, NULL, NULL);
@@ -84,6 +108,36 @@ VALUES ('adams', 'Família Adams', '3cc4a9a458d45578ecd7bbab6ec2aee5', NULL, 0, 
 
 INSERT INTO usuario (ds_login, nm_usuario,ds_pwhash,dt_validade,nr_prazoAlerta,fl_bloqueada,dt_liberacaoBloqueio, ds_configMbID)
 VALUES ('anna', 'Anna Hickmann', 'a70f9e38ff015afaa9ab0aacabee2e13', NULL, 0, FALSE, NULL, NULL);
+
+-- !!!!!!!!!!!!!!!!!!!!!!!!!
+-- INSERTS Contatos
+-- !!!!!!!!!!!!!!!!!!!!!!!!!
+
+-- Contatos ADMIN (fala com todos)
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (1,2);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (1,3);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (1,4);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (1,5);
+
+-- Contatos MOORE (fala com admin e blair)
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (2,1);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (2,3);
+
+-- Contatos BLAIR (fala com admin e moore)
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (3,1);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (3,2);
+
+-- Contatos ADAMS (fala com admin e anna)
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (4,1);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (4,5);
+
+-- Contatos ANNA (fala com admin e admas)
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (5,1);
+INSERT INTO contato (cd_usuario, cd_contato) VALUES (5,4);
+
+-- !!!!!!!!!!!!!!!!!!!!!!!!!
+-- INSERTS Permissões
+-- !!!!!!!!!!!!!!!!!!!!!!!!!
 
 INSERT INTO `WPFMESS`.`RECURSO` VALUES (1, 'main');
 INSERT INTO `WPFMESS`.`RECURSO` VALUES (2, 'chat');
@@ -132,6 +186,8 @@ INSERT INTO `WPFMESS`.`PERMISSAO` VALUES (5, 4);
 INSERT INTO `WPFMESS`.`PERMISSAO` VALUES (5, 5);
 INSERT INTO `WPFMESS`.`PERMISSAO` VALUES (5, 7);
 INSERT INTO `WPFMESS`.`PERMISSAO` VALUES (5, 8);
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

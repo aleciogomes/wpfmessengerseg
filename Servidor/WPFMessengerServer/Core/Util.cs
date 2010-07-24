@@ -35,9 +35,9 @@ namespace WPFMessengerServer
            return String.Format("{0}:{1}:{2}:{3}:{4}:{5}", msnUser.Name, msnUser.Password, msnUser.ExpirationString(false), msnUser.TimeAlert, msnUser.Blocked, msnUser.UnblockDateString(false));
         }
 
-        public static string GetUsers()
+        public static string GetUsers(MSNUser requester, bool onlyContacts)
         {
-            IList<Control.Model.MSNUser> list = daoUser.GetList();
+            IList<Control.Model.MSNUser> list = daoUser.GetList(requester, onlyContacts);
 
             StringBuilder sb = new StringBuilder();
             foreach (Control.Model.MSNUser usuario in list)

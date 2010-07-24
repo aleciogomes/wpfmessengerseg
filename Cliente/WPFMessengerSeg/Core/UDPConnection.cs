@@ -5,12 +5,13 @@ using System.Net.Sockets;
 using System.Text;
 using MessengerLib.Handler;
 using WPFMessengerSeg.Core.util;
+using MessengerLib.Core;
 
 namespace WPFMessengerSeg.Core
 {
     public static class UDPConnection
     {
-        private static IPAddress ipAdress = IPAddress.Parse(MessengerLib.Core.MSNConfig.ServerURL);
+        private static IPAddress ipAdress = IPAddress.Parse( MSNConfig.ServerURL);
         private static UdpClient udp = new UdpClient();
 
         public static bool SendMessage(MSNUser destintyUser, string message)
@@ -122,6 +123,13 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
+        public static void InvalidConfig()
+        {
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventInvalidConfig, Win32.GetIP());
+
+            Transfer(cmd);
+        }
+
         public static void SaveMotherBoardID()
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), MSNSession.User.ConfigMotherBoardID);
@@ -130,12 +138,11 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
-
         private static bool Transfer(string cmd)
         {
             try
             {
-                IPEndPoint ip = new IPEndPoint(ipAdress, MessengerLib.Util.Config.UDPPort);
+                IPEndPoint ip = new IPEndPoint(ipAdress, MSNConfig.UDPPort);
 
                 byte[] data = MessengerLib.Util.Encoder.GetEncoding().GetBytes(cmd);
                 udp.Send(data, data.Length, ip);

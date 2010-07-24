@@ -43,7 +43,7 @@ namespace WPFMessengerSeg.Core.util
 
         private void UsersReport(XML xml, ref String path)
         {
-            IList<MSNUser> users = TCPConnection.GetListUsers();
+            IList<MSNUser> users = TCPConnection.GetListUsers(false);
 
             foreach (MSNUser user in users)
             {
