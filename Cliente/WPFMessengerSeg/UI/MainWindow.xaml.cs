@@ -12,6 +12,8 @@ using MessengerLib.Handler;
 using WPFMessengerSeg.Core;
 using WPFMessengerSeg.Core.events;
 using WPFMessengerSeg.UI;
+using Microsoft.Win32;
+using WPFMessengerSeg.Core.util;
 
 namespace WPFMessengerSeg
 {
@@ -386,7 +388,37 @@ namespace WPFMessengerSeg
 
             this.lblUsuario.Text = MSNSession.User.Login;
             this.lblNome.Text = MSNSession.User.Name;
+        }
 
+        private void ExportContacts_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+
+            dialog.DefaultExt   = Report.REPORT_EXT;
+            dialog.Filter       = String.Format("Lista de contatos do WPFMessenger ({0})|*{1}", Report.REPORT_EXT, Report.REPORT_EXT);
+
+            if (dialog.ShowDialog() == true)
+            {
+                IList<int> listContacts = new List<int>();
+
+                foreach (KeyValuePair<string, MSNUser> kvp in dicOnlineUsers)
+                {
+                    listContacts.Add(kvp.Value.ID);
+                }
+
+                foreach (KeyValuePair<string, MSNUser> kvp in dicOfflineUsers)
+                {
+                    listContacts.Add(kvp.Value.ID);
+                }
+
+                new Report().GenerateContactReport(listContacts, dialog.FileName);
+                UDPConnection.ExportContactList();
+                MessageBox.Show("Lista de contatos exportada com sucesso!", "Exportação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void ImportContacts_Click(object sender, RoutedEventArgs e)
+        {
         }
 
         private void ManageUsers_Click(object sender, RoutedEventArgs e)

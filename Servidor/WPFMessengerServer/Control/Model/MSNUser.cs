@@ -6,6 +6,7 @@ namespace WPFMessengerServer.Control.Model
 {
     public class MSNUser
     {
+        public IList<int> ListNewContacts { get; set; }
         public IList<MSNFeature> ListFeature { get; set; }
 
         public String ConfigMotherBoardID { get; set; }

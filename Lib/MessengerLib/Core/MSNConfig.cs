@@ -8,12 +8,11 @@ namespace MessengerLib.Core
     {
         private const string CONFIG_FILE    = "wpfmsn.cfg";
 
+        private const string HASH_KEY = "wpfKeyConfigM$n";
+
         private const string SERVER_TAG     = "serverMSN";
         private const string TCP_TAG        = "tcp";
         private const string UDP_TAG        = "udp";
-
-        private const string HASH_TAG       = "hash";
-        private const string HASH_KEY       = "wpfKeyConfigM$n";
 
         public static string ServerURL  = String.Empty;
         public static int TCPPort = 0;
@@ -62,7 +61,7 @@ namespace MessengerLib.Core
                     TCPPort = int.Parse(docXML.ReadTagValue(TCP_TAG));
                     UDPPort = int.Parse(docXML.ReadTagValue(UDP_TAG));
 
-                    string configHash = docXML.ReadTagValue(HASH_TAG);
+                    string configHash = docXML.ReadTagValue(XML.HASH_TAG);
 
                     //verifica
                     if (!configHash.Equals(Util.Encoder.GenerateMD5(HASH_KEY)))
@@ -89,7 +88,7 @@ namespace MessengerLib.Core
             docXML.InsertIntoGroup(docXML.GetRootNode(), SERVER_TAG, Util.Config.DefaultServer);
             docXML.InsertIntoGroup(docXML.GetRootNode(), TCP_TAG, Util.Config.DefaultTCPPort.ToString());
             docXML.InsertIntoGroup(docXML.GetRootNode(), UDP_TAG, Util.Config.DefaultUDPPort.ToString());
-            docXML.InsertIntoGroup(docXML.GetRootNode(), HASH_TAG, Util.Encoder.GenerateMD5(HASH_KEY));
+            docXML.AppendHashNode(HASH_KEY);
 
             string xmlContent = docXML.ToString();
             xmlContent = Util.Encoder.EncryptMessage(xmlContent);

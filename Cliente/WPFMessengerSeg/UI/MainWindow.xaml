@@ -56,6 +56,16 @@
                             <Image  Source="../resources/account.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Header="Exportar contatos" Click="ExportContacts_Click">
+                        <MenuItem.Icon>
+                            <Image  Source="../resources/export.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Importar contatos" Click="ImportContacts_Click">
+                        <MenuItem.Icon>
+                            <Image  Source="../resources/import.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Administrar" Visibility="Hidden" Name="menuAdmin" >
                     <MenuItem Header="Gerenciar usuários" Visibility="Hidden"  Click="ManageUsers_Click" Name="menuManageUsers">
