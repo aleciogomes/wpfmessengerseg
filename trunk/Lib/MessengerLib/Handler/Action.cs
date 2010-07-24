@@ -50,6 +50,7 @@ namespace MessengerLib.Handler
         ,EventRecEmoticonInMsg
         ,EventInvalidPassword
         ,EventInvalidConfig
+        ,EventExportContacts
         ,SaveMotherBoardID
     }
 }

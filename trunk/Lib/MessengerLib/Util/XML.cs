@@ -8,6 +8,8 @@ namespace MessengerLib.Util
     public class XML
     {
 
+        public const string HASH_TAG = "hash";
+
         private XmlDocument doc;
         private XmlNode rootNode; 
 
@@ -36,23 +38,22 @@ namespace MessengerLib.Util
             return doc.CreateElement(name);
         }
 
-
         public XmlNode GetRootNode()
         {
             return this.rootNode;
         }
 
-        public void AppendNode(XmlNode node)
+        public XmlNode AppendNode(XmlNode node)
         {
-            this.rootNode.AppendChild(node);
+            return this.rootNode.AppendChild(node);
         }
 
-        public void InsertIntoGroup(XmlNode group, string name, string value)
+        public XmlNode InsertIntoGroup(XmlNode group, string name, string value)
         {
             XmlNode node = doc.CreateElement(name);
             node.InnerText = value;
 
-            group.AppendChild(node);
+            return group.AppendChild(node);
         }
 
         public string ReadTagValue(string tag)
@@ -98,16 +99,17 @@ namespace MessengerLib.Util
             this.doc.Save(path);
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return this.doc.InnerXml;
         }
 
 
-        public void AppendHashNode()
+        public void AppendHashNode(string value)
         {
-            XmlNode node = CreateElement("hash");
-            node.InnerText = MessengerLib.Util.Encoder.GenerateMD5(ToString());
+            XmlNode node    = CreateElement(HASH_TAG);
+            node.InnerText  = MessengerLib.Util.Encoder.GenerateMD5(value);
+
             AppendNode(node);
         }
     }

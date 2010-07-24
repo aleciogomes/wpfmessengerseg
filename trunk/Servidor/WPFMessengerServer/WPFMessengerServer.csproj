@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\DAO\MSNContact.cs" />
     <Compile Include="Control\DAO\MSNLog.cs" />
     <Compile Include="Control\DAO\MSNFeature.cs" />
     <Compile Include="Control\DAO\MSNPermission.cs" />

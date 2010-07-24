@@ -123,6 +123,12 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
+        public static void ExportContactList()
+        {
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventExportContacts, TCPConnection.GetAuthentication());
+            Transfer(cmd);
+        }
+
         public static void InvalidConfig()
         {
             string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventInvalidConfig, Win32.GetIP());

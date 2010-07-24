@@ -57,6 +57,23 @@ namespace WPFMessengerServer.Core
                 {
                     #region Tratamento de requisições
 
+                    case MessengerLib.Handler.Action.Logoff:
+
+                        if (msnUser != null)
+                        {
+                            //auditoria
+                            Util.RegEvent(msnUser.Login, "Logoff efetuado");
+                            Console.WriteLine(String.Format("Usuário desconectado: {0}", msnUser.Login));
+
+                            Util.ShutdownUser(msnUser.Login);
+                        }
+                        else
+                        {
+                            Util.RegEvent(userLogin, "Tentativa de realizar logoff sem login do sistema");
+                        }
+
+                        break;
+
                     #region CASES Envio de mensagens
 
                     case MessengerLib.Handler.Action.SendMsg:
@@ -117,22 +134,7 @@ namespace WPFMessengerServer.Core
 
                     #endregion
 
-                    case MessengerLib.Handler.Action.Logoff:
-
-                        if (msnUser != null)
-                        {
-                            //auditoria
-                            Util.RegEvent(msnUser.Login, "Logoff efetuado");
-                            Console.WriteLine(String.Format("Usuário desconectado: {0}", msnUser.Login));
-
-                            Util.ShutdownUser(msnUser.Login);
-                        }
-                        else
-                        {
-                            Util.RegEvent(userLogin, "Tentativa de realizar logoff sem login do sistema");
-                        }
-
-                        break;
+                    #region CASES Cadastro do usuário
 
                     case MessengerLib.Handler.Action.UpdateAccMainInfo:
 
@@ -317,6 +319,8 @@ namespace WPFMessengerServer.Core
 
                         break;
 
+                    #endregion
+
                     #region CASES Arquivo de config
 
                     case MessengerLib.Handler.Action.SaveMotherBoardID:
@@ -340,7 +344,26 @@ namespace WPFMessengerServer.Core
 
                         //auditoria
                         Util.RegEvent("Sem usuário", String.Format("Arquivo de configuração inválido na máquina {0}", info[0]));
-                        Console.WriteLine(String.Format("Arquivo de configuração inválido na máquina {0}", msnUser.Login));
+                        Console.WriteLine(String.Format("Arquivo de configuração inválido na máquina {0}", info[0]));
+
+                        break;
+
+                    #endregion
+
+                    #region CASES Exportação/Importação
+
+                    case MessengerLib.Handler.Action.EventExportContacts:
+
+                        if (msnUser != null)
+                        {
+                            //auditoria
+                            Util.RegEvent(msnUser.Login, "Exportou lista de contatos");
+                            Console.WriteLine(String.Format("Exportou lista de contatos: {0}", msnUser.Login));
+                        }
+                        else
+                        {
+                            Util.RegEvent(userLogin, "Tentativa de simular exportação da lista de usuários sem login do sistema");
+                        }
 
                         break;
 

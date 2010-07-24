@@ -1,67 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MessengerLib.Util;
 using System.IO;
 using System.Xml;
+using MessengerLib.Util;
 
 namespace WPFMessengerSeg.Core.util
 {
-    public enum ReportType
+    public class Report
     {
-        user,
-    }
+        private const string LIST_TAG    = "contatos";
+        private const string USERS_TAG = "usuarios";
+        private const string USER_TAG = "usuario";
+        private const string USERID_TAG = "id";
+        public const string REPORT_EXT  = ".msnlist";
 
-    class Report
-    {
-        public void GenerateReport(ReportType reportType, String path)
+        public void GenerateContactReport(IList<int> listContacts, string savePath)
         {
-            XML xml = new XML();
-            xml.IntializeXML("users");
 
-            switch (reportType)
+            XML docXML = new XML();
+
+            docXML.IntializeXML(LIST_TAG);
+
+            XmlNode rootUsers = docXML.AppendNode(docXML.CreateElement(USERS_TAG));
+            XmlNode userNode = null;
+
+            foreach(int id in listContacts)
             {
-                case ReportType.user:
-                    {
-                        UsersReport(xml, ref path);
-                        break;
-                    }
-                default:
-                    {
-                        throw new ArgumentException();
-                    }
+                //insere id do contato no XML
+                userNode = docXML.InsertIntoGroup(rootUsers, USER_TAG, String.Empty);
+                docXML.InsertIntoGroup(userNode, USERID_TAG, id.ToString());
             }
 
-            xml.AppendHashNode();
+            //cria o hash do conteudo
+            string hashContent = MessengerLib.Util.Encoder.GenerateMD5(docXML.ToString());
+            docXML.AppendHashNode(hashContent);
 
-            using (StreamWriter file = new StreamWriter(path))
+            using (StreamWriter file = new StreamWriter(savePath))
             {
-                file.Write(MessengerLib.Util.Encoder.EncryptMessage(xml.ToString()));
+                //criptografia de todo o conteudo
+                string encryptXML =  MessengerLib.Util.Encoder.EncryptMessage(docXML.ToString());
+                file.Write(encryptXML);
             }
+
         }
 
-        private void UsersReport(XML xml, ref String path)
-        {
-            IList<MSNUser> users = TCPConnection.GetListUsers(false);
-
-            foreach (MSNUser user in users)
-            {
-                XmlNode group = xml.CreateElement("user");
-
-                xml.InsertIntoGroup(group, "name", user.Name);
-                xml.InsertIntoGroup(group, "login", user.Login);
-                xml.InsertIntoGroup(group, "blocked", user.Blocked.ToString());
-                xml.InsertIntoGroup(group, "timeAlert", user.TimeAlert.ToString());
-                xml.InsertIntoGroup(group, "expiration", user.ExpirationString);
-                xml.InsertIntoGroup(group, "unblockDate", user.UnblockDateString);
-                xml.AppendNode(group);
-            }
-
-            if (String.IsNullOrEmpty(path))
-            {
-                path = "users.xml";
-            }
-        }
     }
 }
