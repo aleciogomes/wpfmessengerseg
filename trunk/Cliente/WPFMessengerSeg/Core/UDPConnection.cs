@@ -144,6 +144,30 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
+        public static void InvalidImportFile(bool invalidContent)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), invalidContent.ToString());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventImportContactsFail, info);
+
+            Transfer(cmd);
+        }
+
+        public static void AddContacts(IList<string> listContacts)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach(string id in listContacts)
+            {
+                sb.Append(String.Format(":{0}", id));
+            }
+
+            string info = String.Format("{0}{1}", TCPConnection.GetAuthentication(), sb.ToString());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.AddContacts, info);
+
+            Transfer(cmd);
+        }
+
+
         private static bool Transfer(string cmd)
         {
             try

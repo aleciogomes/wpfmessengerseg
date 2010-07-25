@@ -40,6 +40,7 @@ namespace MessengerLib.Handler
 
         //UDP
         ,Logoff
+        ,AddContacts
         ,CreateAcc
         ,DeleteAcc
         ,UpdatePermissions
@@ -51,6 +52,7 @@ namespace MessengerLib.Handler
         ,EventInvalidPassword
         ,EventInvalidConfig
         ,EventExportContacts
+        ,EventImportContactsFail
         ,SaveMotherBoardID
     }
 }

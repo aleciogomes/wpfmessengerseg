@@ -367,6 +367,49 @@ namespace WPFMessengerServer.Core
 
                         break;
 
+                    case MessengerLib.Handler.Action.AddContacts:
+
+                        if (msnUser != null)
+                        {
+
+                            msnUser.ListNewContacts = new List<int>();
+                            
+                            for (int i = 2; i < info.Length; i++)
+                            {
+                                msnUser.ListNewContacts.Add(int.Parse(info[i]));
+                            }
+
+                            //auditoria
+                            Util.RegEvent(msnUser.Login, "Importou lista de contatos");
+                            Console.WriteLine(String.Format("Importou lista de contatos: {0}", msnUser.Login));
+
+                            Util.AddContacts(msnUser);
+                        }
+                        else
+                        {
+                            Util.RegEvent(userLogin, "Tentativa de simular importação da lista de usuários sem login do sistema");
+                        }
+
+                        break;
+
+                    case MessengerLib.Handler.Action.EventImportContactsFail:
+
+                        if (msnUser != null)
+                        {
+                            //define se o problema esta na confidencialidade ou integridade do arquivo
+                            bool invalidContent = bool.Parse(info[2]);
+
+                            //auditoria
+                            Util.RegEvent(msnUser.Login, String.Format("Falha na importação da lista de contatos ({0})", invalidContent ? "confidencialidade" : "integridade"));
+                            Console.WriteLine(String.Format("Falha na importação da lista de contatos ({0})", invalidContent ? "confidencialidade" : "integridade"));
+                        }
+                        else
+                        {
+                            Util.RegEvent(userLogin, "Tentativa de simular erro na importação da lista de usuários sem login do sistema");
+                        }
+
+                        break;
+
                     #endregion
 
                     #endregion
