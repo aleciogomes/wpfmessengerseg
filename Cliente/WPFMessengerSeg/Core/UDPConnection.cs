@@ -129,9 +129,10 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
-        public static void InvalidConfig()
+        public static void MonitorConfig(bool success)
         {
-            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventInvalidConfig, Win32.GetIP());
+            string info = String.Format("{0}:{1}", success.ToString(), Win32.GetIP());
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventMonitorConfig, info);
 
             Transfer(cmd);
         }
