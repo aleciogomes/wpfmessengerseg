@@ -99,7 +99,7 @@ namespace WPFMessengerSeg.Core
         {
             authentication = String.Empty;
             string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.Login, GetAuthentication());
-            string result = EstabilishConnection(cmd, false);
+            string result = EstabilishConnection(cmd, true);
 
             string[] info = result.Split(':');
 
@@ -120,6 +120,11 @@ namespace WPFMessengerSeg.Core
                 MSNSession.User.TimeAlert = int.Parse(info[4]);
 
                 MSNSession.User.ConfigMotherBoardID = info[5];
+
+                if (!String.IsNullOrEmpty(info[6]))
+                {
+                    MSNSession.User.SignaturePublicKey = MessengerLib.Util.Encoder.DecryptMessage(info[6]);
+                }
 
                 //já foi grava o id da placa mãe de onde foi gerado o config
                 if (!String.IsNullOrEmpty(MSNSession.User.ConfigMotherBoardID) && !MSNSession.User.ConfigMotherBoardID.Equals(Win32.MotherBoardID) && MSNConfig.IsTempURL)
@@ -187,6 +192,25 @@ namespace WPFMessengerSeg.Core
                 user.UnblockDate = DateTime.Parse(result[5]);
             }
             catch { }
+
+            return user;
+        }
+
+        public static MSNUser GetAuthorPublicKey(int userID)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), userID);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.GetAuthorPublicKey, info);
+
+            string[] result = EstabilishConnection(cmd, false).Split(':');
+
+            MSNUser user = new MSNUser();
+
+            user.Name = result[0];
+
+            if (!String.IsNullOrEmpty(result[1]))
+            {
+                user.SignaturePublicKey = MessengerLib.Util.Encoder.DecryptMessage(result[1]);
+            }
 
             return user;
         }

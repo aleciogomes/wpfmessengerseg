@@ -24,7 +24,7 @@ namespace WPFMessengerServer.Control.DAO
                 try
                 {
                     sql.Append(" SELECT ");
-                    sql.Append(" cd_usuario, ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID ");
+                    sql.Append(" cd_usuario, ds_login, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID, ds_puKey");
                     sql.Append(" FROM usuario ");
 
                     if (onlyContacts)
@@ -60,6 +60,13 @@ namespace WPFMessengerServer.Control.DAO
                             try
                             {
                                 user.ConfigMotherBoardID = reader.GetString("ds_configMbID");
+                            }
+                            catch { }
+
+
+                            try
+                            {
+                                user.SignaturePublicKey = reader.GetString("ds_puKey");
                             }
                             catch { }
 
@@ -104,6 +111,11 @@ namespace WPFMessengerServer.Control.DAO
 
         public Model.MSNUser Get(string userLogin, string userPassword)
         {
+            return this.Get("ds_login", userLogin, userPassword);
+        }
+
+        private Model.MSNUser Get(string field, string userIdentifier, string userPassword)
+        {
 
             lock (DBUtil.lockBD)
             {
@@ -115,18 +127,18 @@ namespace WPFMessengerServer.Control.DAO
 
                 try
                 {
-                    sql.Append(" SELECT cd_usuario, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID FROM usuario WHERE ds_login = '{0}'");
+                    sql.Append(" SELECT cd_usuario, nm_usuario, ds_pwhash, dt_validade, nr_prazoAlerta, fl_bloqueada, dt_liberacaoBloqueio, ds_configMbID, ds_puKey FROM usuario WHERE {0} = '{1}'");
 
                     Object[] sqlParams = null;
 
                     if (!String.IsNullOrEmpty(userPassword))
                     {
-                        sql.Append(" and ds_pwhash = '{1}' ");
-                        sqlParams = new Object[] { userLogin, userPassword };
+                        sql.Append(" and ds_pwhash = '{2}' ");
+                        sqlParams = new Object[] { field, userIdentifier, userPassword };
                     }
                     else
                     {
-                        sqlParams = new Object[] { userLogin };
+                        sqlParams = new Object[] { field, userIdentifier };
                     }
 
                     command = new MySqlCommand(String.Format(sql.ToString(), sqlParams), DBUtil.Instance.Connection);
@@ -138,13 +150,19 @@ namespace WPFMessengerServer.Control.DAO
                         Model.MSNUser user = new Model.MSNUser();
 
                         user.ID = reader.GetInt32("cd_usuario");
-                        user.Login = userLogin;
+                        user.Login = userIdentifier;
                         user.Password = reader.GetString("ds_pwhash"); ;
                         user.Name = reader.GetString("nm_usuario");
 
                         try
                         {
                             user.ConfigMotherBoardID = reader.GetString("ds_configMbID");
+                        }
+                        catch { }
+
+                        try
+                        {
+                            user.SignaturePublicKey = reader.GetString("ds_puKey");
                         }
                         catch { }
 
@@ -189,14 +207,25 @@ namespace WPFMessengerServer.Control.DAO
 
         public void SaveMotherBoardID(string userLogin, string mbID)
         {
+            this.SaveInfo(userLogin, "ds_configMbID", mbID);
+        }
+
+        public void SavePublicKey(string userLogin, string key)
+        {
+            this.SaveInfo(userLogin, "ds_puKey", key);
+        }
+
+        private void SaveInfo(string userLogin, string info, string value)
+        {
             StringBuilder sql = new StringBuilder();
             sql.Append(" UPDATE Usuario SET ");
-            sql.Append(" ds_configMbID  = '{0}' ");
-            sql.Append(" WHERE ds_login = '{1}' ");
+            sql.Append(" {0}  = '{1}' ");
+            sql.Append(" WHERE ds_login = '{2}' ");
 
             Object[] sqlParams = new Object[]{
-                mbID,
-                userLogin,
+                info,
+                value,
+                userLogin
             };
 
             DBUtil.ExecQuery(String.Format(sql.ToString(), sqlParams));
@@ -282,6 +311,11 @@ namespace WPFMessengerServer.Control.DAO
         public Model.MSNUser GetContact(string user)
         {
             return this.Get(user, String.Empty);
+        }
+
+        public Model.MSNUser GetContactByID(int userID)
+        {
+            return this.Get("cd_usuario", userID.ToString(), String.Empty);
         }
 
     }

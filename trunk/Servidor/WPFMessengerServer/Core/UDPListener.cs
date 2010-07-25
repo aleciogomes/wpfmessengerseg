@@ -328,14 +328,14 @@ namespace WPFMessengerServer.Core
                         if (msnUser != null)
                         {
                             //auditoria
-                            Util.RegEvent(msnUser.Login, "Config do cliente gerado");
-                            Console.WriteLine(String.Format("Config do cliente gerado: {0}", msnUser.Login));
+                            Util.RegEvent(msnUser.Login, "Config da aplicação cliente gerado");
+                            Console.WriteLine(String.Format("Config da aplicação gerado: {0}", msnUser.Login));
 
                             Util.SaveMotherBoardID(msnUser.Login, info[2]);
                         }
                         else
                         {
-                            Util.RegEvent(userLogin, "Tentativa de simular gravação do id de placa mãe login do sistema");
+                            Util.RegEvent(userLogin, "Tentativa de simular gravação do id de placa mãe sem login do sistema");
                         }
 
                         break;
@@ -406,6 +406,54 @@ namespace WPFMessengerServer.Core
                         else
                         {
                             Util.RegEvent(userLogin, "Tentativa de simular erro na importação da lista de usuários sem login do sistema");
+                        }
+
+                        break;
+
+                    #endregion
+
+                    #region CASES Assinatura digital
+
+                    case MessengerLib.Handler.Action.SavePublicKey:
+
+                        if (msnUser != null)
+                        {
+                            //auditoria
+                            Util.RegEvent(msnUser.Login, "Assinatura digital gerada");
+                            Console.WriteLine(String.Format("Assinatura digital gerada: {0}", msnUser.Login));
+
+                            Util.SavePublicKey(msnUser.Login, info[2]);
+                        }
+                        else
+                        {
+                            Util.RegEvent(userLogin, "Tentativa de simular gravação de assinatura digital sem login do sistema");
+                        }
+
+                        break;
+
+                    case MessengerLib.Handler.Action.EventValidateSignature:
+
+                        if (msnUser != null)
+                        {
+                            bool success = bool.Parse(info[2]);
+
+                            if (success)
+                            {
+                                //auditoria
+                                Util.RegEvent(msnUser.Login, String.Format("Assinatura do documento validada com sucesso. Gerador do arquivo: {0}", info[3]));
+                                Console.WriteLine(String.Format("Assinatura do documento validada com sucesso. Gerador do arquivo: {0}", info[3]));
+                            }
+                            else
+                            {
+                                //auditoria
+                                Util.RegEvent(msnUser.Login, String.Format("Assinatura do documento inválida. Gerador do arquivo: {0}", info[3]));
+                                Console.WriteLine(String.Format("Assinatura do documento inválida. Gerador do arquivo: {0}", info[3]));
+                            }
+
+                        }
+                        else
+                        {
+                            Util.RegEvent(userLogin, "Tentativa de simular verificação de uma assinatura sem login do sistema");
                         }
 
                         break;

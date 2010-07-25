@@ -144,6 +144,22 @@ namespace WPFMessengerSeg.Core
             Transfer(cmd);
         }
 
+        public static void SavePublicKey(string key)
+        {
+            string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), key);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.SavePublicKey, info);
+
+            Transfer(cmd);
+        }
+        public static void ValidateSignature(bool success, string fileAuthor)
+        {
+            string info = String.Format("{0}:{1}:{2}", TCPConnection.GetAuthentication(), success.ToString(), fileAuthor);
+            string cmd = MessengerLib.Handler.ActionHandler.FormatAction(MessengerLib.Handler.Action.EventValidateSignature, info);
+
+            Transfer(cmd);
+        }
+
+
         public static void InvalidImportFile(bool invalidContent)
         {
             string info = String.Format("{0}:{1}", TCPConnection.GetAuthentication(), invalidContent.ToString());

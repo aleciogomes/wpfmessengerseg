@@ -80,6 +80,7 @@ namespace WPFMessengerServer
 
                 string user = info[0];
                 string password = info[1];
+                int userID = 0;
 
                 MSNUser msnUser = Util.GetUser(user, password);
 
@@ -131,7 +132,8 @@ namespace WPFMessengerServer
                                 Console.WriteLine(String.Format("Login realizado: {0}", user));
 
                                 Util.AddOnline(msnUser);
-                                answer = String.Format("{0}:{1}:{2}:{3}:{4}:{5}", MessengerLib.Util.Config.OKMessage, msnUser.ID, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert, msnUser.ConfigMotherBoardID);
+                                answer = String.Format("{0}:{1}:{2}:{3}:{4}:{5}:{6}", MessengerLib.Util.Config.OKMessage, msnUser.ID, msnUser.Name, msnUser.ExpirationString(false), msnUser.TimeAlert, msnUser.ConfigMotherBoardID, msnUser.SignaturePublicKey);
+                                answer = String.Format("{0}:{1}", answer, MessengerLib.Util.Config.EndStackMessage);
                             }
                             else
                             {
@@ -194,10 +196,9 @@ namespace WPFMessengerServer
                         break;
                     case MessengerLib.Handler.Action.GetUserInfo:
 
-                        string user2 = info[2];
-
                         if (msnUser != null)
                         {
+                            string user2 = info[2];
                             answer = Util.GetUserInfo(user2);
                         }
                         else
@@ -207,9 +208,23 @@ namespace WPFMessengerServer
 
                         break;
 
+                    case MessengerLib.Handler.Action.GetAuthorPublicKey:
+
+                        if (msnUser != null)
+                        {
+                            userID = int.Parse(info[2]);
+                            answer = Util.GetContactByID(userID);
+                        }
+                        else
+                        {
+                            Util.RegEvent(user, "Tentativa de buscar chave pública de usuário sem login do sistema");
+                        }
+
+                        break;
+
                     case MessengerLib.Handler.Action.GetFeatures:
 
-                        int userID = int.Parse(info[2]);
+                        userID = int.Parse(info[2]);
 
                         if (msnUser != null)
                         {

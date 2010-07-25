@@ -9,11 +9,11 @@ using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
 using MessengerLib.Handler;
+using Microsoft.Win32;
 using WPFMessengerSeg.Core;
 using WPFMessengerSeg.Core.events;
-using WPFMessengerSeg.UI;
-using Microsoft.Win32;
 using WPFMessengerSeg.Core.util;
+using WPFMessengerSeg.UI;
 
 namespace WPFMessengerSeg
 {
@@ -366,6 +366,12 @@ namespace WPFMessengerSeg
                 this.menuEvents.Visibility = Visibility.Visible;
             }
 
+            //se ainda não possui chave privada/publica
+            if (String.IsNullOrEmpty(MSNSession.User.SignaturePublicKey))
+            {
+                this.menuAssinatura.Visibility = Visibility.Visible;
+            }
+
             this.offlineTalk = MSNUser.HasFeature(MSNSession.User, Operation.SendMsgOffUser);
             this.sendMsg = MSNUser.HasFeature(MSNSession.User, Operation.SendMsg);
             this.recMsg = MSNUser.HasFeature(MSNSession.User, Operation.RecMsg);
@@ -390,8 +396,62 @@ namespace WPFMessengerSeg
             this.lblNome.Text = MSNSession.User.Name;
         }
 
-        private void ExportContacts_Click(object sender, RoutedEventArgs e)
+        private void DigitalSignature_Click(object sender, RoutedEventArgs e)
         {
+            SaveFileDialog dialog = new SaveFileDialog();
+
+            dialog.DefaultExt = Signature.KEY_EXT;
+            dialog.Filter = String.Format("Arquivo de assinatura do WPFMessenger ({0})|*{1}", Signature.KEY_EXT, Signature.KEY_EXT);
+
+            if (dialog.ShowDialog() == true)
+            {
+                Signature signature = new Signature(true);
+                signature.GenerateSignatureFile(dialog.FileName);
+                MessageBox.Show("Assinatura digital criada! Mantenha esse arquivo em local seguro, pois ele será utilizado para assinar dados durante a exportação de informações.", "Assinatura digital", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+        }
+
+        private void ExportContactsWithKey_Click(object sender, RoutedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(MSNSession.User.SignaturePublicKey))
+            {
+                ExportContacts_Click(true);
+            }
+            else
+            {
+                MessageBox.Show("Você ainda não possui uma assinatura digital. Crie uma antes de realizar essa operação novamente.", "Exportação de contatos", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
+        }
+
+        private void ExportContactsNoKey_Click(object sender, RoutedEventArgs e)
+        {
+            ExportContacts_Click(false);
+        }
+
+        private void ExportContacts_Click(bool sign)
+        {
+
+            if(sign && String.IsNullOrEmpty(MSNSession.User.SignaturePrivateKey))
+            {
+                MessageBox.Show("Selecione o arquivo que contém sua assinatura digital", "Exportação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                OpenFileDialog openDialog = new OpenFileDialog();
+                openDialog.DefaultExt = Signature.KEY_EXT;
+                openDialog.Filter = String.Format("Arquivo de assinatura do WPFMessenger ({0})|*{1}", Signature.KEY_EXT, Signature.KEY_EXT);
+
+                if (openDialog.ShowDialog() == true)
+                {
+                    new Signature(false).ReadSginatureFile(openDialog.FileName);
+                }
+                else
+                {
+                    //sai da função
+                    return;
+                }
+            }
+
             SaveFileDialog dialog = new SaveFileDialog();
 
             dialog.DefaultExt   = Report.REPORT_EXT;
@@ -411,13 +471,23 @@ namespace WPFMessengerSeg
                     listContacts.Add(kvp.Value.ID);
                 }
 
-                new Report().GenerateContactReport(listContacts, dialog.FileName);
+                new Report().GenerateContactReport(listContacts, dialog.FileName, sign);
                 UDPConnection.ExportContactList();
                 MessageBox.Show("Lista de contatos exportada com sucesso!", "Exportação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
-        private void ImportContacts_Click(object sender, RoutedEventArgs e)
+        private void ImportContactsWithKey_Click(object sender, RoutedEventArgs e)
+        {
+            ImportContacts_Click(true);
+        }
+
+        private void ImportContactsNoKey_Click(object sender, RoutedEventArgs e)
+        {
+            ImportContacts_Click(false);
+        }
+
+        private void ImportContacts_Click(bool validateSignature)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.DefaultExt = Report.REPORT_EXT;
@@ -427,7 +497,9 @@ namespace WPFMessengerSeg
             {
                 Report importReport = new Report();
 
-                if (importReport.ImportContactReport(dialog.FileName))
+                string title = "Importação de contatos";
+
+                if (importReport.ImportContactReport(dialog.FileName, validateSignature))
                 {
 
                     #region Remove da lista os contatos que o usuário já tem
@@ -449,17 +521,27 @@ namespace WPFMessengerSeg
                     if (importReport.ImportedValues.Count > 0)
                     {
                         UDPConnection.AddContacts(importReport.ImportedValues);
-                        MessageBox.Show("A lista de contatos selecionada foi importada.", "Importação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("A lista de contatos selecionada foi importada.", title, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        MessageBox.Show("A lista de contatos selecionada foi importada, porém você já possui todos os contatos da lista.", "Importação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("A lista de contatos selecionada foi importada, porém você já possui todos os contatos da lista.", title, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 else
                 {
-                    UDPConnection.InvalidImportFile(importReport.InvalidContent);
-                    MessageBox.Show(String.Format("A lista de contatos selecionada não foi importada. Foram encontrados problemas de {0} no arquivo.", importReport.InvalidContent ? "confidencialidade" : "integridade"), "Importação de contatos", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if(importReport.InvalidSignature)
+                    {
+                        MessageBox.Show("A lista de contatos selecionada não foi importada. A assinatura do arquivo não é válida.", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else if(importReport.SignatureNotFound)
+                    {
+                        MessageBox.Show("A lista de contatos selecionada não possui assinatura.", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show(String.Format("A lista de contatos selecionada não foi importada. Foram encontrados problemas de {0} no arquivo.", importReport.InvalidContent ? "confidencialidade" : "integridade"), title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
 

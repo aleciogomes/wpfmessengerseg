@@ -137,12 +137,12 @@ namespace MessengerLib.Util
         }
 
 
-        public void AppendHashNode(string value)
+        public XmlNode AppendHashNode(string value)
         {
             XmlNode node    = CreateElement(HASH_TAG);
             node.InnerText  = MessengerLib.Util.Encoder.GenerateMD5(value);
 
-            AppendNode(node);
+            return AppendNode(node);
         }
     }
 }
