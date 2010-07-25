@@ -51,7 +51,7 @@ namespace MessengerLib.Handler
         ,EventSendEmoticonInMsg
         ,EventRecEmoticonInMsg
         ,EventInvalidPassword
-        ,EventInvalidConfig
+        ,EventMonitorConfig
         ,EventExportContacts
         ,EventImportContactsFail
         ,EventValidateSignature

@@ -40,6 +40,9 @@ namespace WPFMessengerServer.Core
             string request  = data.ToString(),
                    userLogin     = String.Empty,
                    userPassword = String.Empty;
+
+            bool success = true;
+            
             try
             {
 
@@ -340,11 +343,26 @@ namespace WPFMessengerServer.Core
 
                         break;
 
-                    case MessengerLib.Handler.Action.EventInvalidConfig:
+                    case MessengerLib.Handler.Action.EventMonitorConfig:
 
-                        //auditoria
-                        Util.RegEvent("Sem usuário", String.Format("Arquivo de configuração inválido na máquina {0}", info[0]));
-                        Console.WriteLine(String.Format("Arquivo de configuração inválido na máquina {0}", info[0]));
+                        success = bool.Parse(info[0]);
+
+                        string ipAddress = info[1];
+
+                        userLogin = "Sem usuário";
+
+                        if (success)
+                        {
+                            //auditoria
+                            Util.RegEvent(userLogin, String.Format("Arquivo de configuração válido na máquina {0}", ipAddress));
+                            Console.WriteLine(String.Format("Arquivo de configuração válido na máquina {0}", ipAddress));
+                        }
+                        else
+                        {
+                            //auditoria
+                            Util.RegEvent(userLogin, String.Format("Arquivo de configuração inválido na máquina {0}", ipAddress));
+                            Console.WriteLine(String.Format("Arquivo de configuração inválido na máquina {0}", ipAddress));
+                        }
 
                         break;
 
@@ -435,7 +453,7 @@ namespace WPFMessengerServer.Core
 
                         if (msnUser != null)
                         {
-                            bool success = bool.Parse(info[2]);
+                            success = bool.Parse(info[2]);
 
                             if (success)
                             {

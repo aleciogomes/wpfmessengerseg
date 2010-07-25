@@ -39,7 +39,7 @@ namespace WPFMessengerSeg
                 userPassword.IsEnabled = false;
                 btLogin.IsEnabled = false;
                 MSNConfig.LoadTempCfg();
-                UDPConnection.InvalidConfig();
+                UDPConnection.MonitorConfig(false);
                 MessageBox.Show("Arquivo de configuração inválido", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -48,6 +48,10 @@ namespace WPFMessengerSeg
                 if (String.IsNullOrEmpty(MSNConfig.ServerURL))
                 {
                     MSNConfig.LoadTempCfg();
+                }
+                else
+                {
+                    UDPConnection.MonitorConfig(true);
                 }
             }
 
@@ -150,6 +154,10 @@ namespace WPFMessengerSeg
                     {
                         MSNSession.User.ConfigMotherBoardID = Win32.MotherBoardID;
                         UDPConnection.SaveMotherBoardID();
+                    }
+                    else
+                    {
+                        UDPConnection.MonitorConfig(true);
                     }
 
                     //cria arquivo de configuração
