@@ -1,0 +1,24 @@
+============
+Integridade
+============
+[X] - Definir um arquivo de configuração
+[X] - Monitorar a integridade do arquivo de configuração na entrada do sistema
+[X] - Auditoria: todas as verificações corretas ou falhas.
+
+============
+Exportação e importação
+============
+[X] - Exportação e importação com confidencialidade e integridade
+[X] - Auditoria de falha e sucesso da integridade e confidencialidade
+
+==================
+Assinatura
+==================
+[X] - Assinatura e verificação de informações com DSA ou RSA
+[X] - Armazenar chave pública e assinatura em arquivo
+[ ] - Auditoria de falha e sucesso da assinatura.
+
+Legenda:
+[X] - Feito
+[-] - Parcialmente
+[ ] - Não feito
