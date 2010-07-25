@@ -19,6 +19,7 @@ CREATE  TABLE IF NOT EXISTS `WPFMESS`.`USUARIO` (
   `fl_bloqueada` CHAR ,
   `dt_liberacaoBloqueio` DATE ,
   `ds_configMbID` VARCHAR(50) ,
+  `ds_puKey` TEXT ,
   PRIMARY KEY (`cd_usuario`) )
 ENGINE = InnoDB;
 
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `WPFMESS`.`CONTATO` (
     REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`),
   CONSTRAINT `fk_contato_contato`
     FOREIGN KEY (`cd_contato`)
-    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`),
+    REFERENCES `WPFMESS`.`USUARIO` (`cd_usuario`)
 )
 ENGINE = InnoDB;
 
