@@ -9,20 +9,34 @@ namespace WPFMessengerSeg.Core.util
     public class Report
     {
         private const string LIST_TAG    = "contatos";
+        private const string GENERATOR_TAG = "gerador";
         private const string USERS_TAG = "usuarios";
         private const string USER_TAG = "usuario";
         private const string USERID_TAG = "id";
+        private const string SIGN_TAG = "assinatura";
+
         public const string REPORT_EXT  = ".msnlist";
 
         public IList<string> ImportedValues {get;set;}
         public bool InvalidContent;
+        public bool InvalidSignature;
+        public bool SignatureNotFound;
 
-        public void GenerateContactReport(IList<int> listContacts, string savePath)
+        public Report()
+        {
+            this.InvalidContent = false;
+            this.InvalidSignature = false;
+            this.SignatureNotFound = false;
+        }
+
+        public void GenerateContactReport(IList<int> listContacts, string savePath, bool sign)
         {
 
             XML docXML = new XML();
 
             docXML.IntializeXML(LIST_TAG);
+
+            docXML.InsertIntoGroup(docXML.GetRootNode(), GENERATOR_TAG, MSNSession.User.ID.ToString());
 
             XmlNode rootUsers = docXML.AppendNode(docXML.CreateElement(USERS_TAG));
             XmlNode userNode = null;
@@ -35,21 +49,27 @@ namespace WPFMessengerSeg.Core.util
             }
 
             //cria o hash do conteudo
-            docXML.AppendHashNode(docXML.ToString());
+            string hash = docXML.AppendHashNode(docXML.ToString()).InnerText;
+
+            //se deve assinar
+            if (sign)
+            {
+                string signedHash = MessengerLib.Util.Encoder.Sign(hash, MSNSession.User.SignaturePrivateKey);
+                docXML.InsertIntoGroup(docXML.GetRootNode(), SIGN_TAG, signedHash);
+            }
 
             using (StreamWriter file = new StreamWriter(savePath))
             {
                 //criptografia de todo o conteudo
-                string encryptXML =  MessengerLib.Util.Encoder.EncryptMessage(docXML.ToString());
+                string encryptXML   =  docXML.ToString();
+                encryptXML          = MessengerLib.Util.Encoder.EncryptMessage(encryptXML);
+
                 file.Write(encryptXML);
             }
         }
 
-        public bool ImportContactReport(string filePath)
+        public bool ImportContactReport(string filePath, bool validateSignature)
         {
-
-            this.InvalidContent = false;
-
             try
             {
                 //faz a descriptografia do conteudo do arquivo
@@ -57,11 +77,19 @@ namespace WPFMessengerSeg.Core.util
                 Stream streamContent    = new MemoryStream(MessengerLib.Util.Encoder.GetEncoding().GetBytes(content));
                 Stream stream           = new MemoryStream(MessengerLib.Util.Encoder.GetEncoding().GetBytes(content));
 
-                XML docXMLContent       = new XML();
+                //xml sem as tag HASH e ASSINATURA
+                XML docXMLContent = new XML();
                 docXMLContent.LoadStream(streamContent);
                 docXMLContent.RemoveNode(XML.HASH_TAG);
 
-                XML docXML              = new XML();
+                try
+                {
+                    docXMLContent.RemoveNode(SIGN_TAG);
+                }
+                catch { }
+
+                //xml completo
+                XML docXML = new XML();
                 docXML.LoadStream(stream);
 
                 //gera o hash do arquivo
@@ -76,12 +104,51 @@ namespace WPFMessengerSeg.Core.util
                     return false;
                 }
 
+                //valida a assinatura
+                if (validateSignature)
+                {
+                    int userID = int.Parse(docXML.ReadTagValue(GENERATOR_TAG));
+                    MSNUser user = TCPConnection.GetAuthorPublicKey(userID);
+
+                    string signedHash = docXML.ReadTagValue(SIGN_TAG);
+
+                    //se não possui assinatura
+                    if (String.IsNullOrEmpty(signedHash))
+                    {
+                        this.SignatureNotFound = true;
+                        return false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            //verifica se a assinatura é válida
+                            InvalidSignature = !MessengerLib.Util.Encoder.Verify(hashKeyValue, signedHash, user.SignaturePublicKey);
+
+                            UDPConnection.ValidateSignature(!InvalidSignature, user.Name);
+
+                            if (InvalidSignature)
+                            {
+                                return false;
+                            }
+                        }
+                        catch
+                        {
+                            InvalidSignature = true;
+                            UDPConnection.ValidateSignature(!InvalidSignature, user.Name);
+                            return false;
+                        }
+
+                    }
+                }
+
                 this.ImportedValues = docXML.ReadTagValues(USERID_TAG);
 
             }
             catch
             {
                 this.InvalidContent = true;
+                UDPConnection.InvalidImportFile(this.InvalidContent);
                 return false;
             }
 

@@ -25,5 +25,6 @@ namespace WPFMessengerServer
 
             Console.WriteLine("\n\n-------------- EVENTOS-------------- ");
         }
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -86,18 +85,17 @@ namespace MessengerLib.Util
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             rsa.FromXmlString(xmlPrivateKey);
 
-            Encoding enc = MessengerLib.Util.Encoder.GetEncoding();
+            byte[] signData = rsa.SignData(encoderISO.GetBytes(contentToSign), CryptoConfig.MapNameToOID("SHA1"));
 
-            byte[] signData = rsa.SignData(enc.GetBytes(contentToSign), CryptoConfig.MapNameToOID("SHA1"));
-            return Convert.ToBase64String(signData, 0, signData.Length);
+            return Convert.ToBase64String(signData);
         }
 
-        public static bool Verify(string contentToVerify, string signature, string xmlPublicKey)
+        public static bool Verify(string originalContent, string verifyContent, string xmlPublicKey)
         {
             RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
             RSA.FromXmlString(xmlPublicKey);
 
-            return RSA.VerifyData(encoderISO.GetBytes(contentToVerify), CryptoConfig.MapNameToOID("SHA1"), encoderISO.GetBytes(signature));
+            return RSA.VerifyData(encoderISO.GetBytes(originalContent), CryptoConfig.MapNameToOID("SHA1"), Convert.FromBase64String(verifyContent));
         }
     }
 }

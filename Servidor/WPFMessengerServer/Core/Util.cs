@@ -20,19 +20,25 @@ namespace WPFMessengerServer
         private static Dictionary<string, IList<MSNMessage>> dicMessages = new Dictionary<string, IList<MSNMessage>>();
         private static Object lockMsg = new Object();
 
-        public static Control.Model.MSNUser GetUser(string user, string password)
+        public static Control.Model.MSNUser GetUser(string userLogin, string password)
         {
-            return daoUser.Get(user, password);
+            return daoUser.Get(userLogin, password);
         }
 
-        public static Control.Model.MSNUser GetContact(string user)
+        public static Control.Model.MSNUser GetContact(string userLogin)
         {
-            return daoUser.GetContact(user);
+            return daoUser.GetContact(userLogin);
         }
 
-        public static string GetUserInfo(string user)
+        public static string GetContactByID(int userID)
         {
-            Control.Model.MSNUser msnUser = daoUser.GetContact(user);
+            Control.Model.MSNUser msnUser = daoUser.GetContactByID(userID);
+            return String.Format("{0}:{1}", msnUser.Name, msnUser.SignaturePublicKey);
+        }
+
+        public static string GetUserInfo(string userLogin)
+        {
+           Control.Model.MSNUser msnUser = daoUser.GetContact(userLogin);
            return String.Format("{0}:{1}:{2}:{3}:{4}:{5}", msnUser.Name, msnUser.Password, msnUser.ExpirationString(false), msnUser.TimeAlert, msnUser.Blocked, msnUser.UnblockDateString(false));
         }
 
@@ -83,6 +89,11 @@ namespace WPFMessengerServer
         public static void SaveMotherBoardID(string userLogin, string mbID)
         {
             daoUser.SaveMotherBoardID(userLogin, mbID);
+        }
+
+        public static void SavePublicKey(string userLogin, string key)
+        {
+            daoUser.SavePublicKey(userLogin, key);
         }
 
         public static void UpdatePermissions(Control.Model.MSNUser user, IList<string> listOperation)

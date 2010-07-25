@@ -111,6 +111,7 @@
     <Compile Include="Core\events\Arguments.cs" />
     <Compile Include="Core\events\Delegate.cs" />
     <Compile Include="Core\util\Report.cs" />
+    <Compile Include="Core\util\Signature.cs" />
     <Compile Include="Core\util\Win32.cs" />
     <Compile Include="Core\MSNMessage.cs" />
     <Compile Include="Core\MSNSession.cs" />
@@ -193,6 +194,11 @@
     <Content Include="resources\alert.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\digitalSignature.png" />
+    <Resource Include="resources\check.png" />
+    <Resource Include="resources\key.png" />
+    <Resource Include="resources\validate_key.png" />
+    <Resource Include="resources\validate_nokey.png" />
     <Resource Include="resources\export.png" />
     <Resource Include="resources\import.png" />
     <Resource Include="resources\favorite.png" />

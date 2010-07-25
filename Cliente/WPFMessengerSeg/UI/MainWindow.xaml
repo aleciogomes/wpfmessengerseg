@@ -56,15 +56,40 @@
                             <Image  Source="../resources/account.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Exportar contatos" Click="ExportContacts_Click">
+                    <MenuItem Header="Gerar assinatura digital" Name="menuAssinatura"  Visibility="Collapsed" Click="DigitalSignature_Click">
+                        <MenuItem.Icon>
+                            <Image  Source="../resources/digitalSignature.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Exportar contatos">
                         <MenuItem.Icon>
                             <Image  Source="../resources/export.png"/>
                         </MenuItem.Icon>
+                        <MenuItem Header="Assinar exportação" Click="ExportContactsWithKey_Click">
+                            <MenuItem.Icon>
+                                <Image  Source="../resources/key.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Não assinar exportação" Click="ExportContactsNoKey_Click">
+                            <MenuItem.Icon>
+                                <Image  Source="../resources/check.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Importar contatos" Click="ImportContacts_Click">
+                    <MenuItem Header="Importar contatos">
                         <MenuItem.Icon>
                             <Image  Source="../resources/import.png"/>
                         </MenuItem.Icon>
+                        <MenuItem Header="Validar assinatura" Click="ImportContactsWithKey_Click">
+                            <MenuItem.Icon>
+                                <Image  Source="../resources/validate_key.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Não validar assinatura" Click="ImportContactsNoKey_Click">
+                            <MenuItem.Icon>
+                                <Image  Source="../resources/validate_nokey.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Administrar" Visibility="Hidden" Name="menuAdmin" >

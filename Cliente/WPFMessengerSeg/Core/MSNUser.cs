@@ -17,6 +17,8 @@ namespace WPFMessengerSeg.Core
         public String Login { get; set; }
         public Boolean Online { get; set; }
         public String ConfigMotherBoardID { get; set; }
+        public String SignaturePublicKey { get; set; }
+        public String SignaturePrivateKey { get; set; }
 
         public String Password { get; set; }
 

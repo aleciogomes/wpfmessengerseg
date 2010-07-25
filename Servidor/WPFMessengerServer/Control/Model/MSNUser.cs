@@ -15,6 +15,7 @@ namespace WPFMessengerServer.Control.Model
         public String Name { get; set; }
         public String Login { get; set; }
         public String Password { get; set; }
+        public String SignaturePublicKey { get; set; }
         public int TimeAlert { get; set; }
 
         public DateTime? UnblockDate;

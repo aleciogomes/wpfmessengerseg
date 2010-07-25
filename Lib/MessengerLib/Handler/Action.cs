@@ -32,6 +32,7 @@ namespace MessengerLib.Handler
         ,ConfirmLogin
         ,GetUsers
         ,GetUserInfo
+        ,GetAuthorPublicKey
         ,GetMsg
         ,GetFeatures
         ,GetLogDates
@@ -53,6 +54,8 @@ namespace MessengerLib.Handler
         ,EventInvalidConfig
         ,EventExportContacts
         ,EventImportContactsFail
+        ,EventValidateSignature
         ,SaveMotherBoardID
+        ,SavePublicKey
     }
 }
