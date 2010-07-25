@@ -7,7 +7,6 @@ namespace MessengerLib.Util
 {
     public static class Encoder
     {
-
         private static Encoding encoderISO = Encoding.GetEncoding("iso-8859-1");
 
         private const string CRYPT_KEY = "wpfKey@#Messeng*";
@@ -82,5 +81,23 @@ namespace MessengerLib.Util
             return finalString.ToString();
         }
 
+        public static string Sign(string contentToSign, string xmlPrivateKey)
+        {
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(xmlPrivateKey);
+
+            Encoding enc = MessengerLib.Util.Encoder.GetEncoding();
+
+            byte[] signData = rsa.SignData(enc.GetBytes(contentToSign), CryptoConfig.MapNameToOID("SHA1"));
+            return Convert.ToBase64String(signData, 0, signData.Length);
+        }
+
+        public static bool Verify(string contentToVerify, string signature, string xmlPublicKey)
+        {
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            RSA.FromXmlString(xmlPublicKey);
+
+            return RSA.VerifyData(encoderISO.GetBytes(contentToVerify), CryptoConfig.MapNameToOID("SHA1"), encoderISO.GetBytes(signature));
+        }
     }
 }
