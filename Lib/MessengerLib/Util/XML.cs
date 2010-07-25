@@ -2,6 +2,7 @@
 using System.Text;
 using System.Xml;
 using System.IO;
+using System.Collections.Generic;
 
 namespace MessengerLib.Util
 {
@@ -31,11 +32,12 @@ namespace MessengerLib.Util
         public void LoadStream(Stream file)
         {
             this.doc.Load(file);
+            this.rootNode = this.doc.DocumentElement;
         }
 
-        public XmlNode CreateElement(string name)
+        public XmlNode CreateElement(string tagName)
         {
-            return doc.CreateElement(name);
+            return doc.CreateElement(tagName);
         }
 
         public XmlNode GetRootNode()
@@ -48,9 +50,19 @@ namespace MessengerLib.Util
             return this.rootNode.AppendChild(node);
         }
 
-        public XmlNode InsertIntoGroup(XmlNode group, string name, string value)
+        public void RemoveNode(string tagName)
         {
-            XmlNode node = doc.CreateElement(name);
+
+            //seleciona o nodo
+            XmlNode node = this.rootNode.SelectSingleNode(tagName);
+
+            //faz a remoção
+            this.rootNode.RemoveChild(node);
+        }
+
+        public XmlNode InsertIntoGroup(XmlNode group, string tagName, string value)
+        {
+            XmlNode node = doc.CreateElement(tagName);
             node.InnerText = value;
 
             return group.AppendChild(node);
@@ -80,13 +92,33 @@ namespace MessengerLib.Util
             }
         }
 
-        public void UpdateTagValue(string tag, string newValue)
+        public IList<string> ReadTagValues(string tag)
         {
-            XmlNodeList list = doc.GetElementsByTagName(tag);
+            IList<string> listResult = new List<string>();
+
+            try
+            {
+                XmlElement root = doc.DocumentElement;
+
+                XmlNodeList list = root.GetElementsByTagName(tag);
+
+                foreach (XmlNode node in list)
+                {
+                    listResult.Add(node.InnerText);
+                }
+            }
+            catch{}
+
+            return listResult;
+        }
+
+        public void UpdateTagValue(string tagName, string newValue)
+        {
+            XmlNodeList list = doc.GetElementsByTagName(tagName);
 
             foreach (XmlNode node in list)
             {
-                if (node.Name.Equals(tag))
+                if (node.Name.Equals(tagName))
                 {
                     node.InnerText = newValue;
                     break;

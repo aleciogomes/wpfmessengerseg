@@ -419,6 +419,50 @@ namespace WPFMessengerSeg
 
         private void ImportContacts_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.DefaultExt = Report.REPORT_EXT;
+            dialog.Filter = String.Format("Lista de contatos do WPFMessenger ({0})|*{1}", Report.REPORT_EXT, Report.REPORT_EXT);
+
+            if (dialog.ShowDialog() == true)
+            {
+                Report importReport = new Report();
+
+                if (importReport.ImportContactReport(dialog.FileName))
+                {
+
+                    #region Remove da lista os contatos que o usuário já tem
+
+                    foreach (KeyValuePair<string, MSNUser> kvp in dicOnlineUsers)
+                    {
+                        importReport.ImportedValues.Remove(kvp.Value.ID.ToString());
+                    }
+
+                    foreach (KeyValuePair<string, MSNUser> kvp in dicOfflineUsers)
+                    {
+                        importReport.ImportedValues.Remove(kvp.Value.ID.ToString());
+                    }
+
+                    #endregion
+
+                    importReport.ImportedValues.Remove(MSNSession.User.ID.ToString());
+
+                    if (importReport.ImportedValues.Count > 0)
+                    {
+                        UDPConnection.AddContacts(importReport.ImportedValues);
+                        MessageBox.Show("A lista de contatos selecionada foi importada.", "Importação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("A lista de contatos selecionada foi importada, porém você já possui todos os contatos da lista.", "Importação de contatos", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else
+                {
+                    UDPConnection.InvalidImportFile(importReport.InvalidContent);
+                    MessageBox.Show(String.Format("A lista de contatos selecionada não foi importada. Foram encontrados problemas de {0} no arquivo.", importReport.InvalidContent ? "confidencialidade" : "integridade"), "Importação de contatos", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
         }
 
         private void ManageUsers_Click(object sender, RoutedEventArgs e)
