@@ -16,7 +16,7 @@ Assinatura
 ==================
 [X] - Assinatura e verificação de informações com DSA ou RSA
 [X] - Armazenar chave pública e assinatura em arquivo
-[ ] - Auditoria de falha e sucesso da assinatura.
+[X] - Auditoria de falha e sucesso da assinatura.
 
 Legenda:
 [X] - Feito
