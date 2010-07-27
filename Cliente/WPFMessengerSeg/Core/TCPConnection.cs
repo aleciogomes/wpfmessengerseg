@@ -130,6 +130,7 @@ namespace WPFMessengerSeg.Core
                 if (!String.IsNullOrEmpty(MSNSession.User.ConfigMotherBoardID) && !MSNSession.User.ConfigMotherBoardID.Equals(Win32.MotherBoardID) && MSNConfig.IsTempURL)
                 {
                     UDPConnection.Logoff();
+                    UDPConnection.MonitorConfig(false);
                     return "Arquivo de configuração não encontrado";
                 }
                 else
