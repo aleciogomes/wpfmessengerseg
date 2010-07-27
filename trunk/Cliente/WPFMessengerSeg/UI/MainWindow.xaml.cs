@@ -407,6 +407,7 @@ namespace WPFMessengerSeg
             {
                 Signature signature = new Signature(true);
                 signature.GenerateSignatureFile(dialog.FileName);
+                this.menuAssinatura.Visibility = Visibility.Collapsed;
                 MessageBox.Show("Assinatura digital criada! Mantenha esse arquivo em local seguro, pois ele será utilizado para assinar dados durante a exportação de informações.", "Assinatura digital", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
